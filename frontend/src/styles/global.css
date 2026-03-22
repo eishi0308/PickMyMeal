@@ -1,0 +1,475 @@
+:root {
+  --bg: #FFFBF5;
+  --primary: #E8703A;
+  --primary-dark: #C85A28;
+  --primary-light: rgba(232, 112, 58, 0.12);
+  --text: #1A1A1A;
+  --text-muted: #6B7280;
+  --border: #E5E7EB;
+  --chip-bg: #F3F4F6;
+  --white: #FFFFFF;
+  --radius: 12px;
+  --radius-full: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 40px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  min-height: 32px;
+}
+
+/* ── Home ── */
+.home-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0;
+}
+
+.home-subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.mood-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  background: var(--chip-bg);
+  border: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--text);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mood-chip:hover {
+  background: #E9EAEC;
+}
+
+.mood-chip.selected {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.free-text-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.free-text-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-size: 15px;
+  color: var(--text);
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s ease;
+  margin-bottom: 32px;
+}
+
+.free-text-input:focus {
+  border-color: var(--primary);
+}
+
+.free-text-input::placeholder {
+  color: #C0C4CB;
+}
+
+.decide-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
+}
+
+.decide-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.decide-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  color: #DC2626;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ── Shared nav buttons ── */
+.history-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  font-family: inherit;
+}
+
+/* ── Result ── */
+.result-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  text-align: center;
+}
+
+.result-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
+.result-category {
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  margin-bottom: 20px;
+  text-transform: capitalize;
+  line-height: 1.05;
+}
+
+.result-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.result-image-container {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 24px;
+}
+
+.result-image-placeholder {
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  border-radius: 16px;
+  background: var(--chip-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-image-placeholder .spinner {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--primary);
+  width: 28px;
+  height: 28px;
+  border-width: 3px;
+}
+
+.result-reason {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 300px;
+  line-height: 1.65;
+  margin-bottom: 48px;
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.try-again-btn {
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.try-again-btn:hover {
+  background: var(--primary-dark);
+}
+
+.ghost-btn {
+  padding: 14px;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.ghost-btn:hover {
+  background: var(--chip-bg);
+  color: var(--text);
+}
+
+/* ── History ── */
+.history-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: #DC2626;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.history-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  gap: 6px;
+  text-align: center;
+}
+
+.history-empty-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.history-item {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1.5px solid var(--border);
+}
+
+.history-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.history-item-category {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.history-item-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.history-item-moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.history-mood-tag {
+  font-size: 12px;
+  padding: 3px 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.history-item-reason {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── Preference categories ── */
+.home-screen {
+  padding-bottom: 0;
+}
+
+.pref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 140px;
+}
+
+.pref-category-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── Sticky decide footer ── */
+.decide-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 24px 32px;
+  background: linear-gradient(to top, var(--bg) 75%, transparent);
+}
+
+.decide-footer .decide-btn {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.decide-footer .error-msg {
+  max-width: 480px;
+  margin: 8px auto 0;
+}
+
+/* ── Uber Eats button ── */
+.ubereats-btn {
+  display: block;
+  padding: 15px;
+  border-radius: var(--radius);
+  background: #06C167;
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s ease;
+  letter-spacing: -0.2px;
+}
+
+.ubereats-btn:hover {
+  background: #05A857;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
