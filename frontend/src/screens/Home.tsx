@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { recommend, generateImage } from '../api/foodApi';
+import { recommend, generateImage, preloadImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 
@@ -103,6 +103,7 @@ export default function Home({ onResult, onHistory }: Props) {
       const response = await recommend({ preferences: selected });
       const imageRes = await generateImage(response.category, response.category);
       response.image_url = imageRes.image_url;
+      if (response.image_url) await preloadImage(response.image_url);
 
       addToHistory({
         preferences: selected,
