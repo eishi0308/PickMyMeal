@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { recommend } from '../api/foodApi';
+import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 
@@ -101,6 +101,8 @@ export default function Home({ onResult, onHistory }: Props) {
 
     try {
       const response = await recommend({ preferences: selected });
+      const imageRes = await generateImage(response.category, response.category);
+      response.image_url = imageRes.image_url;
 
       addToHistory({
         preferences: selected,
@@ -155,7 +157,7 @@ export default function Home({ onResult, onHistory }: Props) {
           {loading ? (
             <>
               <span className="spinner" />
-              Deciding…
+              Finding your meal…
             </>
           ) : (
             'Decide for me →'

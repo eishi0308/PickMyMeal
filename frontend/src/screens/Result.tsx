@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { recommend } from '../api/foodApi';
+import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 
@@ -28,6 +28,8 @@ export default function Result({ category, reason, imageUrl, preferences, exclud
     setMoreLoading(true);
     try {
       const response = await recommend({ preferences, exclude: excludes });
+      const imageRes = await generateImage(response.category, response.category);
+      response.image_url = imageRes.image_url;
       addToHistory({ preferences, category: response.category, reason: response.reason });
       onResult({ response, preferences });
     } finally {

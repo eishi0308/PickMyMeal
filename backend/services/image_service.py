@@ -20,18 +20,7 @@ async def generate_food_image(
         return _cache[cache_key]
 
     prompt = (
-        f"{food_name}. "
-        f"A realistic professional food photo of {food_name} served on a table at a restaurant. "
-        "Wide shot showing the full dish and surroundings, natural ambient lighting, "
-        "photorealistic, shot on a DSLR camera, slightly wide angle, "
-        "showing the whole plate with some table context. "
-        "Professional food photography, 50mm lens, soft natural window light, "
-        "rich colors, sharp focus on the dish, beautifully plated, "
-        "looks genuinely appetizing and real. "
-        "Hyperrealistic RAW photo, Canon EOS R5, slight film grain, "
-        "natural imperfections, unretouched, candid restaurant setting, "
-        "not AI generated, not CGI, not illustrated, real photograph. "
-        "No text, no logos, no people."
+        f"{food_name} on a white plate, top-down view, soft light, food only, nothing else."
     )
 
     try:

@@ -14,7 +14,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -75,9 +75,7 @@ async def recommend(request: RecommendRequest):
         data = json.loads(text)
         category = data["category"]
 
-        image_url = await generate_food_image(client, category, category)
-
-        return RecommendResponse(category=category, reason=data["reason"], image_url=image_url)
+        return RecommendResponse(category=category, reason=data["reason"])
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
