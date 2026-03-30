@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getHistory, clearHistory } from '../api/history';
 import { HistoryEntry } from '../types';
+import NavBar from '../components/NavBar';
 
 interface Props {
   onBack: () => void;
+  onLogoClick: () => void;
 }
 
 function formatDate(iso: string): string {
@@ -15,7 +17,7 @@ function formatDate(iso: string): string {
   });
 }
 
-export default function History({ onBack }: Props) {
+export default function History({ onBack, onLogoClick }: Props) {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
@@ -29,15 +31,12 @@ export default function History({ onBack }: Props) {
 
   return (
     <div className="screen">
-      <div className="screen-header">
-        <button className="back-btn" onClick={onBack}>
-          ← Back
-        </button>
+      <NavBar onLogoClick={onLogoClick} onBack={onBack} />
+
+      <div className="history-header">
         <h2 className="history-title">History</h2>
         {entries.length > 0 && (
-          <button className="clear-btn" onClick={handleClear}>
-            Clear all
-          </button>
+          <button className="clear-btn" onClick={handleClear}>Clear all</button>
         )}
       </div>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { recommend, generateImage, preloadImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
+import NavBar from '../components/NavBar';
 
 interface ResultData {
   response: RecommendResponse;
@@ -15,11 +16,13 @@ interface Props {
   preferences: PreferenceMap;
   excludes: string[];
   onResult: (data: ResultData) => void;
+  onBack: () => void;
   onReset: () => void;
   onHistory: () => void;
+  onLogoClick: () => void;
 }
 
-export default function Result({ category, reason, imageUrl, preferences, excludes, onResult, onReset, onHistory }: Props) {
+export default function Result({ category, reason, imageUrl, preferences, excludes, onResult, onBack, onReset, onHistory, onLogoClick }: Props) {
   const uberEatsUrl = `https://www.ubereats.com/search?q=${encodeURIComponent(category)}`;
   const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(category)}`;
   const [moreLoading, setMoreLoading] = useState(false);
@@ -40,11 +43,7 @@ export default function Result({ category, reason, imageUrl, preferences, exclud
 
   return (
     <div className="screen">
-      <div className="screen-header">
-        <button className="back-btn" onClick={onReset}>
-          ← Back
-        </button>
-      </div>
+      <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
 
       <div className="result-body">
         <div className="result-eyebrow">Your food today</div>
@@ -87,10 +86,7 @@ export default function Result({ category, reason, imageUrl, preferences, exclud
             )}
           </button>
           <button className="ghost-btn" onClick={onReset}>
-            Change picks
-          </button>
-          <button className="ghost-btn" onClick={onHistory}>
-            History
+            Start over
           </button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Landing from './screens/Landing';
 import Home from './screens/Home';
 import Result from './screens/Result';
 import History from './screens/History';
@@ -10,7 +11,9 @@ interface ResultData {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<Screen>('landing');
+  const [previousScreen, setPreviousScreen] = useState<Screen>('home');
+  const [selected, setSelected] = useState<PreferenceMap>({});
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [sessionExcludes, setSessionExcludes] = useState<string[]>([]);
 
@@ -20,11 +23,26 @@ export default function App() {
     setSessionExcludes((prev) => [...prev, data.response.category]);
   };
 
+  const handleHistory = () => {
+    setPreviousScreen(screen);
+    setScreen('history');
+  };
+
   const handleReset = () => {
+    setSelected({});
     setResultData(null);
     setSessionExcludes([]);
     setScreen('home');
   };
+
+  if (screen === 'landing') {
+    return (
+      <Landing
+        onStart={() => setScreen('home')}
+        onHistory={handleHistory}
+      />
+    );
+  }
 
   if (screen === 'result' && resultData) {
     return (
@@ -35,20 +53,39 @@ export default function App() {
         preferences={resultData.preferences}
         excludes={sessionExcludes}
         onResult={handleResult}
+        onBack={() => setScreen('home')}
         onReset={handleReset}
-        onHistory={() => setScreen('history')}
+        onHistory={handleHistory}
+        onLogoClick={() => setScreen('landing')}
       />
     );
   }
 
   if (screen === 'history') {
-    return <History onBack={() => setScreen('home')} />;
+    return (
+      <History
+        onBack={() => setScreen(previousScreen)}
+        onLogoClick={() => setScreen('landing')}
+      />
+    );
   }
 
   return (
     <Home
+      selected={selected}
+      onToggle={(key, option) =>
+        setSelected((prev) => {
+          if (prev[key] === option) {
+            const next = { ...prev };
+            delete next[key];
+            return next;
+          }
+          return { ...prev, [key]: option };
+        })
+      }
       onResult={(data) => handleResult({ response: data.response, preferences: data.preferences })}
-      onHistory={() => setScreen('history')}
+      onHistory={handleHistory}
+      onLogoClick={() => setScreen('landing')}
     />
   );
 }

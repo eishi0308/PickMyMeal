@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { recommend, generateImage, preloadImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
+import NavBar from '../components/NavBar';
 
 const CATEGORIES = [
   {
@@ -72,25 +73,16 @@ const CATEGORIES = [
 ];
 
 interface Props {
+  selected: PreferenceMap;
+  onToggle: (key: string, option: string) => void;
   onResult: (data: { response: RecommendResponse; preferences: PreferenceMap }) => void;
   onHistory: () => void;
+  onLogoClick: () => void;
 }
 
-export default function Home({ onResult, onHistory }: Props) {
-  const [selected, setSelected] = useState<PreferenceMap>({});
+export default function Home({ selected, onToggle, onResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const toggle = (key: string, option: string) => {
-    setSelected((prev) => {
-      if (prev[key] === option) {
-        const next = { ...prev };
-        delete next[key];
-        return next;
-      }
-      return { ...prev, [key]: option };
-    });
-  };
 
   const hasSelection = Object.keys(selected).length > 0;
 
@@ -121,13 +113,9 @@ export default function Home({ onResult, onHistory }: Props) {
 
   return (
     <div className="screen home-screen">
-      <div className="screen-header">
-        <h1 className="home-title">What do you feel like?</h1>
-        <button className="history-link" onClick={onHistory}>
-          History
-        </button>
-      </div>
+      <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
 
+      <h1 className="home-title">What do you feel like?</h1>
       <p className="home-subtitle">Tap to pick. No typing needed.</p>
 
       <div className="pref-list">
@@ -139,7 +127,7 @@ export default function Home({ onResult, onHistory }: Props) {
                 <button
                   key={option}
                   className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
-                  onClick={() => toggle(key, option)}
+                  onClick={() => onToggle(key, option)}
                 >
                   {option}
                 </button>

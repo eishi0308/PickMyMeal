@@ -38,6 +38,7 @@ body {
   padding: 28px 24px 40px;
   max-width: 480px;
   margin: 0 auto;
+  animation: fadeIn 0.3s ease both;
 }
 
 .screen-header {
@@ -170,6 +171,39 @@ body {
   font-size: 13px;
   margin-top: 12px;
   text-align: center;
+}
+
+/* ── NavBar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  min-height: 36px;
+}
+
+.navbar-left,
+.navbar-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right {
+  justify-content: flex-end;
+}
+
+.navbar-logo {
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+  letter-spacing: -0.5px;
+  padding: 0;
+  font-family: inherit;
+  flex-shrink: 0;
 }
 
 /* ── Shared nav buttons ── */
@@ -310,6 +344,13 @@ body {
 }
 
 /* ── History ── */
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
 .history-title {
   font-size: 20px;
   font-weight: 700;
@@ -455,6 +496,82 @@ body {
 
 .ubereats-btn:hover {
   background: #05A857;
+}
+
+/* ── Landing ── */
+.landing-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 60px;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  animation: fadeIn 0.45s ease both;
+}
+
+.landing-emojis {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+
+.landing-emoji {
+  font-size: 36px;
+  display: inline-block;
+  animation: float 2.6s ease-in-out infinite;
+}
+
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.landing-title {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+
+.landing-tagline {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 40px;
+}
+
+.landing-cta {
+  max-width: 280px;
+  font-size: 17px;
+  padding: 18px 24px;
+  border-radius: var(--radius);
+}
+
+.landing-returning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Spinner ── */
