@@ -12,7 +12,7 @@ export default function NavBar({ onLogoClick, onHistory, onBack }: Props) {
           <button className="back-btn" onClick={onBack}>← Back</button>
         )}
       </div>
-      <button className="navbar-logo" onClick={onLogoClick}>Pick My Meal</button>
+      <button className="navbar-logo" onClick={onLogoClick}>DecideMyMeal</button>
       <div className="navbar-right">
         {onHistory && (
           <button className="history-link" onClick={onHistory}>History</button>

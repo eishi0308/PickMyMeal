@@ -25,7 +25,7 @@ export default function Landing({ onStart, onHistory }: Props) {
       </div>
 
       <div className="landing-content">
-        <h1 className="landing-title">Pick My Meal</h1>
+        <h1 className="landing-title">DecideMyMeal</h1>
         <p className="landing-tagline">
           Can't decide what to eat?<br />
           Tap a few moods. We'll handle the rest.
