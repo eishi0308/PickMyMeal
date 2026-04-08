@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Landing from './src/screens/Landing';
 import Home from './src/screens/Home';
@@ -50,6 +50,7 @@ export default function App() {
   };
 
   return (
+    <SafeAreaProvider>
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
 
@@ -89,6 +90,7 @@ export default function App() {
         />
       )}
     </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
