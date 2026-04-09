@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { recommend, generateImage, preloadImage } from '../api/foodApi';
+import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
@@ -75,7 +75,7 @@ const CATEGORIES = [
 interface Props {
   selected: PreferenceMap;
   onToggle: (key: string, option: string) => void;
-  onResult: (data: { response: RecommendResponse; preferences: PreferenceMap }) => void;
+  onResult: (data: { response: RecommendResponse; backups: RecommendResponse[]; preferences: PreferenceMap }) => void;
   onHistory: () => void;
   onLogoClick: () => void;
 }
@@ -92,18 +92,19 @@ export default function Home({ selected, onToggle, onResult, onHistory, onLogoCl
     setError(null);
 
     try {
-      const response = await recommend({ preferences: selected });
-      const imageRes = await generateImage(response.category, response.category);
-      response.image_url = imageRes.image_url;
-      if (response.image_url) await preloadImage(response.image_url);
-
-      addToHistory({
-        preferences: selected,
-        category: response.category,
-        reason: response.reason,
-      });
-
-      onResult({ response, preferences: selected });
+      const best = await recommend({ preferences: selected });
+      const backup1 = await recommend({ preferences: selected, exclude: [best.category] });
+      const backup2 = await recommend({ preferences: selected, exclude: [best.category, backup1.category] });
+      const [img0, img1, img2] = await Promise.all([
+        generateImage(best.category, best.category),
+        generateImage(backup1.category, backup1.category),
+        generateImage(backup2.category, backup2.category),
+      ]);
+      best.image_url = img0.image_url;
+      backup1.image_url = img1.image_url;
+      backup2.image_url = img2.image_url;
+      addToHistory({ preferences: selected, category: best.category, reason: best.reason });
+      onResult({ response: best, backups: [backup1, backup2], preferences: selected });
     } catch {
       setError('Could not connect. Is the backend running?');
     } finally {

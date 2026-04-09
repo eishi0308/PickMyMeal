@@ -10,6 +10,7 @@ import { PreferenceMap, RecommendResponse, Screen } from './src/types';
 
 interface ResultData {
   response: RecommendResponse;
+  backups: RecommendResponse[];
   preferences: PreferenceMap;
 }
 
@@ -23,7 +24,11 @@ export default function App() {
   const handleResult = (data: ResultData) => {
     setResultData(data);
     setScreen('result');
-    setSessionExcludes((prev) => [...prev, data.response.category]);
+    setSessionExcludes((prev) => [
+      ...prev,
+      data.response.category,
+      ...data.backups.map((b) => b.category),
+    ]);
   };
 
   const handleHistory = () => {
@@ -70,9 +75,8 @@ export default function App() {
 
       {screen === 'result' && resultData && (
         <Result
-          category={resultData.response.category}
-          reason={resultData.response.reason}
-          imageUrl={resultData.response.image_url}
+          best={resultData.response}
+          backups={resultData.backups}
           preferences={resultData.preferences}
           excludes={sessionExcludes}
           onResult={handleResult}

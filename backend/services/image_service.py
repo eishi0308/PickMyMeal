@@ -1,8 +1,7 @@
 from typing import Optional
 from openai import AsyncOpenAI
 
-# Simple in-memory cache: food_keyword (lowercased) -> image_url
-_cache: dict[str, str] = {}  # cleared on each server restart
+_cache: dict[str, str] = {}
 
 
 async def generate_food_image(
@@ -10,17 +9,15 @@ async def generate_food_image(
     food_name: str,
     food_keyword: str,
 ) -> Optional[str]:
-    """
-    Generate a realistic food photo with DALL-E 3.
-    Caches results by food_keyword so the same dish isn't regenerated.
-    Returns the image URL, or None if generation fails.
-    """
     cache_key = food_keyword.lower().strip()
     if cache_key in _cache:
         return _cache[cache_key]
 
     prompt = (
-        f"{food_name} on a white plate, top-down view, soft light, food only, nothing else."
+        f"A stunning professional food photo of {food_name}. "
+        f"Served beautifully on a clean white plate, shot from slightly above, "
+        f"soft natural lighting, shallow depth of field, restaurant quality, "
+        f"no text, no people, food only."
     )
 
     try:
@@ -29,11 +26,15 @@ async def generate_food_image(
             prompt=prompt,
             size="1024x1024",
             quality="standard",
+            response_format="b64_json",
             n=1,
         )
-        url = response.data[0].url
-        if url:
-            _cache[cache_key] = url
-        return url
-    except Exception:
+        b64 = response.data[0].b64_json
+        if not b64:
+            return None
+        data_url = f"data:image/png;base64,{b64}"
+        _cache[cache_key] = data_url
+        return data_url
+    except Exception as e:
+        print(f"[image_service] ERROR: {e}")
         return None

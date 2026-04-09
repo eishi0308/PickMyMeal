@@ -7,6 +7,7 @@ import { PreferenceMap, RecommendResponse, Screen } from './types';
 
 interface ResultData {
   response: RecommendResponse;
+  backups: RecommendResponse[];
   preferences: PreferenceMap;
 }
 
@@ -20,7 +21,11 @@ export default function App() {
   const handleResult = (data: ResultData) => {
     setResultData(data);
     setScreen('result');
-    setSessionExcludes((prev) => [...prev, data.response.category]);
+    setSessionExcludes((prev) => [
+      ...prev,
+      data.response.category,
+      ...data.backups.map((b) => b.category),
+    ]);
   };
 
   const handleHistory = () => {
@@ -47,9 +52,8 @@ export default function App() {
   if (screen === 'result' && resultData) {
     return (
       <Result
-        category={resultData.response.category}
-        reason={resultData.response.reason}
-        imageUrl={resultData.response.image_url}
+        best={resultData.response}
+        backups={resultData.backups}
         preferences={resultData.preferences}
         excludes={sessionExcludes}
         onResult={handleResult}
@@ -83,7 +87,7 @@ export default function App() {
           return { ...prev, [key]: option };
         })
       }
-      onResult={(data) => handleResult({ response: data.response, preferences: data.preferences })}
+      onResult={(data) => handleResult({ response: data.response, backups: data.backups, preferences: data.preferences })}
       onHistory={handleHistory}
       onLogoClick={() => setScreen('landing')}
     />
