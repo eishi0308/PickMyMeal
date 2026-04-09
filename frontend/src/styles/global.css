@@ -305,7 +305,6 @@ body {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 300px;
 }
 
 .try-again-btn {
@@ -742,4 +741,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+}
+
+.result-actions .decide-btn,
+.result-actions .ghost-btn {
+  width: 100%;
 }
