@@ -75,39 +75,32 @@ export default function Result({ best, backups, preferences, excludes, onResult,
       </div>
 
       {/* Backups */}
-      {backups.length > 0 && (
-        <div className="backups-section">
-          <div className="backups-label">Also consider</div>
-          <div className="backups-list">
-            {backups.map((item, i) => {
-              const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
-              return (
-                <div key={i} className="backup-card">
-                  <img
-                    className="backup-image"
-                    src={item.image_url ?? fb}
-                    alt={item.category}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
-                  />
-                  <div className="backup-body">
-                    <div className="backup-number">{i + 1}</div>
-                    <div className="backup-category">{item.category}</div>
-                    <p className="backup-reason">{item.reason}</p>
-                    <a
-                      href={`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="backup-uber"
-                    >
-                      Order on Uber Eats →
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
+      {backups.map((item, i) => {
+        const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
+        return (
+          <div key={i} className="best-card">
+            <div className="best-badge">#{i + 2} Pick</div>
+            <div className="best-category">{item.category}</div>
+            <div className="best-image-wrap">
+              <img
+                className="best-image"
+                src={item.image_url ?? fb}
+                alt={item.category}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
+              />
+            </div>
+            <p className="best-reason">{item.reason}</p>
+            <a
+              href={`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ubereats-btn"
+            >
+              Order on Uber Eats →
+            </a>
           </div>
-        </div>
-      )}
+        );
+      })}
 
       {/* Actions */}
       <div className="result-actions">

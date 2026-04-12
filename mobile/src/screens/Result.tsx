@@ -83,34 +83,28 @@ export default function Result({
         </View>
 
         {/* Backups */}
-        {backups.length > 0 && (
-          <View style={styles.backupsSection}>
-            <Text style={styles.backupsLabel}>Also consider</Text>
-            {backups.map((item, index) => {
-              const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
-              return (
-                <View key={index} style={styles.backupCard}>
-                  <Image
-                    style={styles.backupImage}
-                    source={{ uri: item.image_url ?? fb }}
-                  />
-                  <View style={styles.backupBody}>
-                    <View style={styles.backupNumber}>
-                      <Text style={styles.backupNumberText}>{index + 1}</Text>
-                    </View>
-                    <Text style={styles.backupCategory}>{item.category}</Text>
-                    <Text style={styles.backupReason} numberOfLines={2}>{item.reason}</Text>
-                    <TouchableOpacity
-                      onPress={() => Linking.openURL(`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`)}
-                    >
-                      <Text style={styles.backupUber}>Order on Uber Eats →</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        )}
+        {backups.map((item, index) => {
+          const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
+          return (
+            <View key={index} style={styles.bestCard}>
+              <View style={styles.bestBadge}>
+                <Text style={styles.bestBadgeText}>#{index + 2} Pick</Text>
+              </View>
+              <Text style={styles.bestCategory}>{item.category}</Text>
+              <Image
+                style={styles.bestImage}
+                source={{ uri: item.image_url ?? fb }}
+              />
+              <Text style={styles.bestReason}>{item.reason}</Text>
+              <TouchableOpacity
+                style={styles.uberEatsBtn}
+                onPress={() => Linking.openURL(`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`)}
+              >
+                <Text style={styles.uberEatsBtnText}>Order on Uber Eats →</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })}
 
         {/* Actions */}
         <View style={styles.actions}>
