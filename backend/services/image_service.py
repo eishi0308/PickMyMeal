@@ -14,10 +14,10 @@ async def generate_food_image(
         return _cache[cache_key]
 
     prompt = (
-        f"A stunning professional food photo of {food_name}. "
-        f"Served beautifully on a clean white plate, shot from slightly above, "
-        f"soft natural lighting, shallow depth of field, restaurant quality, "
-        f"no text, no people, food only."
+        f"Extreme close-up of {food_name} served beautifully on a clean white plate. "
+        f"The food and plate completely fill the entire frame edge to edge. "
+        f"Shot from slightly above, soft natural lighting, shallow depth of field, restaurant quality. "
+        f"Nothing else exists in the image."
     )
 
     try:
