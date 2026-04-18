@@ -1,15 +1,16 @@
 :root {
-  --bg: #FFFBF5;
+  --bg: #F8F8F8;
   --primary: #E8703A;
   --primary-dark: #C85A28;
   --primary-light: rgba(232, 112, 58, 0.12);
   --text: #1A1A1A;
   --text-muted: #6B7280;
   --border: #E5E7EB;
-  --chip-bg: #F3F4F6;
+  --chip-bg: #F0F0F0;
   --white: #FFFFFF;
-  --radius: 12px;
+  --radius: 14px;
   --radius-full: 9999px;
+  --card-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -141,29 +142,33 @@ body {
 
 .decide-btn {
   width: 100%;
-  padding: 16px;
-  border-radius: var(--radius);
+  padding: 17px;
+  border-radius: 16px;
   background: var(--primary);
   color: var(--white);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   letter-spacing: -0.2px;
+  box-shadow: 0 4px 16px rgba(232, 112, 58, 0.3);
 }
 
 .decide-btn:hover:not(:disabled) {
   background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(232, 112, 58, 0.35);
 }
 
 .decide-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .error-msg {
@@ -326,7 +331,7 @@ body {
 
 .ghost-btn {
   padding: 14px;
-  border-radius: var(--radius);
+  border-radius: 16px;
   background: transparent;
   color: var(--text-muted);
   font-size: 15px;
@@ -733,7 +738,8 @@ body {
   max-width: 280px;
   font-size: 17px;
   padding: 18px 24px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-full);
+  box-shadow: 0 6px 24px rgba(232, 112, 58, 0.35);
 }
 
 .landing-selling-points {
@@ -894,16 +900,21 @@ body {
 .tune-btn {
   width: 100%;
   padding: 14px;
-  border-radius: 14px;
+  border-radius: 16px;
   background: transparent;
-  color: #9CA3AF;
+  color: var(--text-muted);
   font-size: 15px;
   font-weight: 500;
-  border: 1.5px solid #EBEBEB;
-  cursor: not-allowed;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
   font-family: inherit;
-  opacity: 0.6;
   margin-bottom: 16px;
+  transition: all 0.15s ease;
+}
+
+.tune-btn:hover {
+  background: var(--chip-bg);
+  color: var(--text);
 }
 
 .backup-collapse-btn {

@@ -24,6 +24,7 @@ interface Props {
   onHistory: () => void;
   onLogoClick: () => void;
   onOrder: (category: string) => void;
+  onTune: () => void;
 }
 
 function FoodCard({
@@ -70,7 +71,7 @@ function FoodCard({
 
 export default function Result({
   best, backups, preferences, excludes,
-  onResult, onBack, onReset, onHistory, onLogoClick, onOrder,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
@@ -152,7 +153,7 @@ export default function Result({
         </View>
 
         {/* Tune it — once, below all options */}
-        <TouchableOpacity style={styles.tuneBtn} disabled>
+        <TouchableOpacity style={styles.tuneBtn} onPress={onTune}>
           <Text style={styles.tuneBtnText}>🔁 Tune it</Text>
         </TouchableOpacity>
 
@@ -301,12 +302,11 @@ const styles = StyleSheet.create({
 
   // Tune it
   tuneBtn: {
-    borderRadius: 14,
+    borderRadius: 16,
     paddingVertical: 14,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#EBEBEB',
-    opacity: 0.6,
+    borderColor: '#E5E7EB',
     marginBottom: 20,
   },
   tuneBtnText: { fontSize: 15, fontWeight: '500', color: '#9CA3AF' },

@@ -19,6 +19,7 @@ export default function App() {
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [sessionExcludes, setSessionExcludes] = useState<string[]>([]);
   const [orderCategory, setOrderCategory] = useState<string>('');
+  const [homeMode, setHomeMode] = useState<'quick' | 'fine'>('quick');
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -39,12 +40,18 @@ export default function App() {
     setSelected({});
     setResultData(null);
     setSessionExcludes([]);
+    setHomeMode('quick');
     setScreen('home');
   };
 
   const handleOrder = (category: string) => {
     setOrderCategory(category);
     setScreen('order');
+  };
+
+  const handleTune = () => {
+    setHomeMode('fine');
+    setScreen('home');
   };
 
   if (screen === 'landing') {
@@ -79,6 +86,7 @@ export default function App() {
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
         onOrder={handleOrder}
+        onTune={handleTune}
       />
     );
   }
@@ -95,6 +103,7 @@ export default function App() {
   return (
     <Home
       selected={selected}
+      initialMode={homeMode}
       onToggle={(key, option) =>
         setSelected((prev) => {
           if (prev[key] === option) {

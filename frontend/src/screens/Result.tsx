@@ -21,11 +21,12 @@ interface Props {
   onHistory: () => void;
   onLogoClick: () => void;
   onOrder: (category: string) => void;
+  onTune: () => void;
 }
 
 export default function Result({
   best, backups, preferences, excludes,
-  onResult, onBack, onReset, onHistory, onLogoClick, onOrder,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
@@ -121,7 +122,7 @@ export default function Result({
       </div>
 
       {/* Tune it — once, below all options */}
-      <button className="tune-btn" disabled>
+      <button className="tune-btn" onClick={onTune}>
         🔁 Tune it
       </button>
 

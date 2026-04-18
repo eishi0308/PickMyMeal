@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
@@ -26,16 +26,21 @@ const CATEGORIES = [
 
 interface Props {
   selected: PreferenceMap;
+  initialMode?: 'quick' | 'fine';
   onToggle: (key: string, option: string) => void;
   onResult: (data: { response: RecommendResponse; backups: RecommendResponse[]; preferences: PreferenceMap }) => void;
   onHistory: () => void;
   onLogoClick: () => void;
 }
 
-export default function Home({ selected, onToggle, onResult, onHistory, onLogoClick }: Props) {
+export default function Home({ selected, initialMode = 'quick', onToggle, onResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<'quick' | 'fine'>('quick');
+  const [mode, setMode] = useState<'quick' | 'fine'>(initialMode);
+
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
 
   const hasSelection = Object.keys(selected).length > 0;
 
