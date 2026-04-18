@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Landing from './screens/Landing';
 import Home from './screens/Home';
 import Result from './screens/Result';
+import Order from './screens/Order';
 import History from './screens/History';
 import { PreferenceMap, RecommendResponse, Screen } from './types';
 
@@ -17,6 +18,7 @@ export default function App() {
   const [selected, setSelected] = useState<PreferenceMap>({});
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [sessionExcludes, setSessionExcludes] = useState<string[]>([]);
+  const [orderCategory, setOrderCategory] = useState<string>('');
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -40,11 +42,26 @@ export default function App() {
     setScreen('home');
   };
 
+  const handleOrder = (category: string) => {
+    setOrderCategory(category);
+    setScreen('order');
+  };
+
   if (screen === 'landing') {
     return (
       <Landing
         onStart={() => setScreen('home')}
         onHistory={handleHistory}
+      />
+    );
+  }
+
+  if (screen === 'order') {
+    return (
+      <Order
+        category={orderCategory}
+        onBack={() => setScreen('result')}
+        onReset={handleReset}
       />
     );
   }
@@ -61,6 +78,7 @@ export default function App() {
         onReset={handleReset}
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
+        onOrder={handleOrder}
       />
     );
   }

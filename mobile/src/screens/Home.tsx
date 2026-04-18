@@ -6,6 +6,7 @@ import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
+import QuickMode from './QuickMode';
 
 const CATEGORIES = [
   { key: 'flavor', label: 'Flavor', options: ['Salty', 'Sweet', 'Savory', 'Sour', 'Any'] },
@@ -34,17 +35,17 @@ interface Props {
 export default function Home({ selected, onToggle, onResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<'quick' | 'fine'>('quick');
 
   const hasSelection = Object.keys(selected).length > 0;
 
-  const handleDecide = async () => {
-    if (!hasSelection) return;
+  const handleDecideWithPrefs = async (prefs: PreferenceMap) => {
     setLoading(true);
     setError(null);
     try {
-      const best = await recommend({ preferences: selected });
-      const backup1 = await recommend({ preferences: selected, exclude: [best.category] });
-      const backup2 = await recommend({ preferences: selected, exclude: [best.category, backup1.category] });
+      const best = await recommend({ preferences: prefs });
+      const backup1 = await recommend({ preferences: prefs, exclude: [best.category] });
+      const backup2 = await recommend({ preferences: prefs, exclude: [best.category, backup1.category] });
       const [img0, img1, img2] = await Promise.all([
         generateImage(best.category, best.category),
         generateImage(backup1.category, backup1.category),
@@ -53,8 +54,8 @@ export default function Home({ selected, onToggle, onResult, onHistory, onLogoCl
       best.image_url = img0.image_url;
       backup1.image_url = img1.image_url;
       backup2.image_url = img2.image_url;
-      await addToHistory({ preferences: selected, category: best.category, reason: best.reason });
-      onResult({ response: best, backups: [backup1, backup2], preferences: selected });
+      await addToHistory({ preferences: prefs, category: best.category, reason: best.reason });
+      onResult({ response: best, backups: [backup1, backup2], preferences: prefs });
     } catch {
       setError('Could not connect. Is the backend running?');
     } finally {
@@ -62,58 +63,210 @@ export default function Home({ selected, onToggle, onResult, onHistory, onLogoCl
     }
   };
 
+  const handleDecide = async () => {
+    if (!hasSelection) return;
+    handleDecideWithPrefs(selected);
+  };
+
+  const switchMode = (newMode: 'quick' | 'fine') => {
+    setMode(newMode);
+    setError(null);
+  };
+
   return (
     <View style={styles.screen}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
-        <Text style={styles.title}>What do you feel like?</Text>
-        <Text style={styles.subtitle}>Tap to pick. No typing needed.</Text>
+      {mode === 'quick' ? (
+        /* Quick mode — no scroll, centered layout */
+        <View style={styles.quickContainer}>
+          <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
 
-        {CATEGORIES.map(({ key, label, options }) => (
-          <View key={key} style={styles.category}>
-            <Text style={styles.categoryLabel}>{label}</Text>
-            <View style={styles.chipGrid}>
-              {options.map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.chip, selected[key] === option && styles.chipSelected]}
-                  onPress={() => onToggle(key, option)}
-                >
-                  <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+          {/* Mode toggle */}
+          <View style={styles.modeToggle}>
+            <TouchableOpacity
+              style={[styles.modeBtn, mode === 'quick' && styles.modeBtnActive]}
+              onPress={() => switchMode('quick')}
+            >
+              <Text style={[styles.modeBtnText, mode === 'quick' && styles.modeBtnTextActive]}>
+                ⚡ Quick
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modeBtn, mode === 'fine' && styles.modeBtnActive]}
+              onPress={() => switchMode('fine')}
+            >
+              <Text style={[styles.modeBtnText, mode === 'fine' && styles.modeBtnTextActive]}>
+                🎛 Fine Tune
+              </Text>
+            </TouchableOpacity>
           </View>
-        ))}
 
-        <View style={styles.footerSpacer} />
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.decideBtn, (!hasSelection || loading) && styles.decideBtnDisabled]}
-          onPress={handleDecide}
-          disabled={!hasSelection || loading}
-        >
           {loading ? (
-            <View style={styles.loadingRow}>
-              <ActivityIndicator color="#fff" size="small" />
-              <Text style={styles.decideBtnText}>  Finding your meal…</Text>
+            <View style={styles.quickLoading}>
+              <ActivityIndicator color="#E8703A" size="large" />
+              <Text style={styles.quickLoadingText}>Finding your meal…</Text>
+            </View>
+          ) : error ? (
+            <View style={styles.quickError}>
+              <Text style={styles.errorMsg}>{error}</Text>
+              <TouchableOpacity style={styles.retryBtn} onPress={() => setError(null)}>
+                <Text style={styles.retryBtnText}>Try again</Text>
+              </TouchableOpacity>
             </View>
           ) : (
-            <Text style={styles.decideBtnText}>Decide for me →</Text>
+            <QuickMode onSubmit={handleDecideWithPrefs} />
           )}
-        </TouchableOpacity>
-        {error && <Text style={styles.errorMsg}>{error}</Text>}
-      </View>
+        </View>
+      ) : (
+        /* Fine Tune mode — scrollable chip list */
+        <View style={styles.screen}>
+          <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+            <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
+
+            {/* Mode toggle */}
+            <View style={styles.modeToggle}>
+              <TouchableOpacity
+                style={[styles.modeBtn, mode === 'quick' && styles.modeBtnActive]}
+                onPress={() => switchMode('quick')}
+              >
+                <Text style={[styles.modeBtnText, mode === 'quick' && styles.modeBtnTextActive]}>
+                  ⚡ Quick
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modeBtn, mode === 'fine' && styles.modeBtnActive]}
+                onPress={() => switchMode('fine')}
+              >
+                <Text style={[styles.modeBtnText, mode === 'fine' && styles.modeBtnTextActive]}>
+                  🎛 Fine Tune
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.title}>What do you feel like?</Text>
+            <Text style={styles.subtitle}>Tap to pick. No typing needed.</Text>
+
+            {CATEGORIES.map(({ key, label, options }) => (
+              <View key={key} style={styles.category}>
+                <Text style={styles.categoryLabel}>{label}</Text>
+                <View style={styles.chipGrid}>
+                  {options.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[styles.chip, selected[key] === option && styles.chipSelected]}
+                      onPress={() => onToggle(key, option)}
+                    >
+                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>
+                        {option}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            ))}
+
+            <View style={styles.footerSpacer} />
+          </ScrollView>
+
+          <View style={styles.footer}>
+            <TouchableOpacity
+              style={[styles.decideBtn, (!hasSelection || loading) && styles.decideBtnDisabled]}
+              onPress={handleDecide}
+              disabled={!hasSelection || loading}
+            >
+              {loading ? (
+                <View style={styles.loadingRow}>
+                  <ActivityIndicator color="#fff" size="small" />
+                  <Text style={styles.decideBtnText}>  Finding your meal…</Text>
+                </View>
+              ) : (
+                <Text style={styles.decideBtnText}>Decide for me →</Text>
+              )}
+            </TouchableOpacity>
+            {error && <Text style={styles.errorMsg}>{error}</Text>}
+          </View>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#FFFBF5' },
+
+  /* Quick mode layout */
+  quickContainer: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 28,
+    backgroundColor: '#FFFBF5',
+  },
+  quickLoading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+    paddingBottom: 60,
+  },
+  quickLoadingText: {
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  quickError: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    paddingBottom: 60,
+  },
+  retryBtn: {
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+  },
+  retryBtnText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+
+  /* Mode toggle */
+  modeToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#EFEFEF',
+    borderRadius: 12,
+    padding: 3,
+    marginBottom: 32,
+    gap: 2,
+  },
+  modeBtn: {
+    flex: 1,
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modeBtnActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.10,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  modeBtnText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  modeBtnTextActive: {
+    color: '#1A1A1A',
+    fontWeight: '600',
+  },
+
+  /* Fine tune / scroll layout */
   scroll: { flex: 1 },
   scrollContent: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: '800', letterSpacing: -0.5, color: '#1A1A1A', marginBottom: 4 },

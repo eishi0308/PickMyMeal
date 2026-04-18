@@ -3,6 +3,7 @@ import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
+import QuickMode from './QuickMode';
 
 const CATEGORIES = [
   {
@@ -83,18 +84,17 @@ interface Props {
 export default function Home({ selected, onToggle, onResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<'quick' | 'fine'>('quick');
 
   const hasSelection = Object.keys(selected).length > 0;
 
-  const handleDecide = async () => {
-    if (!hasSelection) return;
+  const handleDecideWithPrefs = async (prefs: PreferenceMap) => {
     setLoading(true);
     setError(null);
-
     try {
-      const best = await recommend({ preferences: selected });
-      const backup1 = await recommend({ preferences: selected, exclude: [best.category] });
-      const backup2 = await recommend({ preferences: selected, exclude: [best.category, backup1.category] });
+      const best = await recommend({ preferences: prefs });
+      const backup1 = await recommend({ preferences: prefs, exclude: [best.category] });
+      const backup2 = await recommend({ preferences: prefs, exclude: [best.category, backup1.category] });
       const [img0, img1, img2] = await Promise.all([
         generateImage(best.category, best.category),
         generateImage(backup1.category, backup1.category),
@@ -103,8 +103,8 @@ export default function Home({ selected, onToggle, onResult, onHistory, onLogoCl
       best.image_url = img0.image_url;
       backup1.image_url = img1.image_url;
       backup2.image_url = img2.image_url;
-      addToHistory({ preferences: selected, category: best.category, reason: best.reason });
-      onResult({ response: best, backups: [backup1, backup2], preferences: selected });
+      addToHistory({ preferences: prefs, category: best.category, reason: best.reason });
+      onResult({ response: best, backups: [backup1, backup2], preferences: prefs });
     } catch {
       setError('Could not connect. Is the backend running?');
     } finally {
@@ -112,49 +112,89 @@ export default function Home({ selected, onToggle, onResult, onHistory, onLogoCl
     }
   };
 
+  const handleDecide = async () => {
+    if (!hasSelection) return;
+    handleDecideWithPrefs(selected);
+  };
+
   return (
     <div className="screen home-screen">
       <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
 
-      <h1 className="home-title">What do you feel like?</h1>
-      <p className="home-subtitle">Tap to pick. No typing needed.</p>
-
-      <div className="pref-list">
-        {CATEGORIES.map(({ key, label, options }) => (
-          <div key={key} className="pref-category">
-            <div className="pref-category-label">{label}</div>
-            <div className="mood-grid">
-              {options.map((option) => (
-                <button
-                  key={option}
-                  className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
-                  onClick={() => onToggle(key, option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="decide-footer">
+      <div className="mode-toggle">
         <button
-          className="decide-btn"
-          onClick={handleDecide}
-          disabled={!hasSelection || loading}
+          className={`mode-btn${mode === 'quick' ? ' active' : ''}`}
+          onClick={() => { setMode('quick'); setError(null); }}
         >
-          {loading ? (
-            <>
-              <span className="spinner" />
-              Finding your meal…
-            </>
-          ) : (
-            'Decide for me →'
-          )}
+          ⚡ Quick
         </button>
-        {error && <p className="error-msg">{error}</p>}
+        <button
+          className={`mode-btn${mode === 'fine' ? ' active' : ''}`}
+          onClick={() => { setMode('fine'); setError(null); }}
+        >
+          🎛 Fine Tune
+        </button>
       </div>
+
+      {mode === 'quick' ? (
+        loading ? (
+          <div className="quick-loading">
+            <span className="spinner quick-spinner" />
+            <p className="quick-loading-text">Finding your meal…</p>
+          </div>
+        ) : error ? (
+          <div className="quick-error">
+            <p className="error-msg">{error}</p>
+            <button className="ghost-btn quick-retry-btn" onClick={() => setError(null)}>
+              Try again
+            </button>
+          </div>
+        ) : (
+          <QuickMode onSubmit={handleDecideWithPrefs} />
+        )
+      ) : (
+        <>
+          <h1 className="home-title">What do you feel like?</h1>
+          <p className="home-subtitle">Tap to pick. No typing needed.</p>
+
+          <div className="pref-list">
+            {CATEGORIES.map(({ key, label, options }) => (
+              <div key={key} className="pref-category">
+                <div className="pref-category-label">{label}</div>
+                <div className="mood-grid">
+                  {options.map((option) => (
+                    <button
+                      key={option}
+                      className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
+                      onClick={() => onToggle(key, option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="decide-footer">
+            <button
+              className="decide-btn"
+              onClick={handleDecide}
+              disabled={!hasSelection || loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner" />
+                  Finding your meal…
+                </>
+              ) : (
+                'Decide for me →'
+              )}
+            </button>
+            {error && <p className="error-msg">{error}</p>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Linking, ActivityIndicator,
+  View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
 import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
@@ -23,18 +23,55 @@ interface Props {
   onReset: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
+  onOrder: (category: string) => void;
+}
+
+function PrimaryCard({
+  item,
+  badge,
+  fallbackUrl,
+  onOrder,
+}: {
+  item: RecommendResponse;
+  badge: string;
+  fallbackUrl: string;
+  onOrder: (category: string) => void;
+}) {
+  return (
+    <View style={styles.primaryCard}>
+      <View style={styles.primaryBadge}>
+        <Text style={styles.primaryBadgeText}>{badge}</Text>
+      </View>
+      <Text style={styles.primaryTitle}>{item.category}</Text>
+      <Image
+        style={styles.primaryImage}
+        source={{ uri: item.image_url ?? fallbackUrl }}
+      />
+      <Text style={styles.primaryReason}>{item.reason}</Text>
+
+      <View style={styles.actionLayer}>
+        <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
+          <Text style={styles.takeBtnText}>✅ Take this</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tuneBtn} disabled>
+          <Text style={styles.tuneBtnText}>🔁 Tune it</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 export default function Result({
   best, backups, preferences, excludes,
-  onResult, onBack, onReset, onHistory, onLogoClick,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder,
 }: Props) {
   const [loading, setLoading] = useState(false);
+  const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
   const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(best.category)}`;
-  const uberEatsUrl = `https://www.ubereats.com/search?q=${encodeURIComponent(best.category)}`;
 
   const handleTryAgain = async () => {
     setLoading(true);
+    setExpandedBackup(null);
     try {
       const r1 = await recommend({ preferences, exclude: excludes });
       const r2 = await recommend({ preferences, exclude: [...excludes, r1.category] });
@@ -59,54 +96,51 @@ export default function Result({
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
 
-        {/* Best Pick */}
-        <View style={styles.bestCard}>
-          <View style={styles.bestBadge}>
-            <Text style={styles.bestBadgeText}>⭐  Best Pick</Text>
-          </View>
+        {/* Primary card */}
+        <PrimaryCard
+          item={best}
+          badge="⭐ Best Pick"
+          fallbackUrl={fallbackUrl}
+          onOrder={onOrder}
+        />
 
-          <Text style={styles.bestCategory}>{best.category}</Text>
+        {/* Compact backups */}
+        <View style={styles.backupsSection}>
+          <Text style={styles.backupsLabel}>Or try:</Text>
 
-          <Image
-            style={styles.bestImage}
-            source={{ uri: best.image_url ?? fallbackUrl }}
-          />
+          {backups.map((item, i) => {
+            const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
+            const isExpanded = expandedBackup === i;
 
-          <Text style={styles.bestReason}>{best.reason}</Text>
-
-          <TouchableOpacity
-            style={styles.uberEatsBtn}
-            onPress={() => Linking.openURL(uberEatsUrl)}
-          >
-            <Text style={styles.uberEatsBtnText}>Order on Uber Eats →</Text>
-          </TouchableOpacity>
+            return (
+              <View key={i}>
+                {isExpanded ? (
+                  <View style={styles.expandedCardWrap}>
+                    <PrimaryCard
+                      item={item}
+                      badge={`#${i + 2} Pick`}
+                      fallbackUrl={fb}
+                      onOrder={onOrder}
+                    />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.backupRow}
+                    onPress={() => setExpandedBackup(i)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.backupBullet}>•</Text>
+                    <Text style={styles.backupName}>{item.category}</Text>
+                    <Text style={styles.backupReason} numberOfLines={1}>{item.reason}</Text>
+                    <Text style={styles.backupArrow}>›</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            );
+          })}
         </View>
 
-        {/* Backups */}
-        {backups.map((item, index) => {
-          const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
-          return (
-            <View key={index} style={styles.bestCard}>
-              <View style={styles.bestBadge}>
-                <Text style={styles.bestBadgeText}>#{index + 2} Pick</Text>
-              </View>
-              <Text style={styles.bestCategory}>{item.category}</Text>
-              <Image
-                style={styles.bestImage}
-                source={{ uri: item.image_url ?? fb }}
-              />
-              <Text style={styles.bestReason}>{item.reason}</Text>
-              <TouchableOpacity
-                style={styles.uberEatsBtn}
-                onPress={() => Linking.openURL(`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`)}
-              >
-                <Text style={styles.uberEatsBtnText}>Order on Uber Eats →</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
-
-        {/* Actions */}
+        {/* Bottom actions */}
         <View style={styles.actions}>
           <TouchableOpacity
             style={[styles.tryBtn, loading && styles.btnDisabled]}
@@ -136,21 +170,21 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#FFFBF5' },
   scrollContent: { paddingHorizontal: 20, paddingTop: 28, paddingBottom: 48 },
 
-  // Best Pick card
-  bestCard: {
+  // Primary card
+  primaryCard: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 24,
+    padding: 22,
+    marginBottom: 16,
     borderWidth: 1.5,
     borderColor: '#F0E8E0',
-    shadowColor: '#E8703A',
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 3,
+    shadowRadius: 24,
+    elevation: 4,
   },
-  bestBadge: {
+  primaryBadge: {
     alignSelf: 'flex-start',
     backgroundColor: 'rgba(232,112,58,0.1)',
     borderRadius: 9999,
@@ -158,116 +192,111 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 14,
   },
-  bestBadgeText: {
+  primaryBadgeText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#E8703A',
     letterSpacing: 0.3,
   },
-  bestCategory: {
-    fontSize: 36,
+  primaryTitle: {
+    fontSize: 40,
     fontWeight: '800',
     color: '#1A1A1A',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
     textTransform: 'capitalize',
     marginBottom: 16,
-    lineHeight: 42,
+    lineHeight: 46,
   },
-  bestImage: {
+  primaryImage: {
     width: '100%',
-    height: 180,
-    borderRadius: 14,
+    height: 220,
+    borderRadius: 16,
     marginBottom: 16,
     backgroundColor: '#F3F4F6',
   },
-  imagePlaceholder: {
-    width: '100%',
-    height: 180,
-    borderRadius: 14,
-    marginBottom: 16,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bestReason: {
+  primaryReason: {
     fontSize: 15,
     color: '#6B7280',
     lineHeight: 24,
     marginBottom: 20,
   },
-  uberEatsBtn: {
-    backgroundColor: '#06C167',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  uberEatsBtnText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '700',
-  },
 
-  // Backups
-  backupsSection: { marginBottom: 20 },
-  backupsLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    color: '#9CA3AF',
-    marginBottom: 12,
-  },
-  backupCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#F0F0F0',
+  // Action layer
+  actionLayer: {
     flexDirection: 'row',
-    marginBottom: 12,
+    gap: 10,
   },
-  backupImage: {
-    width: 110,
-    height: 110,
-    borderTopLeftRadius: 14,
-    borderBottomLeftRadius: 14,
-  },
-  backupBody: {
-    flex: 1,
-    padding: 14,
-    justifyContent: 'center',
-  },
-  backupNumber: {
-    width: 22,
-    height: 22,
-    borderRadius: 9999,
-    backgroundColor: '#F3F4F6',
+  takeBtn: {
+    flex: 2,
+    backgroundColor: '#1A1A1A',
+    borderRadius: 12,
+    paddingVertical: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
   },
-  backupNumberText: {
-    fontSize: 11,
+  takeBtnText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '700',
+  },
+  tuneBtn: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 15,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    opacity: 0.5,
+  },
+  tuneBtnText: {
+    fontSize: 14,
+    fontWeight: '500',
     color: '#6B7280',
   },
-  backupCategory: {
+
+  // Compact backups
+  backupsSection: { marginBottom: 24 },
+  backupsLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    color: '#9CA3AF',
+    marginBottom: 10,
+  },
+  backupRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#F0F0F0',
+    borderRadius: 14,
+    marginBottom: 8,
+  },
+  backupBullet: {
+    color: '#E8703A',
     fontSize: 16,
+    fontWeight: '700',
+  },
+  backupName: {
+    fontSize: 15,
     fontWeight: '700',
     color: '#1A1A1A',
     textTransform: 'capitalize',
-    marginBottom: 4,
-    lineHeight: 22,
   },
   backupReason: {
-    fontSize: 12,
+    flex: 1,
+    fontSize: 13,
     color: '#9CA3AF',
-    lineHeight: 18,
-    marginBottom: 10,
   },
-  backupUber: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#06C167',
+  backupArrow: {
+    fontSize: 18,
+    color: '#D1D5DB',
+  },
+  expandedCardWrap: {
+    marginBottom: 8,
   },
 
   // Actions

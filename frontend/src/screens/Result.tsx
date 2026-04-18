@@ -20,14 +20,20 @@ interface Props {
   onReset: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
+  onOrder: (category: string) => void;
 }
 
-export default function Result({ best, backups, preferences, excludes, onResult, onBack, onReset, onHistory, onLogoClick }: Props) {
+export default function Result({
+  best, backups, preferences, excludes,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder,
+}: Props) {
   const [loading, setLoading] = useState(false);
+  const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
   const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(best.category)}`;
 
   const handleTryAgain = async () => {
     setLoading(true);
+    setExpandedBackup(null);
     try {
       const r1 = await recommend({ preferences, exclude: excludes });
       const r2 = await recommend({ preferences, exclude: [...excludes, r1.category] });
@@ -51,58 +57,79 @@ export default function Result({ best, backups, preferences, excludes, onResult,
     <div className="screen result-screen">
       <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
 
-      {/* Best Pick */}
-      <div className="best-card">
-        <div className="best-badge">⭐ Best Pick</div>
-        <div className="best-category">{best.category}</div>
-        <div className="best-image-wrap">
+      {/* Primary card */}
+      <div className="primary-card">
+        <div className="primary-badge">⭐ Best Pick</div>
+        <h1 className="primary-title">{best.category}</h1>
+        <div className="primary-image-wrap">
           <img
-            className="best-image"
+            className="primary-image"
             src={best.image_url ?? fallbackUrl}
             alt={best.category}
             onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackUrl; }}
           />
         </div>
-        <p className="best-reason">{best.reason}</p>
-        <a
-          href={`https://www.ubereats.com/search?q=${encodeURIComponent(best.category)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ubereats-btn"
-        >
-          Order on Uber Eats →
-        </a>
+        <p className="primary-reason">{best.reason}</p>
       </div>
 
-      {/* Backups */}
-      {backups.map((item, i) => {
-        const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
-        return (
-          <div key={i} className="best-card">
-            <div className="best-badge">#{i + 2} Pick</div>
-            <div className="best-category">{item.category}</div>
-            <div className="best-image-wrap">
-              <img
-                className="best-image"
-                src={item.image_url ?? fb}
-                alt={item.category}
-                onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
-              />
-            </div>
-            <p className="best-reason">{item.reason}</p>
-            <a
-              href={`https://www.ubereats.com/search?q=${encodeURIComponent(item.category)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ubereats-btn"
-            >
-              Order on Uber Eats →
-            </a>
-          </div>
-        );
-      })}
+      {/* Action layer */}
+      <div className="action-layer">
+        <button className="take-btn" onClick={() => onOrder(best.category)}>
+          ✅ Take this
+        </button>
+        <button className="tune-btn" disabled>
+          🔁 Tune it
+        </button>
+      </div>
 
-      {/* Actions */}
+      {/* Backups — compact list */}
+      <div className="backups-compact">
+        <p className="backups-compact-label">Or try:</p>
+        {backups.map((item, i) => {
+          const isExpanded = expandedBackup === i;
+          const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
+
+          return (
+            <div key={i}>
+              {isExpanded ? (
+                <div className="primary-card backup-expanded-card">
+                  <div className="primary-badge">#{i + 2} Pick</div>
+                  <h2 className="primary-title">{item.category}</h2>
+                  <div className="primary-image-wrap">
+                    <img
+                      className="primary-image"
+                      src={item.image_url ?? fb}
+                      alt={item.category}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
+                    />
+                  </div>
+                  <p className="primary-reason">{item.reason}</p>
+                  <div className="action-layer">
+                    <button className="take-btn" onClick={() => onOrder(item.category)}>
+                      ✅ Take this
+                    </button>
+                    <button className="tune-btn" disabled>
+                      🔁 Tune it
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className="backup-row"
+                  onClick={() => setExpandedBackup(i)}
+                >
+                  <span className="backup-row-bullet">•</span>
+                  <span className="backup-row-name">{item.category}</span>
+                  <span className="backup-row-reason">{item.reason}</span>
+                  <span className="backup-row-arrow">›</span>
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom actions */}
       <div className="result-actions">
         <button className="decide-btn" onClick={handleTryAgain} disabled={loading}>
           {loading ? <><span className="spinner" /> Finding new picks…</> : 'Try different picks →'}

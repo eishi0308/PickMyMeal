@@ -4,6 +4,10 @@ from openai import AsyncOpenAI
 _cache: dict[str, str] = {}
 
 
+def clear_cache() -> None:
+    _cache.clear()
+
+
 async def generate_food_image(
     client: AsyncOpenAI,
     food_name: str,
@@ -16,7 +20,7 @@ async def generate_food_image(
     prompt = (
         f"Extreme close-up of {food_name} served beautifully on a clean white plate. "
         f"The food and plate completely fill the entire frame edge to edge. "
-        f"Shot from slightly above, soft natural lighting, shallow depth of field, restaurant quality. "
+        f"Viewed from slightly above, soft natural lighting, shallow depth of field, restaurant quality. "
         f"Nothing else exists in the image."
     )
 

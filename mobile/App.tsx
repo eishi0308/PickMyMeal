@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Landing from './src/screens/Landing';
 import Home from './src/screens/Home';
 import Result from './src/screens/Result';
+import Order from './src/screens/Order';
 import History from './src/screens/History';
 import { PreferenceMap, RecommendResponse, Screen } from './src/types';
 
@@ -20,6 +21,7 @@ export default function App() {
   const [selected, setSelected] = useState<PreferenceMap>({});
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [sessionExcludes, setSessionExcludes] = useState<string[]>([]);
+  const [orderCategory, setOrderCategory] = useState<string>('');
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -43,6 +45,11 @@ export default function App() {
     setScreen('home');
   };
 
+  const handleOrder = (category: string) => {
+    setOrderCategory(category);
+    setScreen('order');
+  };
+
   const handleToggle = (key: string, option: string) => {
     setSelected((prev) => {
       if (prev[key] === option) {
@@ -56,44 +63,53 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="dark" />
 
-      {screen === 'landing' && (
-        <Landing onStart={() => setScreen('home')} onHistory={handleHistory} />
-      )}
+        {screen === 'landing' && (
+          <Landing onStart={() => setScreen('home')} onHistory={handleHistory} />
+        )}
 
-      {screen === 'home' && (
-        <Home
-          selected={selected}
-          onToggle={handleToggle}
-          onResult={handleResult}
-          onHistory={handleHistory}
-          onLogoClick={() => setScreen('landing')}
-        />
-      )}
+        {screen === 'home' && (
+          <Home
+            selected={selected}
+            onToggle={handleToggle}
+            onResult={handleResult}
+            onHistory={handleHistory}
+            onLogoClick={() => setScreen('landing')}
+          />
+        )}
 
-      {screen === 'result' && resultData && (
-        <Result
-          best={resultData.response}
-          backups={resultData.backups}
-          preferences={resultData.preferences}
-          excludes={sessionExcludes}
-          onResult={handleResult}
-          onBack={() => setScreen('home')}
-          onReset={handleReset}
-          onHistory={handleHistory}
-          onLogoClick={() => setScreen('landing')}
-        />
-      )}
+        {screen === 'result' && resultData && (
+          <Result
+            best={resultData.response}
+            backups={resultData.backups}
+            preferences={resultData.preferences}
+            excludes={sessionExcludes}
+            onResult={handleResult}
+            onBack={() => setScreen('home')}
+            onReset={handleReset}
+            onHistory={handleHistory}
+            onLogoClick={() => setScreen('landing')}
+            onOrder={handleOrder}
+          />
+        )}
 
-      {screen === 'history' && (
-        <History
-          onBack={() => setScreen(previousScreen)}
-          onLogoClick={() => setScreen('landing')}
-        />
-      )}
-    </SafeAreaView>
+        {screen === 'order' && (
+          <Order
+            category={orderCategory}
+            onBack={() => setScreen('result')}
+            onReset={handleReset}
+          />
+        )}
+
+        {screen === 'history' && (
+          <History
+            onBack={() => setScreen(previousScreen)}
+            onLogoClick={() => setScreen('landing')}
+          />
+        )}
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }

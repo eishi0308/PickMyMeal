@@ -23,4 +23,4 @@ export interface HistoryEntry {
   reason: string;
 }
 
-export type Screen = 'landing' | 'home' | 'result' | 'history';
+export type Screen = 'landing' | 'home' | 'result' | 'order' | 'history';
