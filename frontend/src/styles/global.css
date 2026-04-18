@@ -736,6 +736,44 @@ body {
   border-radius: var(--radius);
 }
 
+.landing-selling-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 36px;
+  text-align: left;
+  width: 100%;
+  max-width: 280px;
+}
+
+.landing-selling-points li {
+  font-size: 14px;
+  color: var(--text-muted);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.landing-selling-points li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  top: 1px;
+}
+
+.landing-selling-points li:last-child {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.landing-selling-points li:last-child::before {
+  content: '→';
+}
+
 .landing-returning {
   display: flex;
   flex-direction: column;

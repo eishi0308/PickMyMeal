@@ -48,6 +48,20 @@ export default function Landing({ onStart, onHistory }: Props) {
           Can't decide what to eat?{'\n'}Tap a few moods. We'll handle the rest.
         </Text>
 
+        <View style={styles.sellingPoints}>
+          {[
+            { icon: '✕', text: 'No scrolling through endless menus' },
+            { icon: '✕', text: 'No comparing 30 options' },
+            { icon: '✕', text: 'No thinking for 20 minutes' },
+            { icon: '→', text: 'Just take this — or adjust slightly', highlight: true },
+          ].map(({ icon, text, highlight }, i) => (
+            <View key={i} style={styles.sellingRow}>
+              <Text style={[styles.sellingIcon, highlight && styles.sellingIconHighlight]}>{icon}</Text>
+              <Text style={[styles.sellingText, highlight && styles.sellingTextHighlight]}>{text}</Text>
+            </View>
+          ))}
+        </View>
+
         <TouchableOpacity style={styles.ctaBtn} onPress={onStart}>
           <Text style={styles.ctaBtnText}>Let's go →</Text>
         </TouchableOpacity>
@@ -100,8 +114,39 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#6B7280',
     lineHeight: 28,
-    marginBottom: 40,
+    marginBottom: 28,
     textAlign: 'center',
+  },
+  sellingPoints: {
+    alignSelf: 'stretch',
+    gap: 10,
+    marginBottom: 36,
+    paddingHorizontal: 8,
+  },
+  sellingRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  sellingIcon: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#E8703A',
+    marginTop: 2,
+    width: 14,
+  },
+  sellingIconHighlight: {
+    fontSize: 14,
+  },
+  sellingText: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 22,
+    flex: 1,
+  },
+  sellingTextHighlight: {
+    color: '#1A1A1A',
+    fontWeight: '600',
   },
   ctaBtn: {
     width: 280,

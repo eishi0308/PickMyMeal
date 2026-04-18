@@ -31,6 +31,13 @@ export default function Landing({ onStart, onHistory }: Props) {
           Tap a few moods. We'll handle the rest.
         </p>
 
+        <ul className="landing-selling-points">
+          <li>No scrolling through endless menus</li>
+          <li>No comparing 30 options</li>
+          <li>No thinking for 20 minutes</li>
+          <li>Just take this — or adjust slightly</li>
+        </ul>
+
         <button className="decide-btn landing-cta" onClick={onStart}>
           Let's go →
         </button>
