@@ -26,22 +26,34 @@ interface Props {
   onOrder: (category: string) => void;
 }
 
-function PrimaryCard({
+function FoodCard({
   item,
   badge,
   fallbackUrl,
   onOrder,
+  onCollapse,
 }: {
   item: RecommendResponse;
   badge: string;
   fallbackUrl: string;
   onOrder: (category: string) => void;
+  onCollapse?: () => void;
 }) {
   return (
     <View style={styles.primaryCard}>
-      <View style={styles.primaryBadge}>
-        <Text style={styles.primaryBadgeText}>{badge}</Text>
-      </View>
+      <TouchableOpacity
+        style={styles.cardHeader}
+        onPress={onCollapse}
+        disabled={!onCollapse}
+      >
+        <View style={styles.primaryBadge}>
+          <Text style={styles.primaryBadgeText}>{badge}</Text>
+        </View>
+        {onCollapse && (
+          <Text style={styles.collapseText}>↑ Close</Text>
+        )}
+      </TouchableOpacity>
+
       <Text style={styles.primaryTitle}>{item.category}</Text>
       <Image
         style={styles.primaryImage}
@@ -49,14 +61,9 @@ function PrimaryCard({
       />
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
-      <View style={styles.actionLayer}>
-        <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
-          <Text style={styles.takeBtnText}>✅ Take this</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tuneBtn} disabled>
-          <Text style={styles.tuneBtnText}>🔁 Tune it</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
+        <Text style={styles.takeBtnText}>✅ Take this</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -91,20 +98,23 @@ export default function Result({
     }
   };
 
+  const toggleBackup = (i: number) =>
+    setExpandedBackup((prev) => (prev === i ? null : i));
+
   return (
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
 
         {/* Primary card */}
-        <PrimaryCard
+        <FoodCard
           item={best}
           badge="⭐ Best Pick"
           fallbackUrl={fallbackUrl}
           onOrder={onOrder}
         />
 
-        {/* Compact backups */}
+        {/* Compact backups — accordion */}
         <View style={styles.backupsSection}>
           <Text style={styles.backupsLabel}>Or try:</Text>
 
@@ -115,18 +125,19 @@ export default function Result({
             return (
               <View key={i}>
                 {isExpanded ? (
-                  <View style={styles.expandedCardWrap}>
-                    <PrimaryCard
+                  <View style={styles.expandedWrap}>
+                    <FoodCard
                       item={item}
                       badge={`#${i + 2} Pick`}
                       fallbackUrl={fb}
                       onOrder={onOrder}
+                      onCollapse={() => toggleBackup(i)}
                     />
                   </View>
                 ) : (
                   <TouchableOpacity
                     style={styles.backupRow}
-                    onPress={() => setExpandedBackup(i)}
+                    onPress={() => toggleBackup(i)}
                     activeOpacity={0.7}
                   >
                     <Text style={styles.backupBullet}>•</Text>
@@ -139,6 +150,11 @@ export default function Result({
             );
           })}
         </View>
+
+        {/* Tune it — once, below all options */}
+        <TouchableOpacity style={styles.tuneBtn} disabled>
+          <Text style={styles.tuneBtnText}>🔁 Tune it</Text>
+        </TouchableOpacity>
 
         {/* Bottom actions */}
         <View style={styles.actions}>
@@ -173,16 +189,22 @@ const styles = StyleSheet.create({
   // Primary card
   primaryCard: {
     backgroundColor: '#fff',
-    borderRadius: 24,
-    padding: 22,
-    marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: '#F0E8E0',
+    borderRadius: 28,
+    padding: 24,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 16,
     elevation: 4,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
   },
   primaryBadge: {
     alignSelf: 'flex-start',
@@ -190,71 +212,62 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     paddingVertical: 5,
     paddingHorizontal: 12,
-    marginBottom: 14,
   },
   primaryBadgeText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: '#E8703A',
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  collapseText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    fontWeight: '500',
   },
   primaryTitle: {
-    fontSize: 40,
+    fontSize: 38,
     fontWeight: '800',
     color: '#1A1A1A',
     letterSpacing: -1.2,
     textTransform: 'capitalize',
-    marginBottom: 16,
-    lineHeight: 46,
+    marginBottom: 14,
+    lineHeight: 44,
   },
   primaryImage: {
     width: '100%',
-    height: 220,
-    borderRadius: 16,
-    marginBottom: 16,
+    height: 224,
+    borderRadius: 18,
+    marginBottom: 18,
     backgroundColor: '#F3F4F6',
   },
   primaryReason: {
     fontSize: 15,
     color: '#6B7280',
-    lineHeight: 24,
-    marginBottom: 20,
-  },
-
-  // Action layer
-  actionLayer: {
-    flexDirection: 'row',
-    gap: 10,
+    lineHeight: 26,
+    marginBottom: 28,
   },
   takeBtn: {
-    flex: 2,
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
-    paddingVertical: 15,
+    backgroundColor: '#E8703A',
+    borderRadius: 14,
+    paddingVertical: 17,
     alignItems: 'center',
+    shadowColor: '#E8703A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 5,
+    marginTop: 4,
   },
   takeBtnText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
-  },
-  tuneBtn: {
-    flex: 1,
-    borderRadius: 12,
-    paddingVertical: 15,
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    opacity: 0.5,
-  },
-  tuneBtnText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6B7280',
+    letterSpacing: -0.3,
   },
 
-  // Compact backups
-  backupsSection: { marginBottom: 24 },
+  // Backups
+  backupsSection: { marginBottom: 12 },
   backupsLabel: {
     fontSize: 12,
     fontWeight: '700',
@@ -270,34 +283,33 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
-    borderWidth: 1.5,
-    borderColor: '#F0F0F0',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
     borderRadius: 14,
     marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 1,
   },
-  backupBullet: {
-    color: '#E8703A',
-    fontSize: 16,
-    fontWeight: '700',
+  backupBullet: { color: '#E8703A', fontSize: 16, fontWeight: '700' },
+  backupName: { fontSize: 15, fontWeight: '700', color: '#1A1A1A', textTransform: 'capitalize' },
+  backupReason: { flex: 1, fontSize: 13, color: '#9CA3AF' },
+  backupArrow: { fontSize: 18, color: '#D1D5DB' },
+  expandedWrap: { marginBottom: 8 },
+
+  // Tune it
+  tuneBtn: {
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#EBEBEB',
+    opacity: 0.6,
+    marginBottom: 20,
   },
-  backupName: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    textTransform: 'capitalize',
-  },
-  backupReason: {
-    flex: 1,
-    fontSize: 13,
-    color: '#9CA3AF',
-  },
-  backupArrow: {
-    fontSize: 18,
-    color: '#D1D5DB',
-  },
-  expandedCardWrap: {
-    marginBottom: 8,
-  },
+  tuneBtnText: { fontSize: 15, fontWeight: '500', color: '#9CA3AF' },
 
   // Actions
   actions: { gap: 12 },

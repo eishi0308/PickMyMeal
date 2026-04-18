@@ -53,6 +53,9 @@ export default function Result({
     }
   };
 
+  const toggleBackup = (i: number) =>
+    setExpandedBackup((prev) => (prev === i ? null : i));
+
   return (
     <div className="screen result-screen">
       <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
@@ -70,19 +73,12 @@ export default function Result({
           />
         </div>
         <p className="primary-reason">{best.reason}</p>
-      </div>
-
-      {/* Action layer */}
-      <div className="action-layer">
         <button className="take-btn" onClick={() => onOrder(best.category)}>
           ✅ Take this
         </button>
-        <button className="tune-btn" disabled>
-          🔁 Tune it
-        </button>
       </div>
 
-      {/* Backups — compact list */}
+      {/* Backups — compact list, accordion */}
       <div className="backups-compact">
         <p className="backups-compact-label">Or try:</p>
         {backups.map((item, i) => {
@@ -93,7 +89,10 @@ export default function Result({
             <div key={i}>
               {isExpanded ? (
                 <div className="primary-card backup-expanded-card">
-                  <div className="primary-badge">#{i + 2} Pick</div>
+                  <button className="backup-collapse-btn" onClick={() => toggleBackup(i)}>
+                    <span className="primary-badge">#{i + 2} Pick</span>
+                    <span className="backup-collapse-arrow">↑ Close</span>
+                  </button>
                   <h2 className="primary-title">{item.category}</h2>
                   <div className="primary-image-wrap">
                     <img
@@ -104,20 +103,12 @@ export default function Result({
                     />
                   </div>
                   <p className="primary-reason">{item.reason}</p>
-                  <div className="action-layer">
-                    <button className="take-btn" onClick={() => onOrder(item.category)}>
-                      ✅ Take this
-                    </button>
-                    <button className="tune-btn" disabled>
-                      🔁 Tune it
-                    </button>
-                  </div>
+                  <button className="take-btn" onClick={() => onOrder(item.category)}>
+                    ✅ Take this
+                  </button>
                 </div>
               ) : (
-                <button
-                  className="backup-row"
-                  onClick={() => setExpandedBackup(i)}
-                >
+                <button className="backup-row" onClick={() => toggleBackup(i)}>
                   <span className="backup-row-bullet">•</span>
                   <span className="backup-row-name">{item.category}</span>
                   <span className="backup-row-reason">{item.reason}</span>
@@ -128,6 +119,11 @@ export default function Result({
           );
         })}
       </div>
+
+      {/* Tune it — once, below all options */}
+      <button className="tune-btn" disabled>
+        🔁 Tune it
+      </button>
 
       {/* Bottom actions */}
       <div className="result-actions">
