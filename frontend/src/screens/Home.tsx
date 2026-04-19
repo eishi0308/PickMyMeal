@@ -100,15 +100,8 @@ export default function Home({ selected, initialMode = 'quick', onToggle, onResu
       const best = await recommend({ preferences: prefs });
       const backup1 = await recommend({ preferences: prefs, exclude: [best.category] });
       const backup2 = await recommend({ preferences: prefs, exclude: [best.category, backup1.category] });
-      const [img0, img1, img2] = await Promise.all([
-        generateImage(best.category, best.category),
-        generateImage(backup1.category, backup1.category),
-        generateImage(backup2.category, backup2.category),
-      ]);
-      best.image_url = img0.image_url;
-      backup1.image_url = img1.image_url;
-      backup2.image_url = img2.image_url;
       addToHistory({ preferences: prefs, category: best.category, reason: best.reason });
+      // Navigate immediately — images load progressively inside Result
       onResult({ response: best, backups: [backup1, backup2], preferences: prefs });
     } catch {
       setError('Could not connect. Is the backend running?');

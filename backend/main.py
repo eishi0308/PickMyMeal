@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 from openai import AsyncOpenAI
-from services.image_service import generate_food_image
+from services.image_service import generate_food_image, clear_cache, clear_cache
 
 load_dotenv()
 
@@ -99,3 +99,9 @@ async def get_food_image(request: ImageRequest):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.post("/clear-image-cache")
+async def clear_image_cache():
+    clear_cache()
+    return {"status": "cleared"}

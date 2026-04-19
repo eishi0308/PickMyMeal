@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
@@ -27,16 +27,30 @@ interface Props {
   onTune: () => void;
 }
 
+function ImageSlot({ src, alt }: { src: string | null; alt: string }) {
+  const fallback = `https://loremflickr.com/600/400/food,${encodeURIComponent(alt)}`;
+  if (!src) {
+    return <View style={styles.imageShimmer} />;
+  }
+  return (
+    <Image
+      style={styles.primaryImage}
+      source={{ uri: src }}
+      onError={(e) => { (e.nativeEvent as any).target.setNativeProps({ src: [{ uri: fallback }] }); }}
+    />
+  );
+}
+
 function FoodCard({
   item,
+  imageUrl,
   badge,
-  fallbackUrl,
   onOrder,
   onCollapse,
 }: {
   item: RecommendResponse;
+  imageUrl: string | null;
   badge: string;
-  fallbackUrl: string;
   onOrder: (category: string) => void;
   onCollapse?: () => void;
 }) {
@@ -56,10 +70,7 @@ function FoodCard({
       </TouchableOpacity>
 
       <Text style={styles.primaryTitle}>{item.category}</Text>
-      <Image
-        style={styles.primaryImage}
-        source={{ uri: item.image_url ?? fallbackUrl }}
-      />
+      <ImageSlot src={imageUrl} alt={item.category} />
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
       <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
@@ -74,24 +85,36 @@ export default function Result({
   onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
-  const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
-  const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(best.category)}`;
+  const [expandedBackups, setExpandedBackups] = useState<Set<number>>(new Set());
+  const [bestImage, setBestImage] = useState<string | null>(null);
+  const [backupImages, setBackupImages] = useState<(string | null)[]>([null, null]);
+
+  useEffect(() => {
+    setBestImage(null);
+    setBackupImages([null, null]);
+    generateImage(best.category, best.category).then(img => {
+      setBestImage(img.image_url ?? null);
+    });
+    backups.forEach((backup, i) => {
+      generateImage(backup.category, backup.category).then(img => {
+        setBackupImages(prev => {
+          const next = [...prev];
+          next[i] = img.image_url ?? null;
+          return next;
+        });
+      });
+    });
+  }, [best.category]);
 
   const handleTryAgain = async () => {
     setLoading(true);
-    setExpandedBackup(null);
+    setExpandedBackups(new Set());
     try {
-      const r1 = await recommend({ preferences, exclude: excludes });
-      const r2 = await recommend({ preferences, exclude: [...excludes, r1.category] });
-      const r3 = await recommend({ preferences, exclude: [...excludes, r1.category, r2.category] });
-      const [img0, img1, img2] = await Promise.all([
-        generateImage(r1.category, r1.category),
-        generateImage(r2.category, r2.category),
-        generateImage(r3.category, r3.category),
-      ]);
-      r1.image_url = img0.image_url;
-      r2.image_url = img1.image_url;
-      r3.image_url = img2.image_url;
+      const currentShown = [best.category, ...backups.map(b => b.category)];
+      const newExcludes = [...new Set([...excludes, ...currentShown])];
+      const r1 = await recommend({ preferences, exclude: newExcludes });
+      const r2 = await recommend({ preferences, exclude: [...newExcludes, r1.category] });
+      const r3 = await recommend({ preferences, exclude: [...newExcludes, r1.category, r2.category] });
       await addToHistory({ preferences, category: r1.category, reason: r1.reason });
       onResult({ response: r1, backups: [r2, r3], preferences });
     } finally {
@@ -100,7 +123,11 @@ export default function Result({
   };
 
   const toggleBackup = (i: number) =>
-    setExpandedBackup((prev) => (prev === i ? null : i));
+    setExpandedBackups(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
 
   return (
     <View style={styles.screen}>
@@ -110,8 +137,8 @@ export default function Result({
         {/* Primary card */}
         <FoodCard
           item={best}
+          imageUrl={bestImage}
           badge="⭐ Best Pick"
-          fallbackUrl={fallbackUrl}
           onOrder={onOrder}
         />
 
@@ -120,8 +147,7 @@ export default function Result({
           <Text style={styles.backupsLabel}>Or try:</Text>
 
           {backups.map((item, i) => {
-            const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
-            const isExpanded = expandedBackup === i;
+            const isExpanded = expandedBackups.has(i);
 
             return (
               <View key={i}>
@@ -129,8 +155,8 @@ export default function Result({
                   <View style={styles.expandedWrap}>
                     <FoodCard
                       item={item}
+                      imageUrl={backupImages[i]}
                       badge={`#${i + 2} Pick`}
-                      fallbackUrl={fb}
                       onOrder={onOrder}
                       onCollapse={() => toggleBackup(i)}
                     />
@@ -241,6 +267,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     marginBottom: 18,
     backgroundColor: '#F3F4F6',
+  },
+  imageShimmer: {
+    width: '100%',
+    height: 224,
+    borderRadius: 18,
+    marginBottom: 18,
+    backgroundColor: '#E5E7EB',
   },
   primaryReason: {
     fontSize: 15,

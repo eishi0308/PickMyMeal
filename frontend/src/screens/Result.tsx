@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { recommend, generateImage } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
@@ -24,29 +24,59 @@ interface Props {
   onTune: () => void;
 }
 
+function ImageSlot({ src, alt }: { src: string | null; alt: string }) {
+  const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(alt)}`;
+  if (!src) {
+    return <div className="image-shimmer" />;
+  }
+  return (
+    <img
+      className="primary-image image-fade-in"
+      src={src}
+      alt={alt}
+      onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
+    />
+  );
+}
+
 export default function Result({
   best, backups, preferences, excludes,
   onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
-  const [expandedBackup, setExpandedBackup] = useState<number | null>(null);
+  const [expandedBackups, setExpandedBackups] = useState<Set<number>>(new Set());
+  const [bestImage, setBestImage] = useState<string | null>(null);
+  const [backupImages, setBackupImages] = useState<(string | null)[]>([null, null]);
+
   const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(best.category)}`;
+
+  // Reset and reload images whenever picks change
+  useEffect(() => {
+    setBestImage(null);
+    setBackupImages([null, null]);
+    generateImage(best.category, best.category).then(img => {
+      setBestImage(img.image_url);
+    });
+    backups.forEach((backup, i) => {
+      generateImage(backup.category, backup.category).then(img => {
+        setBackupImages(prev => {
+          const next = [...prev];
+          next[i] = img.image_url;
+          return next;
+        });
+      });
+    });
+  }, [best.category]);
 
   const handleTryAgain = async () => {
     setLoading(true);
-    setExpandedBackup(null);
+    setExpandedBackups(new Set());
     try {
-      const r1 = await recommend({ preferences, exclude: excludes });
-      const r2 = await recommend({ preferences, exclude: [...excludes, r1.category] });
-      const r3 = await recommend({ preferences, exclude: [...excludes, r1.category, r2.category] });
-      const [img0, img1, img2] = await Promise.all([
-        generateImage(r1.category, r1.category),
-        generateImage(r2.category, r2.category),
-        generateImage(r3.category, r3.category),
-      ]);
-      r1.image_url = img0.image_url;
-      r2.image_url = img1.image_url;
-      r3.image_url = img2.image_url;
+      const currentShown = [best.category, ...backups.map(b => b.category)];
+      const newExcludes = [...new Set([...excludes, ...currentShown])];
+      const r1 = await recommend({ preferences, exclude: newExcludes });
+      const r2 = await recommend({ preferences, exclude: [...newExcludes, r1.category] });
+      const r3 = await recommend({ preferences, exclude: [...newExcludes, r1.category, r2.category] });
       addToHistory({ preferences, category: r1.category, reason: r1.reason });
       onResult({ response: r1, backups: [r2, r3], preferences });
     } finally {
@@ -55,7 +85,11 @@ export default function Result({
   };
 
   const toggleBackup = (i: number) =>
-    setExpandedBackup((prev) => (prev === i ? null : i));
+    setExpandedBackups(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
 
   return (
     <div className="screen result-screen">
@@ -66,12 +100,7 @@ export default function Result({
         <div className="primary-badge">⭐ Best Pick</div>
         <h1 className="primary-title">{best.category}</h1>
         <div className="primary-image-wrap">
-          <img
-            className="primary-image"
-            src={best.image_url ?? fallbackUrl}
-            alt={best.category}
-            onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackUrl; }}
-          />
+          <ImageSlot src={bestImage} alt={best.category} />
         </div>
         <p className="primary-reason">{best.reason}</p>
         <button className="take-btn" onClick={() => onOrder(best.category)}>
@@ -83,8 +112,7 @@ export default function Result({
       <div className="backups-compact">
         <p className="backups-compact-label">Or try:</p>
         {backups.map((item, i) => {
-          const isExpanded = expandedBackup === i;
-          const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(item.category)}`;
+          const isExpanded = expandedBackups.has(i);
 
           return (
             <div key={i}>
@@ -96,12 +124,7 @@ export default function Result({
                   </button>
                   <h2 className="primary-title">{item.category}</h2>
                   <div className="primary-image-wrap">
-                    <img
-                      className="primary-image"
-                      src={item.image_url ?? fb}
-                      alt={item.category}
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = fb; }}
-                    />
+                    <ImageSlot src={backupImages[i]} alt={item.category} />
                   </div>
                   <p className="primary-reason">{item.reason}</p>
                   <button className="take-btn" onClick={() => onOrder(item.category)}>
@@ -121,7 +144,7 @@ export default function Result({
         })}
       </div>
 
-      {/* Tune it — once, below all options */}
+      {/* Tune it */}
       <button className="tune-btn" onClick={onTune}>
         🔁 Tune it
       </button>
