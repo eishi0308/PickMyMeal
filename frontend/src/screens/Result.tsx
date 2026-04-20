@@ -20,7 +20,7 @@ interface Props {
   onReset: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
-  onOrder: (category: string) => void;
+  onOrder: (category: string, imageUrl: string | null) => void;
   onTune: () => void;
 }
 
@@ -103,7 +103,7 @@ export default function Result({
           <ImageSlot src={bestImage} alt={best.category} />
         </div>
         <p className="primary-reason">{best.reason}</p>
-        <button className="take-btn" onClick={() => onOrder(best.category)}>
+        <button className="take-btn" onClick={() => onOrder(best.category, bestImage)}>
           <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
         </button>
       </div>
@@ -127,7 +127,7 @@ export default function Result({
                     <ImageSlot src={backupImages[i]} alt={item.category} />
                   </div>
                   <p className="primary-reason">{item.reason}</p>
-                  <button className="take-btn" onClick={() => onOrder(item.category)}>
+                  <button className="take-btn" onClick={() => onOrder(item.category, backupImages[i])}>
                     <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
                   </button>
                 </div>

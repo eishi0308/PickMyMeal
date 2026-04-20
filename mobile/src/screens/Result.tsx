@@ -23,7 +23,7 @@ interface Props {
   onReset: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
-  onOrder: (category: string) => void;
+  onOrder: (category: string, imageUrl: string | null) => void;
   onTune: () => void;
 }
 
@@ -51,7 +51,7 @@ function FoodCard({
   item: RecommendResponse;
   imageUrl: string | null;
   badge: string;
-  onOrder: (category: string) => void;
+  onOrder: (category: string, imageUrl: string | null) => void;
   onCollapse?: () => void;
 }) {
   return (
@@ -73,7 +73,7 @@ function FoodCard({
       <ImageSlot src={imageUrl} alt={item.category} />
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
-      <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
+      <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category, imageUrl)}>
         <View style={styles.takeBtnInner}>
           <View style={styles.takeBtnIcon}>
             <Text style={styles.takeBtnIconText}>✓</Text>

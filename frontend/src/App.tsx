@@ -19,6 +19,7 @@ export default function App() {
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [sessionExcludes, setSessionExcludes] = useState<string[]>([]);
   const [orderCategory, setOrderCategory] = useState<string>('');
+  const [orderImage, setOrderImage] = useState<string | null>(null);
   const [homeMode, setHomeMode] = useState<'quick' | 'fine'>('quick');
 
   const handleResult = (data: ResultData) => {
@@ -44,8 +45,9 @@ export default function App() {
     setScreen('home');
   };
 
-  const handleOrder = (category: string) => {
+  const handleOrder = (category: string, imageUrl: string | null = null) => {
     setOrderCategory(category);
+    setOrderImage(imageUrl);
     setScreen('order');
   };
 
@@ -67,6 +69,7 @@ export default function App() {
     return (
       <Order
         category={orderCategory}
+        imageUrl={orderImage}
         onBack={() => setScreen('result')}
         onReset={handleReset}
       />
@@ -85,7 +88,7 @@ export default function App() {
         onReset={handleReset}
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
-        onOrder={handleOrder}
+        onOrder={(cat, img) => handleOrder(cat, img)}
         onTune={handleTune}
       />
     );
