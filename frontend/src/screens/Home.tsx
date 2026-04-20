@@ -76,13 +76,15 @@ const CATEGORIES = [
 interface Props {
   selected: PreferenceMap;
   initialMode?: 'quick' | 'fine';
+  lastResultNames?: string[];
   onToggle: (key: string, option: string) => void;
   onResult: (data: { response: RecommendResponse; backups: RecommendResponse[]; preferences: PreferenceMap }) => void;
+  onBackToResult?: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
 }
 
-export default function Home({ selected, initialMode = 'quick', onToggle, onResult, onHistory, onLogoClick }: Props) {
+export default function Home({ selected, initialMode = 'quick', lastResultNames = [], onToggle, onResult, onBackToResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'quick' | 'fine'>(initialMode);
@@ -118,6 +120,22 @@ export default function Home({ selected, initialMode = 'quick', onToggle, onResu
   return (
     <div className="screen home-screen">
       <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
+
+      {lastResultNames.length > 0 && onBackToResult && (
+        <button className="last-result-banner" onClick={onBackToResult}>
+          <div className="last-result-top">
+            <span className="last-result-label">Last result</span>
+            <span className="last-result-arrow">View →</span>
+          </div>
+          <div className="last-result-chips">
+            {lastResultNames.map((name, i) => (
+              <span key={i} className={`last-result-chip${i === 0 ? ' best' : ''}`}>
+                {i === 0 ? '⭐ ' : ''}{name}
+              </span>
+            ))}
+          </div>
+        </button>
+      )}
 
       <div className="mode-toggle">
         <button

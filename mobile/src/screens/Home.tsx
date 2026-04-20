@@ -27,13 +27,15 @@ const CATEGORIES = [
 interface Props {
   selected: PreferenceMap;
   initialMode?: 'quick' | 'fine';
+  lastResultNames?: string[];
   onToggle: (key: string, option: string) => void;
   onResult: (data: { response: RecommendResponse; backups: RecommendResponse[]; preferences: PreferenceMap }) => void;
+  onBackToResult?: () => void;
   onHistory: () => void;
   onLogoClick: () => void;
 }
 
-export default function Home({ selected, initialMode = 'quick', onToggle, onResult, onHistory, onLogoClick }: Props) {
+export default function Home({ selected, initialMode = 'quick', lastResultNames = [], onToggle, onResult, onBackToResult, onHistory, onLogoClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'quick' | 'fine'>(initialMode);
@@ -77,6 +79,25 @@ export default function Home({ selected, initialMode = 'quick', onToggle, onResu
         /* Quick mode — no scroll, centered layout */
         <View style={styles.quickContainer}>
           <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
+
+          {/* Last result banner */}
+          {lastResultNames.length > 0 && onBackToResult && (
+            <TouchableOpacity style={styles.lastResultBanner} onPress={onBackToResult} activeOpacity={0.75}>
+              <View style={styles.lastResultTop}>
+                <Text style={styles.lastResultLabel}>Last result</Text>
+                <Text style={styles.lastResultArrow}>View →</Text>
+              </View>
+              <View style={styles.lastResultChips}>
+                {lastResultNames.map((name, i) => (
+                  <View key={i} style={[styles.lastResultChip, i === 0 && styles.lastResultChipBest]}>
+                    <Text style={[styles.lastResultChipText, i === 0 && styles.lastResultChipTextBest]}>
+                      {i === 0 ? '⭐ ' : ''}{name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </TouchableOpacity>
+          )}
 
           {/* Mode toggle */}
           <View style={styles.modeToggle}>
@@ -228,6 +249,59 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     color: '#6B7280',
+  },
+
+  lastResultBanner: {
+    flexDirection: 'column',
+    gap: 10,
+    width: '100%',
+    padding: 12,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    backgroundColor: 'rgba(232,112,58,0.07)',
+    borderWidth: 1,
+    borderColor: 'rgba(232,112,58,0.2)',
+    borderRadius: 18,
+  },
+  lastResultTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  lastResultLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    color: '#E8703A',
+  },
+  lastResultArrow: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#E8703A',
+  },
+  lastResultChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  lastResultChip: {
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+  lastResultChipBest: {
+    backgroundColor: '#E8703A',
+  },
+  lastResultChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#374151',
+    textTransform: 'capitalize',
+  },
+  lastResultChipTextBest: {
+    color: '#fff',
   },
 
   /* Mode toggle */

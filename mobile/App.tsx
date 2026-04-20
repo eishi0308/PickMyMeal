@@ -81,8 +81,10 @@ export default function App() {
           <Home
             selected={selected}
             initialMode={homeMode}
+            lastResultNames={resultData ? [resultData.response.category, ...resultData.backups.map(b => b.category)] : []}
             onToggle={handleToggle}
             onResult={handleResult}
+            onBackToResult={() => setScreen('result')}
             onHistory={handleHistory}
             onLogoClick={() => setScreen('landing')}
           />

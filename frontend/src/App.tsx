@@ -104,6 +104,7 @@ export default function App() {
     <Home
       selected={selected}
       initialMode={homeMode}
+      lastResultNames={resultData ? [resultData.response.category, ...resultData.backups.map(b => b.category)] : []}
       onToggle={(key, option) =>
         setSelected((prev) => {
           if (prev[key] === option) {
@@ -115,6 +116,7 @@ export default function App() {
         })
       }
       onResult={(data) => handleResult({ response: data.response, backups: data.backups, preferences: data.preferences })}
+      onBackToResult={() => setScreen('result')}
       onHistory={handleHistory}
       onLogoClick={() => setScreen('landing')}
     />
