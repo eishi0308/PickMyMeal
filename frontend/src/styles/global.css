@@ -943,6 +943,13 @@ body {
   margin-bottom: 28px;
 }
 
+.take-btn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .take-btn {
   width: 100%;
   padding: 17px;

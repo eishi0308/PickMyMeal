@@ -104,7 +104,7 @@ export default function Result({
         </div>
         <p className="primary-reason">{best.reason}</p>
         <button className="take-btn" onClick={() => onOrder(best.category)}>
-          ✅ Take this
+          <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
         </button>
       </div>
 
@@ -128,7 +128,7 @@ export default function Result({
                   </div>
                   <p className="primary-reason">{item.reason}</p>
                   <button className="take-btn" onClick={() => onOrder(item.category)}>
-                    ✅ Take this
+                    <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
                   </button>
                 </div>
               ) : (

@@ -74,7 +74,12 @@ function FoodCard({
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
       <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category)}>
-        <Text style={styles.takeBtnText}>✅ Take this</Text>
+        <View style={styles.takeBtnInner}>
+          <View style={styles.takeBtnIcon}>
+            <Text style={styles.takeBtnIconText}>✓</Text>
+          </View>
+          <Text style={styles.takeBtnText}>Yes, this one</Text>
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -280,6 +285,26 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     lineHeight: 26,
     marginBottom: 28,
+  },
+  takeBtnInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  takeBtnIcon: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  takeBtnIconText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 16,
   },
   takeBtn: {
     backgroundColor: '#E8703A',
