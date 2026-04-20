@@ -146,15 +146,20 @@ export default function Result({
 
       {/* Tune it */}
       <button className="tune-btn" onClick={onTune}>
-        🔁 Tune it
+        <span className="tune-btn-icon">⚙</span>
+        <span className="tune-btn-content">
+          <span className="tune-btn-title">Fine-tune my taste</span>
+          <span className="tune-btn-sub">Adjust preferences for a better match</span>
+        </span>
+        <span className="tune-btn-arrow">›</span>
       </button>
 
       {/* Bottom actions */}
       <div className="result-actions">
-        <button className="decide-btn" onClick={handleTryAgain} disabled={loading}>
-          {loading ? <><span className="spinner" /> Finding new picks…</> : 'Try different picks →'}
+        <button className="try-again-btn" onClick={handleTryAgain} disabled={loading}>
+          {loading ? <><span className="spinner" /> Finding new picks…</> : '↻  Show me different picks'}
         </button>
-        <button className="ghost-btn" onClick={onReset}>Start over</button>
+        <button className="ghost-btn" onClick={onReset}>× Start over</button>
       </div>
     </div>
   );

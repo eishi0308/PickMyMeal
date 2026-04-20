@@ -184,8 +184,15 @@ export default function Result({
         </View>
 
         {/* Tune it — once, below all options */}
-        <TouchableOpacity style={styles.tuneBtn} onPress={onTune}>
-          <Text style={styles.tuneBtnText}>🔁 Tune it</Text>
+        <TouchableOpacity style={styles.tuneBtn} onPress={onTune} activeOpacity={0.8}>
+          <View style={styles.tuneBtnIcon}>
+            <Text style={styles.tuneBtnIconText}>⚙</Text>
+          </View>
+          <View style={styles.tuneBtnContent}>
+            <Text style={styles.tuneBtnTitle}>Fine-tune my taste</Text>
+            <Text style={styles.tuneBtnSub}>Adjust preferences for a better match</Text>
+          </View>
+          <Text style={styles.tuneBtnArrow}>›</Text>
         </TouchableOpacity>
 
         {/* Bottom actions */}
@@ -201,12 +208,12 @@ export default function Result({
                 <Text style={styles.tryBtnText}>  Finding new picks…</Text>
               </View>
             ) : (
-              <Text style={styles.tryBtnText}>Try different picks →</Text>
+              <Text style={styles.tryBtnText}>↻  Show me different picks</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.ghostBtn} onPress={onReset}>
-            <Text style={styles.ghostBtnText}>Start over</Text>
+            <Text style={styles.ghostBtnText}>× Start over</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -360,32 +367,54 @@ const styles = StyleSheet.create({
 
   // Tune it
   tuneBtn: {
-    borderRadius: 16,
-    paddingVertical: 14,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
+    borderRadius: 18,
+    padding: 14,
+    paddingHorizontal: 16,
+    backgroundColor: '#F0EEFF',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: 'rgba(99,75,230,0.15)',
     marginBottom: 20,
   },
-  tuneBtnText: { fontSize: 15, fontWeight: '500', color: '#9CA3AF' },
+  tuneBtnIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#7C5CFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tuneBtnIconText: { fontSize: 18, color: '#fff' },
+  tuneBtnContent: { flex: 1, gap: 2 },
+  tuneBtnTitle: { fontSize: 15, fontWeight: '700', color: '#3D2DB5' },
+  tuneBtnSub: { fontSize: 12, color: '#7C6FCD', marginTop: 2 },
+  tuneBtnArrow: { fontSize: 20, color: '#7C5CFC', fontWeight: '300' },
 
   // Actions
   actions: { gap: 12 },
   tryBtn: {
-    backgroundColor: '#E8703A',
+    backgroundColor: '#0EA5E9',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
+    shadowColor: '#06B6D4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
   btnDisabled: { opacity: 0.35 },
   tryBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   row: { flexDirection: 'row', alignItems: 'center' },
   ghostBtn: {
     borderRadius: 12,
-    paddingVertical: 14,
+    paddingVertical: 13,
     alignItems: 'center',
+    backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: '#FECDD3',
   },
-  ghostBtnText: { color: '#6B7280', fontSize: 15, fontWeight: '500' },
+  ghostBtnText: { color: '#F43F5E', fontSize: 14, fontWeight: '500' },
 });
