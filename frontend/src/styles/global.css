@@ -1417,21 +1417,19 @@ body {
   width: 100%;
   padding: 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #0EA5E9, #06B6D4);
-  color: #fff;
+  background: transparent;
+  color: #E8703A;
   font-size: 16px;
   font-weight: 600;
-  border: none;
+  border: 2px solid #E8703A;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: -0.2px;
   transition: all 0.15s ease;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
 }
 .try-again-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0284C7, #0EA5E9);
+  background: rgba(232, 112, 58, 0.06);
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(6, 182, 212, 0.38);
 }
 .try-again-btn:disabled {
   opacity: 0.4;

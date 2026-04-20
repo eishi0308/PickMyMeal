@@ -395,18 +395,15 @@ const styles = StyleSheet.create({
   // Actions
   actions: { gap: 12 },
   tryBtn: {
-    backgroundColor: '#0EA5E9',
+    backgroundColor: 'transparent',
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 15,
     alignItems: 'center',
-    shadowColor: '#06B6D4',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 2,
+    borderColor: '#E8703A',
   },
   btnDisabled: { opacity: 0.35 },
-  tryBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  tryBtnText: { color: '#E8703A', fontSize: 16, fontWeight: '600' },
   row: { flexDirection: 'row', alignItems: 'center' },
   ghostBtn: {
     borderRadius: 12,
