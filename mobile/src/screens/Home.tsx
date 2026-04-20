@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   modeToggle: {
     flexDirection: 'row',
     backgroundColor: '#EFEFEF',
-    borderRadius: 12,
+    borderRadius: 999,
     padding: 3,
     marginBottom: 32,
     gap: 2,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 9,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 999,
     alignItems: 'center',
   },
   modeBtnActive: {
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFBF5',
   },
   decideBtn: {
-    backgroundColor: '#E8703A', borderRadius: 12,
+    backgroundColor: '#E8703A', borderRadius: 999,
     paddingVertical: 16, alignItems: 'center',
   },
   decideBtnDisabled: { opacity: 0.35 },

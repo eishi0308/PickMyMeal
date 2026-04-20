@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   ctaBtn: {
     width: 280,
     backgroundColor: '#E8703A',
-    borderRadius: 12,
+    borderRadius: 999,
     paddingVertical: 18,
     alignItems: 'center',
   },

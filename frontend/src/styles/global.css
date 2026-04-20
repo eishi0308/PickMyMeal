@@ -143,7 +143,7 @@ body {
 .decide-btn {
   width: 100%;
   padding: 17px;
-  border-radius: 16px;
+  border-radius: 999px;
   background: var(--primary);
   color: var(--white);
   font-size: 16px;
@@ -331,7 +331,7 @@ body {
 
 .ghost-btn {
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 999px;
   background: transparent;
   color: var(--text-muted);
   font-size: 15px;
@@ -494,7 +494,7 @@ body {
 .mode-toggle {
   display: flex;
   background: #EFEFEF;
-  border-radius: 12px;
+  border-radius: 999px;
   padding: 3px;
   margin-bottom: 32px;
   gap: 2px;
@@ -503,7 +503,7 @@ body {
 .mode-btn {
   flex: 1;
   padding: 9px 16px;
-  border-radius: 10px;
+  border-radius: 999px;
   border: none;
   background: transparent;
   font-size: 14px;
@@ -953,7 +953,7 @@ body {
 .take-btn {
   width: 100%;
   padding: 17px;
-  border-radius: 14px;
+  border-radius: 999px;
   background: linear-gradient(135deg, #FF7A45 0%, #E8603A 100%);
   color: var(--white);
   font-size: 17px;
@@ -1405,7 +1405,7 @@ body {
   color: #F43F5E;
   font-size: 14px;
   font-weight: 500;
-  border-radius: 12px;
+  border-radius: 999px;
   padding: 13px;
 }
 .result-actions .ghost-btn:hover {
@@ -1416,7 +1416,7 @@ body {
 .try-again-btn {
   width: 100%;
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 999px;
   background: transparent;
   color: #E8703A;
   font-size: 16px;

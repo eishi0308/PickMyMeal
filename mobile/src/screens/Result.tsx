@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
   takeBtn: {
     backgroundColor: '#E8703A',
-    borderRadius: 14,
+    borderRadius: 999,
     paddingVertical: 17,
     alignItems: 'center',
     shadowColor: '#E8703A',
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.06)',
-    borderRadius: 14,
+    borderRadius: 999,
     marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   actions: { gap: 12 },
   tryBtn: {
     backgroundColor: 'transparent',
-    borderRadius: 12,
+    borderRadius: 999,
     paddingVertical: 15,
     alignItems: 'center',
     borderWidth: 2,
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   tryBtnText: { color: '#E8703A', fontSize: 16, fontWeight: '600' },
   row: { flexDirection: 'row', alignItems: 'center' },
   ghostBtn: {
-    borderRadius: 12,
+    borderRadius: 999,
     paddingVertical: 13,
     alignItems: 'center',
     backgroundColor: 'transparent',
