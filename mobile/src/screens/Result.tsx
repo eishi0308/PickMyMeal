@@ -407,11 +407,11 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   ghostBtn: {
     borderRadius: 999,
-    paddingVertical: 13,
+    paddingVertical: 16,
     alignItems: 'center',
     backgroundColor: 'transparent',
-    borderWidth: 1.5,
-    borderColor: '#FECDD3',
+    borderWidth: 2,
+    borderColor: '#F43F5E',
   },
-  ghostBtnText: { color: '#F43F5E', fontSize: 14, fontWeight: '500' },
+  ghostBtnText: { color: '#F43F5E', fontSize: 16, fontWeight: '600' },
 });
