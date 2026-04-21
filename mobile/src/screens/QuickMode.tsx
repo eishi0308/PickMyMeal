@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Animated,
+  View, Text, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { PreferenceMap } from '../types';
 
@@ -39,6 +39,11 @@ export default function QuickMode({ onSubmit }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<PreferenceMap>({});
 
+  const currentStep = STEPS[step];
+  const hasAnsweredCurrent = !!answers[currentStep.key];
+  const canGoBack = step > 0;
+  const canGoForward = step < STEPS.length - 1 && hasAnsweredCurrent;
+
   const handleChoice = (value: string) => {
     const newAnswers = { ...answers, [STEPS[step].key]: value };
     setAnswers(newAnswers);
@@ -49,7 +54,8 @@ export default function QuickMode({ onSubmit }: Props) {
     }
   };
 
-  const currentStep = STEPS[step];
+  const goBack = () => { if (canGoBack) setStep(step - 1); };
+  const goForward = () => { if (canGoForward) setStep(step + 1); };
 
   return (
     <View style={styles.container}>
@@ -74,7 +80,7 @@ export default function QuickMode({ onSubmit }: Props) {
           {currentStep.options.map(({ value, emoji, label }) => (
             <TouchableOpacity
               key={value}
-              style={styles.card}
+              style={[styles.card, answers[currentStep.key] === value && styles.cardSelected]}
               onPress={() => handleChoice(value)}
               activeOpacity={0.75}
             >
@@ -82,6 +88,26 @@ export default function QuickMode({ onSubmit }: Props) {
               <Text style={styles.cardLabel}>{label}</Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Back / Forward nav buttons */}
+        <View style={styles.nav}>
+          <TouchableOpacity
+            style={[styles.navBtn, !canGoBack && styles.navBtnDisabled]}
+            onPress={goBack}
+            disabled={!canGoBack}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.navBtnText, !canGoBack && styles.navBtnTextDisabled]}>←</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.navBtn, !canGoForward && styles.navBtnDisabled]}
+            onPress={goForward}
+            disabled={!canGoForward}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.navBtnText, !canGoForward && styles.navBtnTextDisabled]}>→</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -156,6 +182,10 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 3,
   },
+  cardSelected: {
+    borderColor: '#E8703A',
+    backgroundColor: 'rgba(232, 112, 58, 0.04)',
+  },
   emoji: {
     fontSize: 52,
     lineHeight: 60,
@@ -165,5 +195,30 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1A1A1A',
     letterSpacing: -0.3,
+  },
+  nav: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 28,
+  },
+  navBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navBtnDisabled: {
+    opacity: 0.25,
+  },
+  navBtnText: {
+    fontSize: 18,
+    color: '#1A1A1A',
+  },
+  navBtnTextDisabled: {
+    color: '#9CA3AF',
   },
 });

@@ -36,6 +36,11 @@ export default function QuickMode({ onSubmit }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<PreferenceMap>({});
 
+  const currentStep = STEPS[step];
+  const hasAnsweredCurrent = !!answers[currentStep.key];
+  const canGoBack = step > 0;
+  const canGoForward = step < STEPS.length - 1 && hasAnsweredCurrent;
+
   const handleChoice = (value: string) => {
     const newAnswers = { ...answers, [STEPS[step].key]: value };
     setAnswers(newAnswers);
@@ -46,7 +51,8 @@ export default function QuickMode({ onSubmit }: Props) {
     }
   };
 
-  const currentStep = STEPS[step];
+  const goBack = () => { if (canGoBack) setStep(step - 1); };
+  const goForward = () => { if (canGoForward) setStep(step + 1); };
 
   return (
     <div className="quick-mode">
@@ -66,13 +72,32 @@ export default function QuickMode({ onSubmit }: Props) {
           {currentStep.options.map(({ value, emoji, label }) => (
             <button
               key={value}
-              className="quick-card"
+              className={`quick-card${answers[currentStep.key] === value ? ' selected' : ''}`}
               onClick={() => handleChoice(value)}
             >
               <span className="quick-card-emoji">{emoji}</span>
               <span className="quick-card-label">{label}</span>
             </button>
           ))}
+        </div>
+
+        <div className="quick-nav">
+          <button
+            className="quick-nav-btn"
+            onClick={goBack}
+            disabled={!canGoBack}
+            aria-label="Previous"
+          >
+            ←
+          </button>
+          <button
+            className="quick-nav-btn"
+            onClick={goForward}
+            disabled={!canGoForward}
+            aria-label="Next"
+          >
+            →
+          </button>
         </div>
       </div>
     </div>
