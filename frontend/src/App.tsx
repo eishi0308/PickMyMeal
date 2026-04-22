@@ -72,6 +72,7 @@ export default function App() {
         imageUrl={orderImage}
         onBack={() => setScreen('result')}
         onReset={handleReset}
+        onLogoClick={() => setScreen('landing')}
       />
     );
   }

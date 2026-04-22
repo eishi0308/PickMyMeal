@@ -13,6 +13,13 @@ export default function Order({ category, imageUrl, onBack, onReset }: Props) {
 
   return (
     <View style={styles.screen}>
+      {/* Top bar with back button */}
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.topBackBtn} onPress={onBack} activeOpacity={0.7}>
+          <Text style={styles.topBackBtnText}>←</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Hero image with overlay */}
       <View style={styles.hero}>
         <Image
@@ -46,6 +53,7 @@ export default function Order({ category, imageUrl, onBack, onReset }: Props) {
           <Text style={styles.resetBtnText}>× Start over</Text>
         </TouchableOpacity>
       </View>
+
     </View>
   );
 }
@@ -70,6 +78,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 20,
     elevation: 6,
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  topBackBtn: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 999,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topBackBtnText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
+    lineHeight: 24,
   },
   heroImg: {
     width: '100%',

@@ -1,16 +1,21 @@
+import NavBar from '../components/NavBar';
+
 interface Props {
   category: string;
   imageUrl: string | null;
   onBack: () => void;
   onReset: () => void;
+  onLogoClick: () => void;
 }
 
-export default function Order({ category, imageUrl, onBack, onReset }: Props) {
+export default function Order({ category, imageUrl, onBack, onReset, onLogoClick }: Props) {
   const uberUrl = `https://www.ubereats.com/search?q=${encodeURIComponent(category)}`;
   const fallback = `https://loremflickr.com/600/400/food,${encodeURIComponent(category)}`;
 
   return (
     <div className="screen order-screen">
+      <NavBar onLogoClick={onLogoClick} onBack={onBack} />
+
       {/* Hero image */}
       <div className="order-hero">
         <img
