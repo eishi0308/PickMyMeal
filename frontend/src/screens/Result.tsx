@@ -157,7 +157,7 @@ export default function Result({
       {/* Bottom actions */}
       <div className="result-actions">
         <button className="try-again-btn" onClick={handleTryAgain} disabled={loading}>
-          {loading ? <><span className="spinner" /> Finding new picks…</> : '↻  Show me different picks'}
+          {loading ? <><span className="spinner" />Finding new picks…</> : '↻  Show me different picks'}
         </button>
         <button className="ghost-btn" onClick={onReset}>× Start over</button>
       </div>
