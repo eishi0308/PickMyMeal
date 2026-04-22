@@ -7,14 +7,24 @@ import QuickMode from './QuickMode';
 
 const CATEGORIES = [
   {
-    key: 'flavor',
-    label: 'Flavor',
-    options: ['Salty', 'Sweet', 'Savory', 'Sour', 'Any'],
+    key: 'mood',
+    label: 'Mood?',
+    options: ['Healthy', 'Comfort food', 'Treat yourself', 'Balanced', 'Any'],
   },
   {
-    key: 'spice_level',
-    label: 'Spice level',
-    options: ['Not spicy', 'Mild', 'Spicy', 'Very spicy', 'Any'],
+    key: 'cuisine',
+    label: 'Cuisine',
+    options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American', 'Any'],
+  },
+  {
+    key: 'meal_type',
+    label: 'Meal type',
+    options: ['Quick bite', 'Full meal', 'Snack', 'Late night', 'Any'],
+  },
+  {
+    key: 'protein',
+    label: 'Protein',
+    options: ['Chicken', 'Beef', 'Pork', 'Seafood', 'Vegetarian', 'Vegan', 'Any'],
   },
   {
     key: 'temperature',
@@ -27,44 +37,24 @@ const CATEGORIES = [
     options: ['Light', 'Medium', 'Heavy', 'Any'],
   },
   {
-    key: 'richness',
-    label: 'Rich or fresh?',
-    options: ['Rich', 'Fresh', 'In between', 'Any'],
+    key: 'flavor',
+    label: 'Flavor',
+    options: ['Savory', 'Salty', 'Sweet', 'Sour', 'Any'],
+  },
+  {
+    key: 'spice_level',
+    label: 'Spice level',
+    options: ['No spice', 'Mild', 'Medium', 'Hot', 'Extra hot', 'Any'],
   },
   {
     key: 'base',
     label: 'Base',
-    options: ['Rice', 'Noodles', 'Bread', 'Any'],
+    options: ['Rice', 'Noodles', 'Bread', 'Salad / Bowl', 'Any'],
   },
   {
     key: 'style',
-    label: 'Style',
-    options: ['Fried', 'Soup', 'Grilled', 'Fresh', 'Saucy', 'Any'],
-  },
-  {
-    key: 'mood',
-    label: 'What sounds good?',
-    options: ['Healthy', 'Comfort', 'Treat', 'Balanced', 'Any'],
-  },
-  {
-    key: 'protein',
-    label: 'Protein',
-    options: ['Chicken', 'Beef', 'Pork', 'Seafood', 'Vegetarian', 'Any'],
-  },
-  {
-    key: 'cuisine',
-    label: 'Cuisine',
-    options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Italian', 'Mexican', 'American', 'Any'],
-  },
-  {
-    key: 'meal_type',
-    label: 'Meal type',
-    options: ['Quick', 'Full meal', 'Snack', 'Late night'],
-  },
-  {
-    key: 'texture',
-    label: 'Texture',
-    options: ['Crispy', 'Soft', 'Chewy', 'Any'],
+    label: 'Cooking style',
+    options: ['Fried', 'Soup / Stew', 'Grilled', 'Raw / Fresh', 'Saucy', 'Any'],
   },
   {
     key: 'portion',

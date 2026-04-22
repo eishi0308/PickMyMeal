@@ -23,10 +23,11 @@ const STEPS = [
   },
   {
     key: 'flavor',
-    question: 'Salty or sweet?',
+    question: 'What flavor?',
     options: [
-      { value: 'Salty', emoji: '🧂', label: 'Salty' },
+      { value: 'Savory', emoji: '🍜', label: 'Savory' },
       { value: 'Sweet', emoji: '🍯', label: 'Sweet' },
+      { value: 'Salty', emoji: '🧂', label: 'Salty' },
     ],
   },
 ];
