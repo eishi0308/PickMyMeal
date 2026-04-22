@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     borderColor: '#E8703A',
   },
   btnDisabled: { opacity: 0.35 },
-  tryBtnText: { color: '#E8703A', fontSize: 16, fontWeight: '600' },
+  tryBtnText: { color: '#E8703A', fontSize: 16, fontWeight: '700' },
   row: { flexDirection: 'row', alignItems: 'center' },
   ghostBtn: {
     borderRadius: 999,

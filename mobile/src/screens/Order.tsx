@@ -54,13 +54,22 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#FFFBF5',
+    padding: 20,
   },
 
   // Hero
   hero: {
     width: '100%',
-    height: 280,
+    height: 260,
+    borderRadius: 28,
+    overflow: 'hidden',
     position: 'relative',
+    marginBottom: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 6,
   },
   heroImg: {
     width: '100%',
@@ -70,13 +79,14 @@ const styles = StyleSheet.create({
   heroOverlay: {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: 'rgba(0,0,0,0.0)',
+    background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.6) 100%)',
   },
   heroContent: {
     position: 'absolute',
-    bottom: 24,
-    left: 24,
-    right: 24,
+    bottom: 22,
+    left: 22,
+    right: 22,
   },
   eyebrow: {
     fontSize: 12,
@@ -98,9 +108,8 @@ const styles = StyleSheet.create({
   // Body
   body: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 40,
+    paddingTop: 20,
+    paddingBottom: 24,
     gap: 12,
   },
   subtitle: {
@@ -128,27 +137,27 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   backBtn: {
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderRadius: 999,
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderWidth: 2,
+    borderColor: '#1A1A1A',
     alignItems: 'center',
   },
   backBtnText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#6B7280',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   resetBtn: {
-    paddingVertical: 13,
+    paddingVertical: 16,
     borderRadius: 999,
-    borderWidth: 1.5,
-    borderColor: '#FECDD3',
+    borderWidth: 2,
+    borderColor: '#F43F5E',
     alignItems: 'center',
   },
   resetBtnText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#F43F5E',
   },
 });
