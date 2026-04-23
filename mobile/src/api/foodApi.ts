@@ -1,6 +1,6 @@
 import { RecommendRequest, RecommendResponse, ImageResponse } from '../types';
 
-export const API_BASE = 'http://localhost:8000';
+export const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:8000';
 
 export async function recommend(request: RecommendRequest): Promise<RecommendResponse> {
   const response = await fetch(`${API_BASE}/recommend`, {

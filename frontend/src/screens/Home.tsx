@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { recommend, generateImage } from '../api/foodApi';
+import { recommend } from '../api/foodApi';
 import { addToHistory } from '../api/history';
 import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
