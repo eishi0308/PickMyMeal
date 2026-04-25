@@ -373,10 +373,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   tuneHook: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: '800',
     color: '#1A1A1A',
-    letterSpacing: -0.5,
+    letterSpacing: -0.8,
     marginBottom: 4,
   },
   tuneHookSub: {

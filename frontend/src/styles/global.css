@@ -1022,10 +1022,10 @@ body {
   padding: 20px;
 }
 .tune-hook {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 800;
   color: #1A1A1A;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.8px;
   margin-bottom: 4px;
 }
 .tune-hook-sub {
