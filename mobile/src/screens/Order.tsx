@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   // Hero
   hero: {
     width: '100%',
-    height: 260,
+    height: 200,
     borderRadius: 28,
     overflow: 'hidden',
     position: 'relative',

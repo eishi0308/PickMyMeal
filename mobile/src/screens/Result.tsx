@@ -275,14 +275,14 @@ const styles = StyleSheet.create({
   },
   primaryImage: {
     width: '100%',
-    height: 224,
+    height: 180,
     borderRadius: 18,
     marginBottom: 18,
     backgroundColor: '#F3F4F6',
   },
   imageShimmer: {
     width: '100%',
-    height: 224,
+    height: 180,
     borderRadius: 18,
     marginBottom: 18,
     backgroundColor: '#E5E7EB',

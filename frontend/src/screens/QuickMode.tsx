@@ -19,12 +19,12 @@ const STEPS = [
     ],
   },
   {
-    key: 'flavor',
-    question: 'What flavor?',
+    key: 'mood',
+    question: "What's the vibe?",
     options: [
-      { value: 'Savory', emoji: '🍜', label: 'Savory' },
-      { value: 'Sweet', emoji: '🍯', label: 'Sweet' },
-      { value: 'Salty', emoji: '🧂', label: 'Salty' },
+      { value: 'Comfort food', emoji: '🍲', label: 'Comfort food' },
+      { value: 'Healthy', emoji: '🥗', label: 'Healthy' },
+      { value: 'Treat yourself', emoji: '🍰', label: 'Treat yourself' },
     ],
   },
 ];
