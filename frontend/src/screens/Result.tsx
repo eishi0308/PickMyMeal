@@ -145,14 +145,14 @@ export default function Result({
       </div>
 
       {/* Tune it */}
-      <button className="tune-btn" onClick={onTune}>
-        <span className="tune-btn-icon">⚙</span>
-        <span className="tune-btn-content">
-          <span className="tune-btn-title">Fine-tune my taste</span>
-          <span className="tune-btn-sub">Adjust preferences for a better match</span>
-        </span>
-        <span className="tune-btn-arrow">›</span>
-      </button>
+      <div className="tune-section">
+        <p className="tune-hook">Not quite right?</p>
+        <p className="tune-hook-sub">Tell us exactly what you want — we'll nail it.</p>
+        <button className="tune-btn" onClick={onTune}>
+          <span className="tune-btn-title">🎛 Make it perfect for you</span>
+          <span className="tune-btn-arrow">→</span>
+        </button>
+      </div>
 
       {/* Bottom actions */}
       <div className="result-actions">

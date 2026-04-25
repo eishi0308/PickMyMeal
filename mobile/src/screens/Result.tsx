@@ -184,16 +184,14 @@ export default function Result({
         </View>
 
         {/* Tune it — once, below all options */}
-        <TouchableOpacity style={styles.tuneBtn} onPress={onTune} activeOpacity={0.8}>
-          <View style={styles.tuneBtnIcon}>
-            <Text style={styles.tuneBtnIconText}>⚙</Text>
-          </View>
-          <View style={styles.tuneBtnContent}>
-            <Text style={styles.tuneBtnTitle}>Fine-tune my taste</Text>
-            <Text style={styles.tuneBtnSub}>Adjust preferences for a better match</Text>
-          </View>
-          <Text style={styles.tuneBtnArrow}>›</Text>
-        </TouchableOpacity>
+        <View style={styles.tuneSection}>
+          <Text style={styles.tuneHook}>Not quite right?</Text>
+          <Text style={styles.tuneHookSub}>Tell us exactly what you want — we'll nail it.</Text>
+          <TouchableOpacity style={styles.tuneBtn} onPress={onTune} activeOpacity={0.8}>
+            <Text style={styles.tuneBtnTitle}>🎛 Make it perfect for you</Text>
+            <Text style={styles.tuneBtnArrow}>→</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Bottom actions */}
         <View style={styles.actions}>
@@ -366,31 +364,43 @@ const styles = StyleSheet.create({
   expandedWrap: { marginBottom: 8 },
 
   // Tune it
+  tuneSection: {
+    marginBottom: 20,
+    backgroundColor: '#f3f0ff',
+    borderWidth: 2,
+    borderColor: 'rgba(124,92,252,0.25)',
+    borderRadius: 24,
+    padding: 20,
+  },
+  tuneHook: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1A1A1A',
+    letterSpacing: -0.5,
+    marginBottom: 4,
+  },
+  tuneHookSub: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+    lineHeight: 21,
+  },
   tuneBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    borderRadius: 18,
-    padding: 14,
-    paddingHorizontal: 16,
-    backgroundColor: '#F0EEFF',
-    borderWidth: 1.5,
-    borderColor: 'rgba(99,75,230,0.15)',
-    marginBottom: 20,
-  },
-  tuneBtnIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
+    justifyContent: 'space-between',
+    borderRadius: 999,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     backgroundColor: '#7C5CFC',
-    alignItems: 'center',
-    justifyContent: 'center',
+    shadowColor: '#7C5CFC',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 6,
   },
-  tuneBtnIconText: { fontSize: 18, color: '#fff' },
-  tuneBtnContent: { flex: 1, gap: 2 },
-  tuneBtnTitle: { fontSize: 15, fontWeight: '700', color: '#3D2DB5' },
-  tuneBtnSub: { fontSize: 12, color: '#7C6FCD', marginTop: 2 },
-  tuneBtnArrow: { fontSize: 20, color: '#7C5CFC', fontWeight: '300' },
+  tuneBtnTitle: { fontSize: 16, fontWeight: '800', color: '#fff', letterSpacing: -0.3 },
+  tuneBtnArrow: { fontSize: 20, color: '#fff', fontWeight: '700' },
 
   // Actions
   actions: { gap: 12 },
