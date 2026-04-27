@@ -36,7 +36,21 @@ class RecommendResponse(BaseModel):
 
 @app.post("/recommend", response_model=RecommendResponse)
 async def recommend(request: RecommendRequest):
-    pref_lines = "\n".join(f"- {k}: {v}" for k, v in request.preferences.items())
+    want = {k: v for k, v in request.preferences.items() if not k.startswith('avoid_')}
+    avoid = {k: v for k, v in request.preferences.items() if k.startswith('avoid_')}
+
+    pref_lines = "\n".join(f"- {k}: {v}" for k, v in want.items())
+
+    avoid_clause = ""
+    if avoid:
+        avoid_items = []
+        for k, v in avoid.items():
+            label = k.replace('avoid_', '').replace('_', ' ')
+            avoid_items.append(f"{label}: {v}")
+        avoid_clause = (
+            f"\n\nThe user does NOT want the following — you MUST strictly exclude these:\n"
+            + "\n".join(f"- {item}" for item in avoid_items)
+        )
 
     exclude_clause = ""
     if request.exclude:
@@ -50,10 +64,11 @@ async def recommend(request: RecommendRequest):
         )
 
     prompt = (
-        f"A person selected the following food preferences:\n{pref_lines}\n\n"
-        "Based on these signals, recommend exactly ONE specific food (e.g. ramen, pizza, pho, tacos, sushi). "
-        "Pick the single best match. Be specific — not a cuisine, but a dish."
+        f"A person selected the following food preferences:\n{pref_lines}"
+        f"{avoid_clause}"
         f"{exclude_clause}\n\n"
+        "Based on these signals, recommend exactly ONE specific food (e.g. ramen, pizza, pho, tacos, sushi). "
+        "Pick the single best match. Be specific — not a cuisine, but a dish.\n\n"
         'Respond with valid JSON only, in this exact shape: {"category": "<dish name>", "reason": "<one sentence, max 20 words>"}'
     )
 

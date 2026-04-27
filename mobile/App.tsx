@@ -61,11 +61,16 @@ export default function App() {
 
   const handleToggle = (key: string, option: string) => {
     setSelected((prev) => {
-      if (prev[key] === option) {
-        const next = { ...prev };
-        delete next[key];
-        return next;
+      if (key.startsWith('avoid_')) {
+        const current = prev[key] ? prev[key].split(',') : [];
+        if (current.includes(option)) {
+          const next = current.filter(o => o !== option);
+          if (next.length === 0) { const n = { ...prev }; delete n[key]; return n; }
+          return { ...prev, [key]: next.join(',') };
+        }
+        return { ...prev, [key]: [...current, option].join(',') };
       }
+      if (prev[key] === option) { const n = { ...prev }; delete n[key]; return n; }
       return { ...prev, [key]: option };
     });
   };

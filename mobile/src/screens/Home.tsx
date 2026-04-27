@@ -8,11 +8,14 @@ import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
 import QuickMode from './QuickMode';
 
-const CATEGORIES = [
+const ESSENTIALS = [
   { key: 'mood', label: 'Mood?', options: ['Healthy', 'Comfort food', 'Treat yourself', 'Balanced', 'Any'] },
   { key: 'cuisine', label: 'Cuisine', options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American', 'Any'] },
   { key: 'meal_type', label: 'Meal type', options: ['Quick bite', 'Full meal', 'Snack', 'Late night', 'Any'] },
   { key: 'protein', label: 'Protein', options: ['Chicken', 'Beef', 'Pork', 'Seafood', 'Vegetarian', 'Vegan', 'Any'] },
+];
+
+const DETAILS = [
   { key: 'temperature', label: 'Hot or cold?', options: ['Hot', 'Cold', 'Either'] },
   { key: 'fullness', label: 'How filling?', options: ['Light', 'Medium', 'Heavy', 'Any'] },
   { key: 'flavor', label: 'Flavor', options: ['Savory', 'Salty', 'Sweet', 'Sour', 'Any'] },
@@ -20,6 +23,11 @@ const CATEGORIES = [
   { key: 'base', label: 'Base', options: ['Rice', 'Noodles', 'Bread', 'Salad / Bowl', 'Any'] },
   { key: 'style', label: 'Cooking style', options: ['Fried', 'Soup / Stew', 'Grilled', 'Raw / Fresh', 'Saucy', 'Any'] },
   { key: 'portion', label: 'Portion', options: ['Just me', 'Sharing', 'Any'] },
+];
+
+const AVOID = [
+  { key: 'avoid_cuisine', label: 'Cuisine to avoid', options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American'] },
+  { key: 'avoid_ingredient', label: 'Ingredients / types to avoid', options: ['Dairy', 'Gluten', 'Pork', 'Beef', 'Seafood', 'Raw fish', 'Spicy', 'Heavy / oily'] },
 ];
 
 interface Props {
@@ -160,9 +168,11 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
             </View>
 
             <Text style={styles.title}>What do you feel like?</Text>
-            <Text style={styles.subtitle}>Tap to pick. No typing needed.</Text>
+            <Text style={styles.subtitle}>The more you tell us, the better we'll nail it.</Text>
 
-            {CATEGORIES.map(({ key, label, options }) => (
+            {/* Essentials */}
+            <Text style={styles.sectionHeader}>The essentials</Text>
+            {ESSENTIALS.map(({ key, label, options }) => (
               <View key={key} style={styles.category}>
                 <Text style={styles.categoryLabel}>{label}</Text>
                 <View style={styles.chipGrid}>
@@ -172,14 +182,59 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
                       style={[styles.chip, selected[key] === option && styles.chipSelected]}
                       onPress={() => onToggle(key, option)}
                     >
-                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>
-                        {option}
-                      </Text>
+                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>{option}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
               </View>
             ))}
+
+            {/* Details */}
+            <Text style={styles.sectionHeader}>Dial it in further</Text>
+            {DETAILS.map(({ key, label, options }) => (
+              <View key={key} style={styles.category}>
+                <Text style={styles.categoryLabel}>{label}</Text>
+                <View style={styles.chipGrid}>
+                  {options.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[styles.chip, selected[key] === option && styles.chipSelected]}
+                      onPress={() => onToggle(key, option)}
+                    >
+                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>{option}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            ))}
+
+            {/* Avoid */}
+            <Text style={[styles.sectionHeader, styles.sectionHeaderAvoid]}>Anything you're NOT feeling?</Text>
+            <Text style={styles.sectionSub}>Sometimes it's easier to say what you don't want.</Text>
+            {AVOID.map(({ key, label, options }) => {
+              const selectedValues = selected[key] ? selected[key].split(',') : [];
+              return (
+                <View key={key} style={styles.category}>
+                  <Text style={styles.categoryLabel}>{label}</Text>
+                  <View style={styles.chipGrid}>
+                    {options.map((option) => {
+                      const isAvoided = selectedValues.includes(option);
+                      return (
+                        <TouchableOpacity
+                          key={option}
+                          style={[styles.chip, styles.avoidChip, isAvoided && styles.avoidChipSelected]}
+                          onPress={() => onToggle(key, option)}
+                        >
+                          <Text style={[styles.chipText, styles.avoidChipText, isAvoided && styles.avoidChipTextSelected]}>
+                            {isAvoided ? `✕ ${option}` : option}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              );
+            })}
 
             <View style={styles.footerSpacer} />
           </ScrollView>
@@ -341,6 +396,17 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: '800', letterSpacing: -0.5, color: '#1A1A1A', marginBottom: 4 },
   subtitle: { fontSize: 15, color: '#6B7280', marginBottom: 32 },
+  sectionHeader: {
+    fontSize: 13, fontWeight: '800', textTransform: 'uppercase',
+    letterSpacing: 1, color: '#1A1A1A', marginBottom: 14, marginTop: 8,
+    paddingBottom: 8, borderBottomWidth: 2, borderBottomColor: '#E5E7EB',
+  },
+  sectionHeaderAvoid: { color: '#F43F5E', borderBottomColor: 'rgba(244,63,94,0.2)' },
+  sectionSub: { fontSize: 13, color: '#9CA3AF', marginBottom: 14, marginTop: -8 },
+  avoidChip: { borderColor: '#FECDD3' },
+  avoidChipSelected: { backgroundColor: '#F43F5E', borderColor: '#F43F5E' },
+  avoidChipText: { color: '#F43F5E' },
+  avoidChipTextSelected: { color: '#fff' },
   category: { marginBottom: 24 },
   categoryLabel: {
     fontSize: 11, fontWeight: '700', textTransform: 'uppercase',

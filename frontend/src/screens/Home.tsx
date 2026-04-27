@@ -5,62 +5,26 @@ import { PreferenceMap, RecommendResponse } from '../types';
 import NavBar from '../components/NavBar';
 import QuickMode from './QuickMode';
 
-const CATEGORIES = [
-  {
-    key: 'mood',
-    label: 'Mood?',
-    options: ['Healthy', 'Comfort food', 'Treat yourself', 'Balanced', 'Any'],
-  },
-  {
-    key: 'cuisine',
-    label: 'Cuisine',
-    options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American', 'Any'],
-  },
-  {
-    key: 'meal_type',
-    label: 'Meal type',
-    options: ['Quick bite', 'Full meal', 'Snack', 'Late night', 'Any'],
-  },
-  {
-    key: 'protein',
-    label: 'Protein',
-    options: ['Chicken', 'Beef', 'Pork', 'Seafood', 'Vegetarian', 'Vegan', 'Any'],
-  },
-  {
-    key: 'temperature',
-    label: 'Hot or cold?',
-    options: ['Hot', 'Cold', 'Either'],
-  },
-  {
-    key: 'fullness',
-    label: 'How filling?',
-    options: ['Light', 'Medium', 'Heavy', 'Any'],
-  },
-  {
-    key: 'flavor',
-    label: 'Flavor',
-    options: ['Savory', 'Salty', 'Sweet', 'Sour', 'Any'],
-  },
-  {
-    key: 'spice_level',
-    label: 'Spice level',
-    options: ['No spice', 'Mild', 'Medium', 'Hot', 'Extra hot', 'Any'],
-  },
-  {
-    key: 'base',
-    label: 'Base',
-    options: ['Rice', 'Noodles', 'Bread', 'Salad / Bowl', 'Any'],
-  },
-  {
-    key: 'style',
-    label: 'Cooking style',
-    options: ['Fried', 'Soup / Stew', 'Grilled', 'Raw / Fresh', 'Saucy', 'Any'],
-  },
-  {
-    key: 'portion',
-    label: 'Portion',
-    options: ['Just me', 'Sharing', 'Any'],
-  },
+const ESSENTIALS = [
+  { key: 'mood', label: 'Mood?', options: ['Healthy', 'Comfort food', 'Treat yourself', 'Balanced', 'Any'] },
+  { key: 'cuisine', label: 'Cuisine', options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American', 'Any'] },
+  { key: 'meal_type', label: 'Meal type', options: ['Quick bite', 'Full meal', 'Snack', 'Late night', 'Any'] },
+  { key: 'protein', label: 'Protein', options: ['Chicken', 'Beef', 'Pork', 'Seafood', 'Vegetarian', 'Vegan', 'Any'] },
+];
+
+const DETAILS = [
+  { key: 'temperature', label: 'Hot or cold?', options: ['Hot', 'Cold', 'Either'] },
+  { key: 'fullness', label: 'How filling?', options: ['Light', 'Medium', 'Heavy', 'Any'] },
+  { key: 'flavor', label: 'Flavor', options: ['Savory', 'Salty', 'Sweet', 'Sour', 'Any'] },
+  { key: 'spice_level', label: 'Spice level', options: ['No spice', 'Mild', 'Medium', 'Hot', 'Extra hot', 'Any'] },
+  { key: 'base', label: 'Base', options: ['Rice', 'Noodles', 'Bread', 'Salad / Bowl', 'Any'] },
+  { key: 'style', label: 'Cooking style', options: ['Fried', 'Soup / Stew', 'Grilled', 'Raw / Fresh', 'Saucy', 'Any'] },
+  { key: 'portion', label: 'Portion', options: ['Just me', 'Sharing', 'Any'] },
+];
+
+const AVOID = [
+  { key: 'avoid_cuisine', label: 'Cuisine to avoid', options: ['Japanese', 'Korean', 'Chinese', 'Thai', 'Indian', 'Italian', 'Mexican', 'American'] },
+  { key: 'avoid_ingredient', label: 'Ingredients / types to avoid', options: ['Dairy', 'Gluten', 'Pork', 'Beef', 'Seafood', 'Raw fish', 'Spicy', 'Heavy / oily'] },
 ];
 
 interface Props {
@@ -161,10 +125,12 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
       ) : (
         <>
           <h1 className="home-title">What do you feel like?</h1>
-          <p className="home-subtitle">Tap to pick. No typing needed.</p>
+          <p className="home-subtitle">The more you tell us, the better we'll nail it.</p>
 
+          {/* Essentials */}
+          <div className="pref-section-header">The essentials</div>
           <div className="pref-list">
-            {CATEGORIES.map(({ key, label, options }) => (
+            {ESSENTIALS.map(({ key, label, options }) => (
               <div key={key} className="pref-category">
                 <div className="pref-category-label">{label}</div>
                 <div className="mood-grid">
@@ -180,6 +146,52 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Details */}
+          <div className="pref-section-header">Dial it in further</div>
+          <div className="pref-list">
+            {DETAILS.map(({ key, label, options }) => (
+              <div key={key} className="pref-category">
+                <div className="pref-category-label">{label}</div>
+                <div className="mood-grid">
+                  {options.map((option) => (
+                    <button
+                      key={option}
+                      className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
+                      onClick={() => onToggle(key, option)}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Avoid */}
+          <div className="pref-section-header avoid">Anything you're NOT feeling?</div>
+          <p className="pref-section-sub">Sometimes it's easier to say what you don't want.</p>
+          <div className="pref-list">
+            {AVOID.map(({ key, label, options }) => {
+              const selected_values = selected[key] ? selected[key].split(',') : [];
+              return (
+                <div key={key} className="pref-category">
+                  <div className="pref-category-label">{label}</div>
+                  <div className="mood-grid">
+                    {options.map((option) => (
+                      <button
+                        key={option}
+                        className={`mood-chip avoid-chip${selected_values.includes(option) ? ' avoid-selected' : ''}`}
+                        onClick={() => onToggle(key, option)}
+                      >
+                        {selected_values.includes(option) ? `✕ ${option}` : option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           <div className="decide-footer">

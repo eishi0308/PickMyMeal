@@ -716,6 +716,36 @@ body {
   padding-bottom: 0;
 }
 
+.pref-section-header {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #1A1A1A;
+  margin-bottom: 14px;
+  margin-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E5E7EB;
+}
+.pref-section-header.avoid {
+  color: #F43F5E;
+  border-bottom-color: rgba(244, 63, 94, 0.2);
+}
+.pref-section-sub {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin-bottom: 14px;
+  margin-top: -8px;
+}
+.avoid-chip {
+  border-color: #FECDD3 !important;
+  color: #F43F5E !important;
+}
+.avoid-chip.avoid-selected {
+  background: #F43F5E !important;
+  border-color: #F43F5E !important;
+  color: #fff !important;
+}
 .pref-list {
   display: flex;
   flex-direction: column;
