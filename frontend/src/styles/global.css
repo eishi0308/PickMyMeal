@@ -706,6 +706,73 @@ body {
   color: var(--text-muted);
 }
 
+/* Confirmation screen */
+.qm-confirm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.qm-confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--white);
+  border: 1.5px solid #EBEBEB;
+  border-radius: 16px;
+}
+
+.qm-confirm-emoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.qm-confirm-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.qm-confirm-q {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.qm-confirm-a {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.qm-confirm-btn {
+  width: 100%;
+  padding: 18px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.3px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.qm-confirm-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.qm-confirm-btn:active {
+  transform: scale(0.98);
+}
+
 /* ── Quick loading / error ── */
 .quick-loading {
   flex: 1;
