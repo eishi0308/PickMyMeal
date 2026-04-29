@@ -120,14 +120,12 @@ export default function QuickMode({ onSubmit }: Props) {
         <div className="qm-progress-fill" style={{ width: `${progressPct}%` }} />
       </div>
 
-      {/* Previous answer chips */}
-      {prevAnswers.length > 0 && (
-        <div className="qm-prev-answers">
-          {prevAnswers.map((a, i) => (
-            <span key={i} className="qm-prev-chip">{a.emoji} {a.label}</span>
-          ))}
-        </div>
-      )}
+      {/* Previous answer chips — always rendered to keep vertical axis consistent */}
+      <div className="qm-prev-answers">
+        {prevAnswers.map((a, i) => (
+          <span key={i} className="qm-prev-chip">{a.emoji} {a.label}</span>
+        ))}
+      </div>
 
       {/* Animated step content */}
       <div key={`${step}-${slideDir}`} className={`qm-step qm-step--${slideDir}`}>

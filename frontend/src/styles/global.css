@@ -556,6 +556,7 @@ body {
   gap: 8px;
   margin-bottom: 24px;
   width: 100%;
+  min-height: 32px;
 }
 
 .qm-prev-chip {
