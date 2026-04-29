@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { PreferenceMap } from '../types';
 
 const STEPS = [
@@ -36,70 +36,81 @@ interface Props {
 export default function QuickMode({ onSubmit }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<PreferenceMap>({});
+  const [slideDir, setSlideDir] = useState<'fwd' | 'back'>('fwd');
+  const submitting = useRef(false);
 
   const currentStep = STEPS[step];
-  const hasAnsweredCurrent = !!answers[currentStep.key];
-  const canGoBack = step > 0;
-  const canGoForward = step < STEPS.length - 1 && hasAnsweredCurrent;
+  const progressPct = ((step + 1) / STEPS.length) * 100;
+  const prevAnswers = STEPS.slice(0, step).filter(s => answers[s.key]).map(s => {
+    const opt = s.options.find(o => o.value === answers[s.key]);
+    return opt ? { emoji: opt.emoji, label: opt.label } : null;
+  }).filter(Boolean) as { emoji: string; label: string }[];
 
   const handleChoice = (value: string) => {
+    if (submitting.current) return;
     const newAnswers = { ...answers, [STEPS[step].key]: value };
     setAnswers(newAnswers);
     if (step < STEPS.length - 1) {
-      setStep(step + 1);
+      setSlideDir('fwd');
+      setStep(s => s + 1);
     } else {
+      submitting.current = true;
       onSubmit(newAnswers);
     }
   };
 
-  const goBack = () => { if (canGoBack) setStep(step - 1); };
-  const goForward = () => { if (canGoForward) setStep(step + 1); };
+  const goBack = () => {
+    if (step > 0) {
+      setSlideDir('back');
+      setStep(s => s - 1);
+    }
+  };
 
   return (
     <div className="quick-mode">
-      <div className="quick-progress">
-        {STEPS.map((_, i) => (
-          <div
-            key={i}
-            className={`quick-dot${i < step ? ' done' : i === step ? ' active' : ''}`}
-          />
-        ))}
+      {/* Progress bar */}
+      <div className="qm-progress-track">
+        <div className="qm-progress-fill" style={{ width: `${progressPct}%` }} />
       </div>
 
-      <div className="quick-step" key={step}>
-        <p className="quick-step-label">{step + 1} of {STEPS.length}</p>
-        <h2 className="quick-question">{currentStep.question}</h2>
-        <div className="quick-options">
-          {currentStep.options.map(({ value, emoji, label }) => (
-            <button
-              key={value}
-              className={`quick-card${answers[currentStep.key] === value ? ' selected' : ''}`}
-              onClick={() => handleChoice(value)}
-            >
-              <span className="quick-card-emoji">{emoji}</span>
-              <span className="quick-card-label">{label}</span>
-            </button>
+      {/* Previous answer chips */}
+      {prevAnswers.length > 0 && (
+        <div className="qm-prev-answers">
+          {prevAnswers.map((a, i) => (
+            <span key={i} className="qm-prev-chip">{a.emoji} {a.label}</span>
           ))}
         </div>
+      )}
 
-        <div className="quick-nav">
-          <button
-            className="quick-nav-btn"
-            onClick={goBack}
-            disabled={!canGoBack}
-            aria-label="Previous"
-          >
-            ←
-          </button>
-          <button
-            className="quick-nav-btn"
-            onClick={goForward}
-            disabled={!canGoForward}
-            aria-label="Next"
-          >
-            →
-          </button>
+      {/* Animated step content */}
+      <div key={`${step}-${slideDir}`} className={`qm-step qm-step--${slideDir}`}>
+        <h2 className="quick-question">{currentStep.question}</h2>
+        <div className="qm-options">
+          {currentStep.options.map(({ value, emoji, label }) => {
+            const isSelected = answers[currentStep.key] === value;
+            return (
+              <button
+                key={value}
+                className={`qm-card${isSelected ? ' selected' : ''}`}
+                onClick={() => handleChoice(value)}
+              >
+                <span className="qm-card-emoji">{emoji}</span>
+                <span className="qm-card-label">{label}</span>
+                <span className="qm-card-arrow">{isSelected ? '✓' : '→'}</span>
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Back button */}
+      <div className="qm-footer">
+        {step > 0 ? (
+          <button className="qm-back-btn" onClick={goBack}>← Back</button>
+        ) : (
+          <span />
+        )}
+        <span className="qm-step-counter">{step + 1} / {STEPS.length}</span>
       </div>
     </div>
   );
