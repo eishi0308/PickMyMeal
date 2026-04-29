@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator,
+  View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Animated,
 } from 'react-native';
 import { recommend } from '../api/foodApi';
 import { addToHistory } from '../api/history';
@@ -45,9 +45,13 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'quick' | 'fine'>(initialMode);
+  const [fineStep, setFineStep] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     setMode(initialMode);
+    if (initialMode === 'fine') setFineStep(0);
   }, [initialMode]);
 
   const hasSelection = Object.keys(selected).length > 0;
@@ -74,8 +78,25 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
     handleDecideWithPrefs(selected);
   };
 
+  const goToStep = (next: number, dir: 'fwd' | 'back') => {
+    const outX = dir === 'fwd' ? -30 : 30;
+    const inX = dir === 'fwd' ? 30 : -30;
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 0, duration: 140, useNativeDriver: true }),
+      Animated.timing(slideAnim, { toValue: outX, duration: 140, useNativeDriver: true }),
+    ]).start(() => {
+      setFineStep(next);
+      slideAnim.setValue(inX);
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+      ]).start();
+    });
+  };
+
   const switchMode = (newMode: 'quick' | 'fine') => {
     setMode(newMode);
+    if (newMode === 'fine') setFineStep(0);
     setError(null);
   };
 
@@ -141,10 +162,34 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
             <QuickMode onSubmit={handleDecideWithPrefs} />
           )}
         </View>
+      ) : loading ? (
+        /* Fine Tune loading */
+        <View style={styles.quickContainer}>
+          <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
+          <View style={styles.quickLoading}>
+            <ActivityIndicator color="#E8703A" size="large" />
+            <Text style={styles.quickLoadingText}>Finding your meal…</Text>
+          </View>
+        </View>
+      ) : error ? (
+        /* Fine Tune error */
+        <View style={styles.quickContainer}>
+          <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
+          <View style={styles.quickError}>
+            <Text style={styles.errorMsg}>{error}</Text>
+            <TouchableOpacity style={styles.retryBtn} onPress={() => setError(null)}>
+              <Text style={styles.retryBtnText}>Try again</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       ) : (
-        /* Fine Tune mode — scrollable chip list */
+        /* Fine Tune — 3-step wizard */
         <View style={styles.screen}>
-          <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
             <NavBar onLogoClick={onLogoClick} onHistory={onHistory} />
 
             {/* Mode toggle */}
@@ -167,94 +212,95 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.title}>What do you feel like?</Text>
-            <Text style={styles.subtitle}>The more you tell us, the better we'll nail it.</Text>
+            {/* Progress bar */}
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${((fineStep + 1) / 3) * 100}%` as any }]} />
+            </View>
 
-            {/* Essentials */}
-            <Text style={styles.sectionHeader}>The essentials</Text>
-            {ESSENTIALS.map(({ key, label, options }) => (
-              <View key={key} style={styles.category}>
-                <Text style={styles.categoryLabel}>{label}</Text>
-                <View style={styles.chipGrid}>
-                  {options.map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      style={[styles.chip, selected[key] === option && styles.chipSelected]}
-                      onPress={() => onToggle(key, option)}
-                    >
-                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>{option}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            ))}
+            {/* Step header */}
+            <Text style={styles.stepLabel}>Step {fineStep + 1} of 3</Text>
+            <Text style={styles.stepTitle}>
+              {['The essentials', 'Dial it in', 'Anything off limits?'][fineStep]}
+            </Text>
+            <Text style={styles.stepSub}>
+              {[
+                "What are you in the mood for today?",
+                "Optional — skip anything you're flexible on.",
+                "Select what to avoid. Pick as many as you like.",
+              ][fineStep]}
+            </Text>
 
-            {/* Details */}
-            <Text style={styles.sectionHeader}>Dial it in further</Text>
-            {DETAILS.map(({ key, label, options }) => (
-              <View key={key} style={styles.category}>
-                <Text style={styles.categoryLabel}>{label}</Text>
-                <View style={styles.chipGrid}>
-                  {options.map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      style={[styles.chip, selected[key] === option && styles.chipSelected]}
-                      onPress={() => onToggle(key, option)}
-                    >
-                      <Text style={[styles.chipText, selected[key] === option && styles.chipTextSelected]}>{option}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            ))}
-
-            {/* Avoid */}
-            <Text style={[styles.sectionHeader, styles.sectionHeaderAvoid]}>Anything you're NOT feeling?</Text>
-            <Text style={styles.sectionSub}>Sometimes it's easier to say what you don't want.</Text>
-            {AVOID.map(({ key, label, options }) => {
-              const selectedValues = selected[key] ? selected[key].split(',') : [];
-              return (
-                <View key={key} style={styles.category}>
-                  <Text style={styles.categoryLabel}>{label}</Text>
-                  <View style={styles.chipGrid}>
-                    {options.map((option) => {
-                      const isAvoided = selectedValues.includes(option);
-                      return (
-                        <TouchableOpacity
-                          key={option}
-                          style={[styles.chip, styles.avoidChip, isAvoided && styles.avoidChipSelected]}
-                          onPress={() => onToggle(key, option)}
-                        >
-                          <Text style={[styles.chipText, styles.avoidChipText, isAvoided && styles.avoidChipTextSelected]}>
-                            {isAvoided ? `✕ ${option}` : option}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })}
+            {/* Animated step content */}
+            <Animated.View style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
+              {(fineStep === 0 ? ESSENTIALS : fineStep === 1 ? DETAILS : AVOID).map(({ key, label, options }) => {
+                const isAvoid = fineStep === 2;
+                const avoidVals = isAvoid && selected[key] ? selected[key].split(',') : [];
+                return (
+                  <View key={key} style={styles.category}>
+                    <Text style={styles.categoryLabel}>{label}</Text>
+                    <View style={styles.chipGrid}>
+                      {options.map((option) => {
+                        const isOn = isAvoid ? avoidVals.includes(option) : selected[key] === option;
+                        return (
+                          <TouchableOpacity
+                            key={option}
+                            style={[
+                              styles.chip,
+                              isAvoid && styles.avoidChip,
+                              isOn && (isAvoid ? styles.avoidChipSelected : styles.chipSelected),
+                            ]}
+                            onPress={() => onToggle(key, option)}
+                          >
+                            <Text style={[
+                              styles.chipText,
+                              isAvoid && styles.avoidChipText,
+                              isOn && (isAvoid ? styles.avoidChipTextSelected : styles.chipTextSelected),
+                            ]}>
+                              {isAvoid && isOn ? `✕ ${option}` : option}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              })}
+            </Animated.View>
+
+            {/* Escape hatch on step 2 */}
+            {fineStep === 1 && hasSelection && (
+              <TouchableOpacity onPress={handleDecide} style={styles.skipLink}>
+                <Text style={styles.skipLinkText}>Decide now, skip avoids →</Text>
+              </TouchableOpacity>
+            )}
 
             <View style={styles.footerSpacer} />
           </ScrollView>
 
-          <View style={styles.footer}>
-            <TouchableOpacity
-              style={[styles.decideBtn, (!hasSelection || loading) && styles.decideBtnDisabled]}
-              onPress={handleDecide}
-              disabled={!hasSelection || loading}
-            >
-              {loading ? (
-                <View style={styles.loadingRow}>
-                  <ActivityIndicator color="#fff" size="small" />
-                  <Text style={styles.decideBtnText}>  Finding your meal…</Text>
-                </View>
-              ) : (
-                <Text style={styles.decideBtnText}>Decide for me →</Text>
+          {/* Step footer */}
+          <View style={styles.stepFooter}>
+            <View style={styles.stepFooterLeft}>
+              {fineStep > 0 && (
+                <TouchableOpacity style={styles.backBtn} onPress={() => goToStep(fineStep - 1, 'back')}>
+                  <Text style={styles.backBtnText}>← Back</Text>
+                </TouchableOpacity>
               )}
-            </TouchableOpacity>
-            {error && <Text style={styles.errorMsg}>{error}</Text>}
+            </View>
+            <View style={styles.stepFooterRight}>
+              {fineStep < 2 ? (
+                <TouchableOpacity style={styles.nextBtn} onPress={() => goToStep(fineStep + 1, 'fwd')}>
+                  <Text style={styles.nextBtnText}>Continue →</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.decideBtn, !hasSelection && styles.decideBtnDisabled]}
+                  onPress={handleDecide}
+                  disabled={!hasSelection}
+                >
+                  <Text style={styles.decideBtnText}>Decide for me →</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       )}
@@ -396,6 +442,59 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: '800', letterSpacing: -0.5, color: '#1A1A1A', marginBottom: 4 },
   subtitle: { fontSize: 15, color: '#6B7280', marginBottom: 32 },
+  /* Progress bar */
+  progressTrack: {
+    height: 4, backgroundColor: '#E5E7EB', borderRadius: 999,
+    marginBottom: 24, overflow: 'hidden',
+  },
+  progressFill: {
+    height: 4, backgroundColor: '#E8703A', borderRadius: 999,
+  },
+
+  /* Step header */
+  stepLabel: {
+    fontSize: 11, fontWeight: '700', textTransform: 'uppercase',
+    letterSpacing: 0.8, color: '#6B7280', marginBottom: 8,
+  },
+  stepTitle: {
+    fontSize: 28, fontWeight: '800', letterSpacing: -0.8,
+    color: '#1A1A1A', marginBottom: 6, lineHeight: 32,
+  },
+  stepSub: { fontSize: 14, color: '#6B7280', marginBottom: 24 },
+
+  /* Step footer */
+  stepFooter: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 24, paddingBottom: 40, paddingTop: 16,
+    backgroundColor: '#FFFBF5',
+    borderTopWidth: 1, borderTopColor: '#E5E7EB',
+  },
+  stepFooterLeft: { flex: 1 },
+  stepFooterRight: { flex: 1, alignItems: 'flex-end' },
+
+  backBtn: {
+    paddingVertical: 12, paddingHorizontal: 20,
+    borderRadius: 999, borderWidth: 2, borderColor: '#E5E7EB',
+    alignSelf: 'flex-start',
+  },
+  backBtnText: { fontSize: 14, fontWeight: '600', color: '#6B7280' },
+
+  nextBtn: {
+    paddingVertical: 13, paddingHorizontal: 26,
+    borderRadius: 999, backgroundColor: '#E8703A',
+    shadowColor: '#E8703A', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
+  },
+  nextBtnText: { fontSize: 15, fontWeight: '700', color: '#fff' },
+
+  /* Skip link */
+  skipLink: { paddingVertical: 8, alignItems: 'flex-end', marginBottom: 4 },
+  skipLinkText: {
+    fontSize: 13, fontWeight: '500', color: '#9CA3AF',
+    textDecorationLine: 'underline',
+  },
+
   sectionHeader: {
     fontSize: 13, fontWeight: '800', textTransform: 'uppercase',
     letterSpacing: 1, color: '#1A1A1A', marginBottom: 14, marginTop: 8,
@@ -421,18 +520,20 @@ const styles = StyleSheet.create({
   chipSelected: { backgroundColor: '#E8703A', borderColor: '#E8703A' },
   chipText: { fontSize: 14, fontWeight: '500', color: '#1A1A1A' },
   chipTextSelected: { color: '#fff' },
-  footerSpacer: { height: 120 },
+  footerSpacer: { height: 140 },
   footer: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
     paddingHorizontal: 24, paddingBottom: 40, paddingTop: 12,
     backgroundColor: '#FFFBF5',
   },
   decideBtn: {
-    backgroundColor: '#E8703A', borderRadius: 999,
-    paddingVertical: 16, alignItems: 'center',
+    paddingVertical: 13, paddingHorizontal: 26,
+    backgroundColor: '#E8703A', borderRadius: 999, alignItems: 'center',
+    shadowColor: '#E8703A', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
   },
-  decideBtnDisabled: { opacity: 0.35 },
-  decideBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  decideBtnDisabled: { opacity: 0.35, shadowOpacity: 0 },
+  decideBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   loadingRow: { flexDirection: 'row', alignItems: 'center' },
   errorMsg: { color: '#DC2626', fontSize: 13, marginTop: 12, textAlign: 'center' },
 });

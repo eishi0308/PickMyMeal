@@ -42,9 +42,12 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'quick' | 'fine'>(initialMode);
+  const [fineStep, setFineStep] = useState(0);
+  const [slideDir, setSlideDir] = useState<'fwd' | 'back'>('fwd');
 
   useEffect(() => {
     setMode(initialMode);
+    if (initialMode === 'fine') setFineStep(0);
   }, [initialMode]);
 
   const hasSelection = Object.keys(selected).length > 0;
@@ -69,6 +72,11 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
   const handleDecide = async () => {
     if (!hasSelection) return;
     handleDecideWithPrefs(selected);
+  };
+
+  const goToStep = (next: number, dir: 'fwd' | 'back') => {
+    setSlideDir(dir);
+    setFineStep(next);
   };
 
   return (
@@ -100,7 +108,7 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
         </button>
         <button
           className={`mode-btn${mode === 'fine' ? ' active' : ''}`}
-          onClick={() => { setMode('fine'); setError(null); }}
+          onClick={() => { setMode('fine'); setFineStep(0); setSlideDir('fwd'); setError(null); }}
         >
           🎛 Fine Tune
         </button>
@@ -122,96 +130,98 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
         ) : (
           <QuickMode onSubmit={handleDecideWithPrefs} />
         )
+      ) : loading ? (
+        <div className="quick-loading">
+          <span className="spinner quick-spinner" />
+          <p className="quick-loading-text">Finding your meal…</p>
+        </div>
+      ) : error ? (
+        <div className="quick-error">
+          <p className="error-msg">{error}</p>
+          <button className="ghost-btn quick-retry-btn" onClick={() => setError(null)}>
+            Try again
+          </button>
+        </div>
       ) : (
-        <>
-          <h1 className="home-title">What do you feel like?</h1>
-          <p className="home-subtitle">The more you tell us, the better we'll nail it.</p>
-
-          {/* Essentials */}
-          <div className="pref-section-header">The essentials</div>
-          <div className="pref-list">
-            {ESSENTIALS.map(({ key, label, options }) => (
-              <div key={key} className="pref-category">
-                <div className="pref-category-label">{label}</div>
-                <div className="mood-grid">
-                  {options.map((option) => (
-                    <button
-                      key={option}
-                      className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
-                      onClick={() => onToggle(key, option)}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+        <div className="fine-tune">
+          {/* Progress bar */}
+          <div className="fine-progress-track">
+            <div className="fine-progress-fill" style={{ width: `${((fineStep + 1) / 3) * 100}%` }} />
           </div>
 
-          {/* Details */}
-          <div className="pref-section-header">Dial it in further</div>
-          <div className="pref-list">
-            {DETAILS.map(({ key, label, options }) => (
-              <div key={key} className="pref-category">
-                <div className="pref-category-label">{label}</div>
-                <div className="mood-grid">
-                  {options.map((option) => (
-                    <button
-                      key={option}
-                      className={`mood-chip${selected[key] === option ? ' selected' : ''}`}
-                      onClick={() => onToggle(key, option)}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Step header */}
+          <div className="fine-step-label">Step {fineStep + 1} of 3</div>
+          <h2 className="fine-step-title">
+            {['The essentials', 'Dial it in', 'Anything off limits?'][fineStep]}
+          </h2>
+          <p className="fine-step-sub">
+            {[
+              "What are you in the mood for today?",
+              "Optional — skip anything you're flexible on.",
+              "Select what to avoid. Pick as many as you like.",
+            ][fineStep]}
+          </p>
 
-          {/* Avoid */}
-          <div className="pref-section-header avoid">Anything you're NOT feeling?</div>
-          <p className="pref-section-sub">Sometimes it's easier to say what you don't want.</p>
-          <div className="pref-list">
-            {AVOID.map(({ key, label, options }) => {
-              const selected_values = selected[key] ? selected[key].split(',') : [];
+          {/* Categories — keyed so React remounts on step change, triggering animation */}
+          <div key={fineStep} className={`fine-step-body fine-step-body--${slideDir}`}>
+            {(fineStep === 0 ? ESSENTIALS : fineStep === 1 ? DETAILS : AVOID).map(({ key, label, options }) => {
+              const isAvoid = fineStep === 2;
+              const avoidVals = isAvoid && selected[key] ? selected[key].split(',') : [];
               return (
                 <div key={key} className="pref-category">
                   <div className="pref-category-label">{label}</div>
                   <div className="mood-grid">
-                    {options.map((option) => (
-                      <button
-                        key={option}
-                        className={`mood-chip avoid-chip${selected_values.includes(option) ? ' avoid-selected' : ''}`}
-                        onClick={() => onToggle(key, option)}
-                      >
-                        {selected_values.includes(option) ? `✕ ${option}` : option}
-                      </button>
-                    ))}
+                    {options.map((option) => {
+                      const isOn = isAvoid ? avoidVals.includes(option) : selected[key] === option;
+                      return (
+                        <button
+                          key={option}
+                          className={`mood-chip${isAvoid ? ' avoid-chip' : ''}${isOn ? (isAvoid ? ' avoid-selected' : ' selected') : ''}`}
+                          onClick={() => onToggle(key, option)}
+                        >
+                          {isAvoid && isOn ? `✕ ${option}` : option}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="decide-footer">
-            <button
-              className="decide-btn"
-              onClick={handleDecide}
-              disabled={!hasSelection || loading}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner" />
-                  Finding your meal…
-                </>
-              ) : (
-                'Decide for me →'
-              )}
+          {/* Escape hatch: decide from step 2 without going to avoid */}
+          {fineStep === 1 && hasSelection && (
+            <button className="fine-skip-link" onClick={handleDecide}>
+              Decide now, skip avoids →
             </button>
-            {error && <p className="error-msg">{error}</p>}
+          )}
+
+          {/* Step footer */}
+          <div className="fine-step-footer">
+            <div className="fine-footer-left">
+              {fineStep > 0 && (
+                <button className="fine-back-btn" onClick={() => goToStep(fineStep - 1, 'back')}>
+                  ← Back
+                </button>
+              )}
+            </div>
+            <div className="fine-footer-right">
+              {fineStep < 2 ? (
+                <button className="fine-next-btn" onClick={() => goToStep(fineStep + 1, 'fwd')}>
+                  Continue →
+                </button>
+              ) : (
+                <button
+                  className="fine-decide-btn"
+                  onClick={handleDecide}
+                  disabled={!hasSelection}
+                >
+                  Decide for me →
+                </button>
+              )}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

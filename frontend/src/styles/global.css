@@ -783,6 +783,178 @@ body {
   margin: 8px auto 0;
 }
 
+/* ── Fine Tune Step UI ── */
+.fine-tune {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.fine-progress-track {
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.fine-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fine-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.fine-step-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.fine-step-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.fine-step-body {
+  flex: 1;
+  padding-bottom: 16px;
+}
+
+.fine-step-body--fwd {
+  animation: fineSlideFwd 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.fine-step-body--back {
+  animation: fineSlideBack 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fineSlideFwd {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fineSlideBack {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.fine-skip-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0 12px;
+  text-align: right;
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fine-skip-link:hover { color: var(--text); }
+
+.fine-step-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+}
+
+.fine-footer-left,
+.fine-footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.fine-back-btn {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: transparent;
+  border: 2px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.fine-back-btn:hover {
+  border-color: #9CA3AF;
+  color: var(--text);
+}
+
+.fine-next-btn {
+  padding: 13px 28px;
+  border-radius: 999px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(232, 112, 58, 0.3);
+  font-family: inherit;
+  letter-spacing: -0.2px;
+}
+
+.fine-next-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(232, 112, 58, 0.35);
+}
+
+.fine-decide-btn {
+  padding: 13px 28px;
+  border-radius: 999px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(232, 112, 58, 0.3);
+  font-family: inherit;
+  letter-spacing: -0.2px;
+}
+
+.fine-decide-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(232, 112, 58, 0.35);
+}
+
+.fine-decide-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 /* ── Uber Eats button ── */
 .ubereats-btn {
   display: block;
