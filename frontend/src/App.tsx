@@ -3,6 +3,7 @@ import Landing from './screens/Landing';
 import Home from './screens/Home';
 import Result from './screens/Result';
 import Order from './screens/Order';
+import CookAlternative from './screens/CookAlternative';
 import History from './screens/History';
 import { PreferenceMap, RecommendResponse, Screen } from './types';
 
@@ -43,6 +44,12 @@ export default function App() {
     setSessionExcludes([]);
     setHomeMode('quick');
     setScreen('home');
+  };
+
+  const handleCook = (category: string, imageUrl: string | null = null) => {
+    setOrderCategory(category);
+    setOrderImage(imageUrl);
+    setScreen('cook');
   };
 
   const handleOrder = (category: string, imageUrl: string | null = null) => {
@@ -89,8 +96,21 @@ export default function App() {
         onReset={handleReset}
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
-        onOrder={(cat, img) => handleOrder(cat, img)}
+        onOrder={(cat, img) => handleCook(cat, img)}
         onTune={handleTune}
+      />
+    );
+  }
+
+  if (screen === 'cook') {
+    return (
+      <CookAlternative
+        category={orderCategory}
+        imageUrl={orderImage}
+        onOrder={handleOrder}
+        onBack={() => setScreen('result')}
+        onReset={handleReset}
+        onLogoClick={() => setScreen('landing')}
       />
     );
   }

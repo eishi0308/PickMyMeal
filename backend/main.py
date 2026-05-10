@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from typing import Dict, List, Optional
 from openai import AsyncOpenAI
 from services.image_service import generate_food_image, clear_cache, clear_cache
+from services.recipe_library import RECIPE_LIBRARY, RECIPE_KEYS
 
 load_dotenv()
 
@@ -109,6 +110,108 @@ class ImageResponse(BaseModel):
 async def get_food_image(request: ImageRequest):
     url = await generate_food_image(client, request.food_name, request.food_keyword)
     return ImageResponse(image_url=url)
+
+
+class CookAlternativeRequest(BaseModel):
+    dish: str
+    variant: Optional[str] = None  # "easier" | "closer" | None
+
+
+class CookAlternativeResponse(BaseModel):
+    alternative_name: str
+    time_minutes: int
+    effort: str
+    delivery_estimate: str
+    home_estimate: str
+    saving_estimate: str
+    ingredients: List[str]
+    steps: List[str]
+    explanation: str
+
+
+@app.post("/cook-alternative", response_model=CookAlternativeResponse)
+async def cook_alternative(request: CookAlternativeRequest):
+    # Step 1: Match dish to best recipe key
+    keys_list = ", ".join(RECIPE_KEYS)
+    match_resp = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=60,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are a recipe matching assistant. Always respond with valid JSON."},
+            {"role": "user", "content": (
+                f'Match "{request.dish}" to the best key from this list: [{keys_list}]. '
+                f'If none match well, use "generic". '
+                f'Respond with JSON only: {{"key": "chosen_key"}}'
+            )},
+        ],
+    )
+    key_data = json.loads(match_resp.choices[0].message.content)
+    recipe_key = key_data.get("key", "generic")
+    if recipe_key not in RECIPE_LIBRARY:
+        recipe_key = "generic"
+
+    recipe = RECIPE_LIBRARY[recipe_key]
+    steps = list(recipe["steps"])
+
+    delivery_estimate = f"${recipe['delivery_min']}–${recipe['delivery_max']}"
+    home_estimate = f"~${recipe['home_min']}–${recipe['home_max']}"
+    saving_min = recipe['delivery_min'] - recipe['home_max']
+    saving_max = recipe['delivery_max'] - recipe['home_min']
+    saving_estimate = f"~${saving_min}–${saving_max}"
+
+    # Step 2: Explanation + optional variant modification
+    variant_instruction = ""
+    if request.variant == "easier":
+        steps_str = json.dumps(steps)
+        variant_instruction = (
+            f'\n3. Simplify the steps to be even easier (max 4 very short steps, use simpler techniques). '
+            f'Current steps: {steps_str}\n'
+            f'Include a "steps" array in your response.'
+        )
+    elif request.variant == "closer":
+        steps_str = json.dumps(steps)
+        variant_instruction = (
+            f'\n3. Modify the steps by 1–2 small tweaks to make the dish taste closer to "{request.dish}". '
+            f'Keep it simple and realistic. Current steps: {steps_str}\n'
+            f'Include a "steps" array in your response.'
+        )
+
+    steps_field = ', "steps": [...]' if variant_instruction else ''
+    explain_prompt = (
+        f'The user wanted "{request.dish}" (delivery: {delivery_estimate}). '
+        f'Home version: "{recipe["alternative_name"]}" ({home_estimate}, {recipe["time_minutes"]} min).\n'
+        f'1. Write a friendly 1-sentence explanation (max 18 words) of why cooking at home is worth it for this craving.\n'
+        f'2. Respond with JSON: {{"explanation": "..."{steps_field}}}'
+        f'{variant_instruction}'
+    )
+
+    explain_resp = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=350,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are a helpful cooking assistant. Always respond with valid JSON."},
+            {"role": "user", "content": explain_prompt},
+        ],
+    )
+    explain_data = json.loads(explain_resp.choices[0].message.content)
+    explanation = explain_data.get("explanation", "Cook at home for a fraction of the delivery price.")
+
+    if request.variant and "steps" in explain_data:
+        steps = explain_data["steps"]
+
+    return CookAlternativeResponse(
+        alternative_name=recipe["alternative_name"],
+        time_minutes=recipe["time_minutes"],
+        effort=recipe["effort"],
+        delivery_estimate=delivery_estimate,
+        home_estimate=home_estimate,
+        saving_estimate=saving_estimate,
+        ingredients=recipe["ingredients"],
+        steps=steps,
+        explanation=explanation,
+    )
 
 
 @app.get("/health")

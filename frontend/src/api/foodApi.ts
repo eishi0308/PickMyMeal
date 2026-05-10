@@ -1,4 +1,4 @@
-import { RecommendRequest, RecommendResponse, ImageResponse } from '../types';
+import { RecommendRequest, RecommendResponse, ImageResponse, CookAlternativeResponse } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
 
@@ -33,6 +33,16 @@ export function preloadImage(url: string): Promise<void> {
     img.onerror = () => resolve();
     img.src = url;
   });
+}
+
+export async function getCookAlternative(dish: string, variant?: string): Promise<CookAlternativeResponse> {
+  const response = await fetch(`${API_BASE}/cook-alternative`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dish, variant: variant ?? null }),
+  });
+  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  return response.json();
 }
 
 export { API_BASE };
