@@ -21,6 +21,7 @@ interface Props {
   onHistory: () => void;
   onLogoClick: () => void;
   onOrder: (category: string, imageUrl: string | null) => void;
+  onDirectOrder: (category: string, imageUrl: string | null) => void;
   onTune: () => void;
 }
 
@@ -41,7 +42,7 @@ function ImageSlot({ src, alt }: { src: string | null; alt: string }) {
 
 export default function Result({
   best, backups, preferences, excludes,
-  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onDirectOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [expandedBackups, setExpandedBackups] = useState<Set<number>>(new Set());
@@ -103,9 +104,15 @@ export default function Result({
           <ImageSlot src={bestImage} alt={best.category} />
         </div>
         <p className="primary-reason">{best.reason}</p>
-        <button className="take-btn" onClick={() => onOrder(best.category, bestImage)}>
-          <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
-        </button>
+        <div className="result-dual-cta">
+          <button className="cook-btn" onClick={() => onOrder(best.category, bestImage)}>
+            🏠 Cook at home
+          </button>
+          <button className="ubereats-btn" onClick={() => onDirectOrder(best.category, bestImage)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4a8 8 0 110 16A8 8 0 0112 4zm-1 4v4.586l-2.293-2.293-1.414 1.414L12 16.414l4.707-4.707-1.414-1.414L13 12.586V8h-2z"/></svg>
+            Order on Uber Eats
+          </button>
+        </div>
       </div>
 
       {/* Backups — compact list, accordion */}
@@ -127,9 +134,15 @@ export default function Result({
                     <ImageSlot src={backupImages[i]} alt={item.category} />
                   </div>
                   <p className="primary-reason">{item.reason}</p>
-                  <button className="take-btn" onClick={() => onOrder(item.category, backupImages[i])}>
-                    <span className="take-btn-inner"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="rgba(255,255,255,0.2)"/><path d="M5 9l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yes, this one</span>
-                  </button>
+                  <div className="result-dual-cta">
+                    <button className="cook-btn" onClick={() => onOrder(item.category, backupImages[i])}>
+                      🏠 Cook at home
+                    </button>
+                    <button className="ubereats-btn" onClick={() => onDirectOrder(item.category, backupImages[i])}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4a8 8 0 110 16A8 8 0 0112 4zm-1 4v4.586l-2.293-2.293-1.414 1.414L12 16.414l4.707-4.707-1.414-1.414L13 12.586V8h-2z"/></svg>
+                      Order on Uber Eats
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button className="backup-row" onClick={() => toggleBackup(i)}>

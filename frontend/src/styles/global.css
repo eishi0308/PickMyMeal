@@ -1979,6 +1979,13 @@ body {
   margin-top: 8px;
 }
 
+.result-dual-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
 .cook-savings-counter {
   background: rgba(16, 185, 129, 0.07);
   border: 1px solid rgba(16, 185, 129, 0.2);

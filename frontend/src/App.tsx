@@ -25,6 +25,7 @@ export default function App() {
   const [homeMode, setHomeMode] = useState<'quick' | 'fine'>('quick');
   const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
   const [cookLoading, setCookLoading] = useState(false);
+  const [cookForCategory, setCookForCategory] = useState<string>('');
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -34,6 +35,14 @@ export default function App() {
       data.response.category,
       ...data.backups.map((b) => b.category),
     ]);
+    // Pre-fetch cook alternative for best pick while user reads the result
+    const best = data.response.category;
+    setCookData(null);
+    setCookLoading(true);
+    setCookForCategory(best);
+    getCookAlternative(best)
+      .then(d => { setCookData(d); setCookLoading(false); })
+      .catch(() => setCookLoading(false));
   };
 
   const handleHistory = () => {
@@ -52,12 +61,16 @@ export default function App() {
   const handleCook = (category: string, imageUrl: string | null = null) => {
     setOrderCategory(category);
     setOrderImage(imageUrl);
-    setCookData(null);
-    setCookLoading(true);
     setScreen('cook');
-    getCookAlternative(category)
-      .then(d => { setCookData(d); setCookLoading(false); })
-      .catch(() => setCookLoading(false));
+    // Only fetch if it's a different dish from what's already pre-fetched
+    if (category !== cookForCategory) {
+      setCookData(null);
+      setCookLoading(true);
+      setCookForCategory(category);
+      getCookAlternative(category)
+        .then(d => { setCookData(d); setCookLoading(false); })
+        .catch(() => setCookLoading(false));
+    }
   };
 
   const handleOrder = (category: string, imageUrl: string | null = null) => {
@@ -105,6 +118,7 @@ export default function App() {
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
         onOrder={(cat, img) => handleCook(cat, img)}
+        onDirectOrder={(cat, img) => handleOrder(cat, img)}
         onTune={handleTune}
       />
     );
