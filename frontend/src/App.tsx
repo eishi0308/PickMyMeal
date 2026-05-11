@@ -5,7 +5,8 @@ import Result from './screens/Result';
 import Order from './screens/Order';
 import CookAlternative from './screens/CookAlternative';
 import History from './screens/History';
-import { PreferenceMap, RecommendResponse, Screen } from './types';
+import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse } from './types';
+import { getCookAlternative } from './api/foodApi';
 
 interface ResultData {
   response: RecommendResponse;
@@ -22,6 +23,8 @@ export default function App() {
   const [orderCategory, setOrderCategory] = useState<string>('');
   const [orderImage, setOrderImage] = useState<string | null>(null);
   const [homeMode, setHomeMode] = useState<'quick' | 'fine'>('quick');
+  const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
+  const [cookLoading, setCookLoading] = useState(false);
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -49,7 +52,12 @@ export default function App() {
   const handleCook = (category: string, imageUrl: string | null = null) => {
     setOrderCategory(category);
     setOrderImage(imageUrl);
+    setCookData(null);
+    setCookLoading(true);
     setScreen('cook');
+    getCookAlternative(category)
+      .then(d => { setCookData(d); setCookLoading(false); })
+      .catch(() => setCookLoading(false));
   };
 
   const handleOrder = (category: string, imageUrl: string | null = null) => {
@@ -107,6 +115,8 @@ export default function App() {
       <CookAlternative
         category={orderCategory}
         imageUrl={orderImage}
+        prefetchedData={cookData}
+        prefetchLoading={cookLoading}
         onOrder={handleOrder}
         onBack={() => setScreen('result')}
         onReset={handleReset}

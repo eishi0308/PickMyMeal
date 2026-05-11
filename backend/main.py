@@ -151,6 +151,63 @@ async def cook_alternative(request: CookAlternativeRequest):
     if recipe_key not in RECIPE_LIBRARY:
         recipe_key = "generic"
 
+    # Step 2: If generic, use OpenAI to generate a custom recipe for this specific dish
+    if recipe_key == "generic":
+        variant_steps_json = ', "steps": [...]' if request.variant else ''
+        variant_task = ""
+        if request.variant == "easier":
+            variant_task = '\n4. Also simplify the steps to be even easier (max 4 short steps).'
+        elif request.variant == "closer":
+            variant_task = f'\n4. Also make the steps closely resemble "{request.dish}" (1–2 tweaks).'
+
+        custom_prompt = (
+            f'Create a realistic home-cook alternative for someone craving "{request.dish}".\n'
+            f'Rules: beginner-friendly, 5–20 minutes, max 7 ingredients, max 5 steps, '
+            f'suitable for one person, close to the craving, common supermarket ingredients.\n'
+            f'Also write a friendly 1-sentence explanation (max 18 words) of why cooking at home is worth it.\n'
+            f'Estimate realistic delivery/restaurant cost and home-cooked cost in USD.\n'
+            f'{variant_task}\n'
+            f'Respond with JSON:\n'
+            f'{{"alternative_name":"...","time_minutes":15,"effort":"Easy",'
+            f'"delivery_min":18,"delivery_max":28,"home_min":4,"home_max":8,'
+            f'"ingredients":["..."],"steps":["..."],"explanation":"..."{variant_steps_json}}}'
+        )
+        custom_resp = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            max_tokens=600,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": "You are a practical home cooking assistant. Always respond with valid JSON."},
+                {"role": "user", "content": custom_prompt},
+            ],
+        )
+        d = json.loads(custom_resp.choices[0].message.content)
+        alt_name = d.get("alternative_name", f"Home-cooked {request.dish}")
+        time_min = int(d.get("time_minutes", 20))
+        effort = d.get("effort", "Easy")
+        del_min = int(d.get("delivery_min", 18))
+        del_max = int(d.get("delivery_max", 28))
+        hom_min = int(d.get("home_min", 4))
+        hom_max = int(d.get("home_max", 8))
+        ingredients = d.get("ingredients", [])
+        steps = d.get("steps", [])
+        explanation = d.get("explanation", "Cook at home for a fraction of the delivery price.")
+        delivery_estimate = f"${del_min}–${del_max}"
+        home_estimate = f"~${hom_min}–${hom_max}"
+        saving_estimate = f"~${del_min - hom_max}–${del_max - hom_min}"
+        return CookAlternativeResponse(
+            alternative_name=alt_name,
+            time_minutes=time_min,
+            effort=effort,
+            delivery_estimate=delivery_estimate,
+            home_estimate=home_estimate,
+            saving_estimate=saving_estimate,
+            ingredients=ingredients,
+            steps=steps,
+            explanation=explanation,
+        )
+
+    # Library recipe path
     recipe = RECIPE_LIBRARY[recipe_key]
     steps = list(recipe["steps"])
 
@@ -160,7 +217,7 @@ async def cook_alternative(request: CookAlternativeRequest):
     saving_max = recipe['delivery_max'] - recipe['home_min']
     saving_estimate = f"~${saving_min}–${saving_max}"
 
-    # Step 2: Explanation + optional variant modification
+    # Step 3: Explanation + optional variant modification
     variant_instruction = ""
     if request.variant == "easier":
         steps_str = json.dumps(steps)

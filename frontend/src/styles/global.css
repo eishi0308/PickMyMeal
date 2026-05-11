@@ -1978,3 +1978,67 @@ body {
   gap: 12px;
   margin-top: 8px;
 }
+
+.cook-savings-counter {
+  background: rgba(16, 185, 129, 0.07);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ── Cook mode (step-by-step) ── */
+.cook-mode {
+  background: var(--white);
+  border-radius: 28px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cook-mode-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cook-mode-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.cook-mode-exit {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
+
+.cook-mode-exit:hover {
+  color: var(--text);
+}
+
+.cook-mode-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+}
