@@ -28,6 +28,10 @@ async def _verify_image(client: AsyncOpenAI, b64: str) -> bool:
                             "text": (
                                 "Does this image contain any of the following: camera, lens, tripod, smartphone, "
                                 "screen, photography equipment, human hands, fingers, arms, face, or any person? "
+                                "Also check for any of these camera-related overlays or UI elements: "
+                                "camera focusing lines, autofocus brackets, targeting crosshairs, viewfinder frames, "
+                                "camera reticle, focus scale rulers, depth-of-field indicators, camera HUD overlays, "
+                                "measurement grids, or any lines/brackets that look like a camera interface. "
                                 "Reply with only YES or NO."
                             ),
                         },
@@ -61,6 +65,7 @@ async def generate_food_image(
         f"STRICT RULES — every single one must be followed with zero exceptions: "
         f"[1] Zero humans, zero people, zero faces, zero skin, zero eyes, zero fingers, zero hands, zero arms, zero wrists, zero body parts of any kind. "
         f"[2] Zero cameras, zero lenses, zero tripods, zero smartphones, zero screens, zero photography equipment, zero recording devices of any kind. "
+        f"[2b] Zero camera overlays of any kind: zero focusing lines, zero autofocus brackets, zero crosshairs, zero targeting reticles, zero viewfinder frames, zero camera HUD elements, zero ruler scales, zero measurement grids, zero depth indicators, zero any lines or brackets that resemble a camera interface. "
         f"[3] Zero props, zero text, zero logos, zero watermarks, zero decorative objects unrelated to food. "
         f"[4] The only subjects allowed in this image are: {food_name} and the white plate. Absolutely nothing else. "
         f"Generating any human body part or any device is a complete and total failure of this task."
@@ -70,7 +75,8 @@ async def generate_food_image(
         attempt_prompt = prompt if attempt == 1 else (
             prompt +
             f" CRITICAL RETRY {attempt}: Previous attempt included prohibited objects and was rejected. "
-            f"This image MUST contain only {food_name} on a white plate. Zero cameras, zero hands, zero people, zero equipment. Nothing else."
+            f"This image MUST contain only {food_name} on a white plate. Zero cameras, zero hands, zero people, zero equipment. "
+            f"Zero camera overlays: no focusing lines, no crosshairs, no autofocus brackets, no viewfinder frames, no ruler scales, no camera HUD of any kind. Nothing else."
         )
         try:
             t_start = time.time()

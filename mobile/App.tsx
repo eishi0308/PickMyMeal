@@ -6,8 +6,10 @@ import Landing from './src/screens/Landing';
 import Home from './src/screens/Home';
 import Result from './src/screens/Result';
 import Order from './src/screens/Order';
+import CookAlternative from './src/screens/CookAlternative';
 import History from './src/screens/History';
-import { PreferenceMap, RecommendResponse, Screen } from './src/types';
+import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse } from './src/types';
+import { getCookAlternative } from './src/api/foodApi';
 
 interface ResultData {
   response: RecommendResponse;
@@ -24,6 +26,9 @@ export default function App() {
   const [orderCategory, setOrderCategory] = useState<string>('');
   const [orderImage, setOrderImage] = useState<string | null>(null);
   const [homeMode, setHomeMode] = useState<'quick' | 'fine'>('quick');
+  const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
+  const [cookLoading, setCookLoading] = useState(false);
+  const [cookForCategory, setCookForCategory] = useState<string>('');
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -33,6 +38,14 @@ export default function App() {
       data.response.category,
       ...data.backups.map((b) => b.category),
     ]);
+    // Pre-fetch cook alternative for best pick while user reads the result
+    const best = data.response.category;
+    setCookData(null);
+    setCookLoading(true);
+    setCookForCategory(best);
+    getCookAlternative(best)
+      .then(d => { setCookData(d); setCookLoading(false); })
+      .catch(() => setCookLoading(false));
   };
 
   const handleHistory = () => {
@@ -46,6 +59,20 @@ export default function App() {
     setSessionExcludes([]);
     setHomeMode('quick');
     setScreen('home');
+  };
+
+  const handleCook = (category: string, imageUrl: string | null = null) => {
+    setOrderCategory(category);
+    setOrderImage(imageUrl);
+    setScreen('cook');
+    if (category !== cookForCategory) {
+      setCookData(null);
+      setCookLoading(true);
+      setCookForCategory(category);
+      getCookAlternative(category)
+        .then(d => { setCookData(d); setCookLoading(false); })
+        .catch(() => setCookLoading(false));
+    }
   };
 
   const handleOrder = (category: string, imageUrl: string | null = null) => {
@@ -108,8 +135,22 @@ export default function App() {
             onReset={handleReset}
             onHistory={handleHistory}
             onLogoClick={() => setScreen('landing')}
-            onOrder={(cat, img) => handleOrder(cat, img)}
+            onOrder={(cat, img) => handleCook(cat, img)}
+            onDirectOrder={(cat, img) => handleOrder(cat, img)}
             onTune={handleTune}
+          />
+        )}
+
+        {screen === 'cook' && (
+          <CookAlternative
+            category={orderCategory}
+            imageUrl={orderImage}
+            prefetchedData={cookData}
+            prefetchLoading={cookLoading}
+            onOrder={handleOrder}
+            onBack={() => setScreen('result')}
+            onReset={handleReset}
+            onLogoClick={() => setScreen('landing')}
           />
         )}
 

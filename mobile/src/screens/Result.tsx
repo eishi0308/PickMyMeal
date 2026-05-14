@@ -24,6 +24,7 @@ interface Props {
   onHistory: () => void;
   onLogoClick: () => void;
   onOrder: (category: string, imageUrl: string | null) => void;
+  onDirectOrder: (category: string, imageUrl: string | null) => void;
   onTune: () => void;
 }
 
@@ -46,12 +47,14 @@ function FoodCard({
   imageUrl,
   badge,
   onOrder,
+  onDirectOrder,
   onCollapse,
 }: {
   item: RecommendResponse;
   imageUrl: string | null;
   badge: string;
   onOrder: (category: string, imageUrl: string | null) => void;
+  onDirectOrder: (category: string, imageUrl: string | null) => void;
   onCollapse?: () => void;
 }) {
   return (
@@ -73,21 +76,21 @@ function FoodCard({
       <ImageSlot src={imageUrl} alt={item.category} />
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
-      <TouchableOpacity style={styles.takeBtn} onPress={() => onOrder(item.category, imageUrl)}>
-        <View style={styles.takeBtnInner}>
-          <View style={styles.takeBtnIcon}>
-            <Text style={styles.takeBtnIconText}>✓</Text>
-          </View>
-          <Text style={styles.takeBtnText}>Yes, this one</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={styles.dualCta}>
+        <TouchableOpacity style={styles.cookBtn} onPress={() => onOrder(item.category, imageUrl)}>
+          <Text style={styles.cookBtnText}>🏠 Cook at home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.uberBtn} onPress={() => onDirectOrder(item.category, imageUrl)}>
+          <Text style={styles.uberBtnText}>Order on Uber Eats</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 export default function Result({
   best, backups, preferences, excludes,
-  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onTune,
+  onResult, onBack, onReset, onHistory, onLogoClick, onOrder, onDirectOrder, onTune,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [expandedBackups, setExpandedBackups] = useState<Set<number>>(new Set());
@@ -145,6 +148,7 @@ export default function Result({
           imageUrl={bestImage}
           badge="⭐ Best Pick"
           onOrder={onOrder}
+          onDirectOrder={onDirectOrder}
         />
 
         {/* Compact backups — accordion */}
@@ -163,6 +167,7 @@ export default function Result({
                       imageUrl={backupImages[i]}
                       badge={`#${i + 2} Pick`}
                       onOrder={onOrder}
+                      onDirectOrder={onDirectOrder}
                       onCollapse={() => toggleBackup(i)}
                     />
                   </View>
@@ -289,46 +294,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#6B7280',
     lineHeight: 26,
-    marginBottom: 28,
+    marginBottom: 12,
   },
-  takeBtnInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  takeBtnIcon: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  takeBtnIconText: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '700',
-    lineHeight: 16,
-  },
-  takeBtn: {
+  dualCta: { gap: 10, marginTop: 4 },
+  cookBtn: {
     backgroundColor: '#E8703A',
     borderRadius: 999,
-    paddingVertical: 17,
+    paddingVertical: 15,
     alignItems: 'center',
     shadowColor: '#E8703A',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 5,
-    marginTop: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  takeBtnText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+  cookBtnText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: -0.2 },
+  uberBtn: {
+    backgroundColor: '#000',
+    borderRadius: 999,
+    paddingVertical: 15,
+    alignItems: 'center',
   },
+  uberBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 
   // Backups
   backupsSection: { marginBottom: 12 },

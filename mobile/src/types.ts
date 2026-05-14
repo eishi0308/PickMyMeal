@@ -23,4 +23,16 @@ export interface HistoryEntry {
   reason: string;
 }
 
-export type Screen = 'landing' | 'home' | 'result' | 'order' | 'history';
+export interface CookAlternativeResponse {
+  alternative_name: string;
+  time_minutes: number;
+  effort: string;
+  delivery_estimate: string;
+  home_estimate: string;
+  saving_estimate: string;
+  ingredients: string[];
+  steps: string[];
+  explanation: string;
+}
+
+export type Screen = 'landing' | 'home' | 'result' | 'order' | 'cook' | 'history';
