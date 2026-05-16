@@ -448,25 +448,27 @@ const styles = StyleSheet.create({
   savedBannerText: { fontSize: 15, fontWeight: '700', color: '#16A34A', textAlign: 'center' },
 
   cookBtn: {
-    backgroundColor: '#E8703A',
+    backgroundColor: '#16A34A',
     borderRadius: 999,
     paddingVertical: 17,
     alignItems: 'center',
-    shadowColor: '#E8703A',
+    shadowColor: '#16A34A',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.4,
     shadowRadius: 16,
     elevation: 5,
   },
   cookBtnText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: -0.3 },
 
   uberBtn: {
-    backgroundColor: '#000',
+    backgroundColor: 'transparent',
     borderRadius: 999,
     paddingVertical: 17,
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(0,0,0,0.18)',
   },
-  uberBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  uberBtnText: { color: '#111', fontSize: 16, fontWeight: '700' },
 
   ghostBtn: {
     borderRadius: 999,
