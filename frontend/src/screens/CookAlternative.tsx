@@ -278,13 +278,13 @@ export default function CookAlternative({
           Order on Uber Eats anyway
         </button>
 
-        <button className="ghost-btn" onClick={() => { setVariant('easier'); setCooked(false); setCookMode(false); }}>
+        <button className="variant-btn" onClick={() => { setVariant('easier'); setCooked(false); setCookMode(false); }}>
           Make it even easier
         </button>
-        <button className="ghost-btn" onClick={() => { setVariant('closer'); setCooked(false); setCookMode(false); }}>
+        <button className="variant-btn" onClick={() => { setVariant('closer'); setCooked(false); setCookMode(false); }}>
           Make it closer to {category}
         </button>
-        <button className="ghost-btn" onClick={onBack}>← Back to picks</button>
+        <button className="back-link-btn" onClick={onBack}>← Back to picks</button>
         <button className="ghost-btn" onClick={onReset} style={{ color: '#F43F5E', borderColor: '#F43F5E' }}>
           × Start over
         </button>

@@ -281,25 +281,25 @@ export default function CookAlternative({
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.ghostBtn}
+            style={styles.variantBtn}
             onPress={() => { setVariant('easier'); setCooked(false); setCookMode(false); }}
           >
-            <Text style={styles.ghostBtnText}>Make it even easier</Text>
+            <Text style={styles.variantBtnText}>Make it even easier</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.ghostBtn}
+            style={styles.variantBtn}
             onPress={() => { setVariant('closer'); setCooked(false); setCookMode(false); }}
           >
-            <Text style={styles.ghostBtnText}>Make it closer to {category}</Text>
+            <Text style={styles.variantBtnText}>Make it closer to {category}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.ghostBtn} onPress={onBack}>
-            <Text style={styles.ghostBtnText}>← Back to picks</Text>
+          <TouchableOpacity style={styles.backLinkBtn} onPress={onBack}>
+            <Text style={styles.backLinkBtnText}>← Back to picks</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.ghostBtn, styles.dangerBtn]} onPress={onReset}>
-            <Text style={[styles.ghostBtnText, styles.dangerText]}>× Start over</Text>
+          <TouchableOpacity style={styles.ghostBtn} onPress={onReset}>
+            <Text style={styles.ghostBtnText}>× Start over</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -470,14 +470,28 @@ const styles = StyleSheet.create({
   },
   uberBtnText: { color: '#111', fontSize: 16, fontWeight: '700' },
 
+  variantBtn: {
+    borderRadius: 999,
+    paddingVertical: 15,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(124,92,252,0.25)',
+    backgroundColor: 'rgba(124,92,252,0.08)',
+  },
+  variantBtnText: { color: '#7C5CFC', fontSize: 15, fontWeight: '700' },
+  backLinkBtn: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  backLinkBtnText: { color: '#9CA3AF', fontSize: 15, fontWeight: '500' },
   ghostBtn: {
     borderRadius: 999,
     paddingVertical: 15,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.15)',
+    borderColor: '#F43F5E',
   },
-  ghostBtnText: { color: '#374151', fontSize: 15, fontWeight: '600' },
+  ghostBtnText: { color: '#F43F5E', fontSize: 15, fontWeight: '600' },
   dangerBtn: { borderColor: '#F43F5E' },
   dangerText: { color: '#F43F5E' },
 });

@@ -1981,6 +1981,44 @@ body {
   margin-top: 8px;
 }
 
+.variant-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 999px;
+  background: rgba(124, 92, 252, 0.08);
+  color: #7C5CFC;
+  font-size: 16px;
+  font-weight: 700;
+  border: 2px solid rgba(124, 92, 252, 0.25);
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.2px;
+  transition: all 0.15s ease;
+}
+
+.variant-btn:hover {
+  background: rgba(124, 92, 252, 0.14);
+  border-color: rgba(124, 92, 252, 0.45);
+  transform: translateY(-1px);
+}
+
+.back-link-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.back-link-btn:hover {
+  color: #6B7280;
+}
+
 .result-dual-cta {
   display: flex;
   flex-direction: column;
