@@ -448,11 +448,11 @@ const styles = StyleSheet.create({
   savedBannerText: { fontSize: 15, fontWeight: '700', color: '#16A34A', textAlign: 'center' },
 
   cookBtn: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#E8703A',
     borderRadius: 999,
     paddingVertical: 17,
     alignItems: 'center',
-    shadowColor: '#16A34A',
+    shadowColor: '#E8703A',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 16,

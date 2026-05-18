@@ -298,11 +298,11 @@ const styles = StyleSheet.create({
   },
   dualCta: { gap: 10, marginTop: 4 },
   cookBtn: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#E8703A',
     borderRadius: 999,
     paddingVertical: 15,
     alignItems: 'center',
-    shadowColor: '#16A34A',
+    shadowColor: '#E8703A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 12,

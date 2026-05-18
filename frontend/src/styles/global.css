@@ -1953,7 +1953,7 @@ body {
   width: 100%;
   padding: 17px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+  background: linear-gradient(135deg, #E8703A 0%, #d45e28 100%);
   color: #fff;
   font-size: 17px;
   font-weight: 700;
@@ -1962,12 +1962,12 @@ body {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
   letter-spacing: -0.3px;
-  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+  box-shadow: 0 6px 20px rgba(232, 112, 58, 0.4);
 }
 
 .cook-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 28px rgba(22, 163, 74, 0.5);
+  box-shadow: 0 10px 28px rgba(232, 112, 58, 0.5);
 }
 
 .cook-btn:active {
