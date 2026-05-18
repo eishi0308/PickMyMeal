@@ -13,16 +13,21 @@ export async function recommend(request: RecommendRequest): Promise<RecommendRes
 }
 
 export async function generateImage(foodName: string, foodKeyword: string): Promise<ImageResponse> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000);
   try {
     const response = await fetch(`${API_BASE}/image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ food_name: foodName, food_keyword: foodKeyword }),
+      signal: controller.signal,
     });
     if (!response.ok) return { image_url: null };
     return response.json();
   } catch {
     return { image_url: null };
+  } finally {
+    clearTimeout(timer);
   }
 }
 

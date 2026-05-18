@@ -81,11 +81,10 @@ async def generate_food_image(
         try:
             t_start = time.time()
             response = await client.images.generate(
-                model="dall-e-3",
+                model="gpt-image-1",
                 prompt=attempt_prompt,
                 size="1024x1024",
-                quality="standard",
-                response_format="b64_json",
+                quality="medium",
                 n=1,
             )
             elapsed = time.time() - t_start
