@@ -58,9 +58,10 @@ async def generate_food_image(
         return _cache[cache_key]
 
     prompt = (
-        f"Extreme close-up of {food_name} served beautifully on a clean white plate. "
-        f"The food and plate completely fill the entire frame edge to edge. "
+        f"Medium shot of {food_name} served beautifully on a clean white plate, with the full plate visible. "
+        f"The plate sits centered with a little space around it, showing the elegant white rim. "
         f"Viewed from slightly above, soft natural lighting, shallow depth of field, restaurant quality. "
+        f"Michelin-star plating, professional food photography, vibrant and appetizing colors, magazine-worthy presentation. "
         f"Nothing else exists in the image. "
         f"STRICT RULES — every single one must be followed with zero exceptions: "
         f"[1] Zero humans, zero people, zero faces, zero skin, zero eyes, zero fingers, zero hands, zero arms, zero wrists, zero body parts of any kind. "
