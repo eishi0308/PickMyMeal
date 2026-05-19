@@ -173,14 +173,20 @@ export default function CookAlternative({
         </div>
       )}
 
-      {/* Origin */}
-      <p className="cook-origin">You picked</p>
-      <p className="cook-origin-dish">{category}</p>
+      {/* Origin → transformation flow */}
+      <div className="cook-flow">
+        <span className="cook-flow-original">{category}</span>
+        <span className="cook-flow-arrow">→</span>
+        <span className="cook-flow-label">{activeData.alternative_name}</span>
+      </div>
 
       {/* Alternative card */}
       <div className="primary-card">
-        <div className="cook-badge">🏠 Home Cook Alternative</div>
+        <div className="cook-badge">🏠 Adapted for your kitchen</div>
         <h1 className="primary-title">{activeData.alternative_name}</h1>
+
+        {/* Why it's different — shown immediately so users understand before anything else */}
+        <p className="cook-why-different">{activeData.explanation}</p>
 
         {/* Dish image */}
         <div className="primary-image-wrap">
@@ -212,8 +218,6 @@ export default function CookAlternative({
             <span className="cook-savings-value">{activeData.saving_estimate}</span>
           </div>
         </div>
-
-        <p className="primary-reason">{activeData.explanation}</p>
       </div>
 
       {/* Cook mode (step-by-step) OR ingredients + steps list */}

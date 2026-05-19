@@ -177,15 +177,26 @@ export default function CookAlternative({
           </View>
         )}
 
-        <Text style={styles.originLabel}>You picked</Text>
-        <Text style={styles.originDish}>{category}</Text>
+        {/* Origin → transformation flow */}
+        <View style={styles.cookFlow}>
+          <Text style={styles.cookFlowOriginal}>{category}</Text>
+          <Text style={styles.cookFlowArrow}>→</Text>
+          <View style={styles.cookFlowLabelWrap}>
+            <Text style={styles.cookFlowLabel}>{activeData.alternative_name}</Text>
+          </View>
+        </View>
 
         {/* Main card */}
         <View style={styles.primaryCard}>
           <View style={styles.cookBadge}>
-            <Text style={styles.cookBadgeText}>🏠 Home Cook Alternative</Text>
+            <Text style={styles.cookBadgeText}>🏠 Adapted for your kitchen</Text>
           </View>
           <Text style={styles.primaryTitle}>{activeData.alternative_name}</Text>
+
+          {/* Why it's different — shown immediately */}
+          <View style={styles.whyDifferent}>
+            <Text style={styles.whyDifferentText}>{activeData.explanation}</Text>
+          </View>
 
           <View style={styles.imageWrap}>
             {altImage
@@ -214,8 +225,6 @@ export default function CookAlternative({
               <Text style={[styles.savingsValue, styles.savingsHighlightText]}>{activeData.saving_estimate}</Text>
             </View>
           </View>
-
-          <Text style={styles.explanation}>{activeData.explanation}</Text>
         </View>
 
         {/* Cook mode or ingredient/step list */}
@@ -325,6 +334,22 @@ const styles = StyleSheet.create({
 
   originLabel: { fontSize: 12, fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 2 },
   originDish: { fontSize: 20, fontWeight: '800', color: '#1A1A1A', marginBottom: 16 },
+
+  cookFlow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' },
+  cookFlowOriginal: { fontSize: 15, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.3 },
+  cookFlowArrow: { fontSize: 15, color: '#9CA3AF' },
+  cookFlowLabelWrap: { backgroundColor: 'rgba(232,112,58,0.1)', borderRadius: 999, paddingVertical: 3, paddingHorizontal: 10 },
+  cookFlowLabel: { fontSize: 13, fontWeight: '700', color: '#E8703A' },
+
+  whyDifferent: {
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: 'rgba(232,112,58,0.4)',
+  },
+  whyDifferentText: { fontSize: 13, color: '#6B7280', lineHeight: 20 },
 
   primaryCard: {
     backgroundColor: '#fff',

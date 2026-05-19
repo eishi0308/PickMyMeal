@@ -164,7 +164,9 @@ async def cook_alternative(request: CookAlternativeRequest):
             f'Create a realistic home-cook alternative for someone craving "{request.dish}".\n'
             f'Rules: beginner-friendly, 5–20 minutes, max 7 ingredients, max 5 steps, '
             f'suitable for one person, close to the craving, common supermarket ingredients.\n'
-            f'Also write a friendly 1-sentence explanation (max 18 words) of why cooking at home is worth it.\n'
+            f'Also write a specific 1-sentence explanation (max 25 words) of WHY this home version differs from "{request.dish}". '
+            f'Name the actual hard-to-find ingredient, specialist equipment, or complex technique that was simplified. '
+            f'Be dish-specific — never say generic things like "cooking at home saves money".\n'
             f'Estimate realistic delivery/restaurant cost and home-cooked cost in USD.\n'
             f'{variant_task}\n'
             f'Respond with JSON:\n'
@@ -236,10 +238,11 @@ async def cook_alternative(request: CookAlternativeRequest):
 
     steps_field = ', "steps": [...]' if variant_instruction else ''
     explain_prompt = (
-        f'The user wanted "{request.dish}" (delivery: {delivery_estimate}). '
-        f'Home version: "{recipe["alternative_name"]}" ({home_estimate}, {recipe["time_minutes"]} min).\n'
-        f'1. Write a friendly 1-sentence explanation (max 18 words) of why cooking at home is worth it for this craving.\n'
-        f'2. Respond with JSON: {{"explanation": "..."{steps_field}}}'
+        f'The user wanted "{request.dish}" but will cook "{recipe["alternative_name"]}" at home instead.\n'
+        f'Write a specific 1-sentence explanation (max 25 words) of WHY this home version differs from the original. '
+        f'Name the actual hard-to-find ingredient, specialist equipment, or complex restaurant technique that was simplified. '
+        f'Be dish-specific — never say generic things like "cooking at home saves money" or "customize to your taste".\n'
+        f'Respond with JSON: {{"explanation": "..."{steps_field}}}'
         f'{variant_instruction}'
     )
 
