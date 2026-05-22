@@ -32,6 +32,7 @@ class RecommendRequest(BaseModel):
 class RecommendResponse(BaseModel):
     category: str
     reason: str
+    description: Optional[str] = None
     image_url: Optional[str] = None
 
 
@@ -70,7 +71,7 @@ async def recommend(request: RecommendRequest):
         f"{exclude_clause}\n\n"
         "Based on these signals, recommend exactly ONE specific food (e.g. ramen, pizza, pho, tacos, sushi). "
         "Pick the single best match. Be specific — not a cuisine, but a dish.\n\n"
-        'Respond with valid JSON only, in this exact shape: {"category": "<dish name>", "reason": "<one sentence, max 20 words>"}'
+        'Respond with valid JSON only, in this exact shape: {"category": "<dish name>", "reason": "<one sentence, max 20 words>", "description": "<what this dish is in plain English, 1-2 sentences, max 35 words, suitable for someone who has never heard of it>"}'
     )
 
     try:
@@ -91,7 +92,7 @@ async def recommend(request: RecommendRequest):
         data = json.loads(text)
         category = data["category"]
 
-        return RecommendResponse(category=category, reason=data["reason"])
+        return RecommendResponse(category=category, reason=data["reason"], description=data.get("description"))
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

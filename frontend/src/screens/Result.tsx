@@ -46,13 +46,15 @@ export default function Result({
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [expandedBackups, setExpandedBackups] = useState<Set<number>>(new Set());
+  const [descOpen, setDescOpen] = useState(false);
+  const [backupDescOpen, setBackupDescOpen] = useState<Set<number>>(new Set());
   const [bestImage, setBestImage] = useState<string | null>(null);
   const [backupImages, setBackupImages] = useState<(string | null)[]>([null, null]);
 
-  const fallbackUrl = `https://loremflickr.com/600/400/food,${encodeURIComponent(best.category)}`;
-
   // Reset and reload images whenever picks change
   useEffect(() => {
+    setDescOpen(false);
+    setBackupDescOpen(new Set());
     setBestImage(null);
     setBackupImages([null, null]);
     generateImage(best.category, best.category).then(img => {
@@ -92,6 +94,13 @@ export default function Result({
       return next;
     });
 
+  const toggleBackupDesc = (i: number) =>
+    setBackupDescOpen(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+
   return (
     <div className="screen result-screen">
       <NavBar onLogoClick={onLogoClick} onBack={onBack} onHistory={onHistory} />
@@ -100,6 +109,17 @@ export default function Result({
       <div className="primary-card">
         <div className="primary-badge">⭐ Best Pick</div>
         <h1 className="primary-title">{best.category}</h1>
+        {best.description && (
+          <div className="dish-desc-wrap">
+            <button className="dish-desc-toggle" onClick={() => setDescOpen(o => !o)}>
+              <span>What is this?</span>
+              <span className={`dish-desc-chevron${descOpen ? ' open' : ''}`}>›</span>
+            </button>
+            <div className={`dish-desc-body${descOpen ? ' open' : ''}`}>
+              <p>{best.description}</p>
+            </div>
+          </div>
+        )}
         <div className="primary-image-wrap">
           <ImageSlot src={bestImage} alt={best.category} />
         </div>
@@ -130,6 +150,17 @@ export default function Result({
                     <span className="backup-collapse-arrow">↑ Close</span>
                   </button>
                   <h2 className="primary-title">{item.category}</h2>
+                  {item.description && (
+                    <div className="dish-desc-wrap">
+                      <button className="dish-desc-toggle" onClick={() => toggleBackupDesc(i)}>
+                        <span>What is this?</span>
+                        <span className={`dish-desc-chevron${backupDescOpen.has(i) ? ' open' : ''}`}>›</span>
+                      </button>
+                      <div className={`dish-desc-body${backupDescOpen.has(i) ? ' open' : ''}`}>
+                        <p>{item.description}</p>
+                      </div>
+                    </div>
+                  )}
                   <div className="primary-image-wrap">
                     <ImageSlot src={backupImages[i]} alt={item.category} />
                   </div>

@@ -1288,6 +1288,61 @@ body {
   margin-bottom: 28px;
 }
 
+/* ── Dish description reveal ── */
+.dish-desc-wrap {
+  margin-bottom: 14px;
+}
+
+.dish-desc-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.1px;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+}
+
+.dish-desc-toggle:hover {
+  opacity: 1;
+}
+
+.dish-desc-chevron {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+
+.dish-desc-chevron.open {
+  transform: rotate(90deg);
+}
+
+.dish-desc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.dish-desc-body.open {
+  grid-template-rows: 1fr;
+}
+
+.dish-desc-body > p {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-top: 6px;
+}
+
 .take-btn-inner {
   display: flex;
   align-items: center;

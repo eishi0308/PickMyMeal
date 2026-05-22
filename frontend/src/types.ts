@@ -8,6 +8,7 @@ export interface RecommendRequest {
 export interface RecommendResponse {
   category: string;
   reason: string;
+  description?: string;
   image_url: string | null;
 }
 
