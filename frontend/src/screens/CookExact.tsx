@@ -66,7 +66,7 @@ export default function CookExact({
       <div className="cook-flow">
         <span className="cook-flow-original">{category}</span>
         <span className="cook-flow-arrow">→</span>
-        <span className="cook-flow-label cook-exact-label">Real recipe</span>
+        <span className="cook-flow-label cook-exact-label"><span className="cook-flow-emoji">👨‍🍳</span> Real recipe</span>
       </div>
 
       {/* Primary card */}
