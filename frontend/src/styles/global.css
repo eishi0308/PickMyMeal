@@ -2188,3 +2188,195 @@ body {
   line-height: 1.4;
   letter-spacing: -0.4px;
 }
+
+/* ── Cook Gateway screen ── */
+.cook-gateway-screen {
+  padding-bottom: 48px;
+}
+
+.cook-gateway-header {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.cook-gateway-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.cook-gateway-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.cook-gateway-title em {
+  font-style: normal;
+  color: var(--primary);
+}
+
+.cook-gateway-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.cook-gateway-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cook-gateway-card {
+  width: 100%;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 20px;
+  border: 2px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+}
+
+.cook-gateway-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.cook-gateway-card:active {
+  transform: scale(0.98);
+}
+
+.cook-gateway-card--real {
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.cook-gateway-card--real:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.cook-gateway-card--easy {
+  border-color: rgba(232, 112, 58, 0.25);
+}
+
+.cook-gateway-card--easy:hover {
+  border-color: var(--primary);
+}
+
+.cook-gateway-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cook-gateway-card-icon {
+  font-size: 28px;
+}
+
+.cook-gateway-card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.cook-gateway-card-badge--real {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366F1;
+}
+
+.cook-gateway-card-badge--easy {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.cook-gateway-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.cook-gateway-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.cook-gateway-card-cta {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cook-gateway-card--real .cook-gateway-card-cta {
+  color: #6366F1;
+}
+
+.cook-gateway-card--easy .cook-gateway-card-cta {
+  color: var(--primary);
+}
+
+/* ── Cook Exact screen extras ── */
+.cook-exact-label {
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366F1;
+}
+
+.cook-exact-badge {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366F1;
+  border: 1.5px solid rgba(99, 102, 241, 0.2);
+}
+
+.cook-exact-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1.5px solid rgba(251, 191, 36, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.cook-exact-tip-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cook-exact-escape {
+  text-align: center;
+  padding: 16px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.cook-exact-escape-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.cook-exact-escape-btn {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  font-weight: 600;
+}

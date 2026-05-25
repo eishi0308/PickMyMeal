@@ -275,6 +275,52 @@ async def cook_alternative(request: CookAlternativeRequest):
     )
 
 
+class CookExactRequest(BaseModel):
+    dish: str
+
+
+class CookExactResponse(BaseModel):
+    dish_name: str
+    time_minutes: int
+    effort: str
+    serves: int
+    ingredients: List[str]
+    steps: List[str]
+    tip: Optional[str] = None
+
+
+@app.post("/cook-exact", response_model=CookExactResponse)
+async def cook_exact(request: CookExactRequest):
+    prompt = (
+        f'Generate an authentic home recipe for "{request.dish}".\n'
+        f'Rules: real ingredients with measurements, clear step-by-step instructions, '
+        f'serves 1-2 people, as close to the real dish as possible (not simplified).\n'
+        f'Include an optional single pro tip.\n'
+        f'Respond with JSON:\n'
+        f'{{"dish_name":"...","time_minutes":45,"effort":"Medium","serves":2,'
+        f'"ingredients":["250g ingredient","..."],"steps":["..."],"tip":"..."}}'
+    )
+    resp = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        max_tokens=900,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "You are an expert home cooking instructor. Always respond with valid JSON."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    d = json.loads(resp.choices[0].message.content)
+    return CookExactResponse(
+        dish_name=d.get("dish_name", request.dish),
+        time_minutes=int(d.get("time_minutes", 45)),
+        effort=d.get("effort", "Medium"),
+        serves=int(d.get("serves", 2)),
+        ingredients=d.get("ingredients", []),
+        steps=d.get("steps", []),
+        tip=d.get("tip"),
+    )
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}

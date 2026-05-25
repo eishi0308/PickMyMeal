@@ -1,4 +1,4 @@
-import { RecommendRequest, RecommendResponse, ImageResponse, CookAlternativeResponse } from '../types';
+import { RecommendRequest, RecommendResponse, ImageResponse, CookAlternativeResponse, CookExactResponse } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
 
@@ -45,6 +45,16 @@ export async function getCookAlternative(dish: string, variant?: string): Promis
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ dish, variant: variant ?? null }),
+  });
+  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  return response.json();
+}
+
+export async function getCookExact(dish: string): Promise<CookExactResponse> {
+  const response = await fetch(`${API_BASE}/cook-exact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dish }),
   });
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   return response.json();
