@@ -177,12 +177,11 @@ export default function CookAlternative({
       <div className="cook-flow">
         <span className="cook-flow-original">{category}</span>
         <span className="cook-flow-arrow">→</span>
-        <span className="cook-flow-label">{activeData.alternative_name}</span>
+        <span className="cook-flow-label">Easy home version</span>
       </div>
 
       {/* Alternative card */}
       <div className="primary-card">
-        <div className="cook-badge">🏠 Adapted for your kitchen</div>
         <h1 className="primary-title">{activeData.alternative_name}</h1>
 
         {/* Why it's different — shown immediately so users understand before anything else */}

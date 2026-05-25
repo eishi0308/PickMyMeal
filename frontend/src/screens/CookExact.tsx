@@ -71,7 +71,6 @@ export default function CookExact({
 
       {/* Primary card */}
       <div className="primary-card">
-        <div className="cook-badge cook-exact-badge">👨‍🍳 Authentic Recipe</div>
         <h1 className="primary-title">{data.dish_name}</h1>
 
         {imageUrl && (
