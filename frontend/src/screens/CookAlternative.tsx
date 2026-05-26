@@ -177,7 +177,7 @@ export default function CookAlternative({
       <div className="cook-flow">
         <span className="cook-flow-original">{category}</span>
         <span className="cook-flow-arrow">→</span>
-        <span className="cook-flow-label"><span className="cook-flow-emoji">⚡</span> Easy home version</span>
+        <span className="cook-flow-label"><span className="cook-flow-emoji">⚡</span> Easy version</span>
       </div>
 
       {/* Alternative card */}

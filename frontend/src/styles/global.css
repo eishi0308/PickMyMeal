@@ -1880,10 +1880,11 @@ body {
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
-  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  white-space: nowrap;
 }
 
 .cook-flow-arrow {
