@@ -8,6 +8,7 @@ interface Props {
   imageUrl: string | null;
   prefetchedData: CookAlternativeResponse | null;
   prefetchLoading: boolean;
+  prefetchedAltImage: string | null;
   onOrder: (category: string, imageUrl: string | null) => void;
   onBack: () => void;
   onReset: () => void;
@@ -41,7 +42,7 @@ function saveCookedEntry(dish: string, alternative: string, saving: string) {
 }
 
 export default function CookAlternative({
-  category, imageUrl, prefetchedData, prefetchLoading,
+  category, imageUrl, prefetchedData, prefetchLoading, prefetchedAltImage,
   onOrder, onBack, onReset, onLogoClick,
 }: Props) {
   // Variant state — when set, fetches internally
@@ -98,13 +99,17 @@ export default function CookAlternative({
   const loading = variant !== undefined ? variantLoading : (prefetchLoading || selfLoading);
   const error = variant !== undefined ? variantError : selfError;
 
-  // Fetch image whenever activeData changes
+  // Fetch image whenever activeData changes — use prefetched image if available and no variant active
   useEffect(() => {
     if (!activeData) return;
+    if (prefetchedAltImage && variant === undefined) {
+      setAltImage(prefetchedAltImage);
+      return;
+    }
     setAltImage(null);
     generateImage(activeData.alternative_name, activeData.alternative_name)
       .then(img => setAltImage(img.image_url));
-  }, [activeData?.alternative_name]);
+  }, [activeData?.alternative_name, variant]);
 
   const handleCooked = () => {
     if (!activeData) return;

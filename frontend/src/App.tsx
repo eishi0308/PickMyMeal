@@ -8,7 +8,7 @@ import CookAlternative from './screens/CookAlternative';
 import CookExact from './screens/CookExact';
 import History from './screens/History';
 import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse, CookExactResponse } from './types';
-import { getCookAlternative, getCookExact } from './api/foodApi';
+import { getCookAlternative, getCookExact, generateImage } from './api/foodApi';
 
 interface ResultData {
   response: RecommendResponse;
@@ -28,6 +28,7 @@ export default function App() {
   const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
   const [cookLoading, setCookLoading] = useState(false);
   const [cookForCategory, setCookForCategory] = useState<string>('');
+  const [cookAltImage, setCookAltImage] = useState<string | null>(null);
   const [exactData, setExactData] = useState<CookExactResponse | null>(null);
   const [exactLoading, setExactLoading] = useState(false);
   const [exactError, setExactError] = useState(false);
@@ -44,9 +45,15 @@ export default function App() {
     const best = data.response.category;
     setCookData(null);
     setCookLoading(true);
+    setCookAltImage(null);
     setCookForCategory(best);
     getCookAlternative(best)
-      .then(d => { setCookData(d); setCookLoading(false); })
+      .then(d => {
+        setCookData(d);
+        setCookLoading(false);
+        generateImage(d.alternative_name, d.alternative_name)
+          .then(img => setCookAltImage(img.image_url));
+      })
       .catch(() => setCookLoading(false));
   };
 
@@ -71,9 +78,15 @@ export default function App() {
     if (category !== cookForCategory) {
       setCookData(null);
       setCookLoading(true);
+      setCookAltImage(null);
       setCookForCategory(category);
       getCookAlternative(category)
-        .then(d => { setCookData(d); setCookLoading(false); })
+        .then(d => {
+          setCookData(d);
+          setCookLoading(false);
+          generateImage(d.alternative_name, d.alternative_name)
+            .then(img => setCookAltImage(img.image_url));
+        })
         .catch(() => setCookLoading(false));
     }
     // Reset exact recipe state for fresh fetch on demand
@@ -173,6 +186,7 @@ export default function App() {
         imageUrl={orderImage}
         prefetchedData={cookData}
         prefetchLoading={cookLoading}
+        prefetchedAltImage={cookAltImage}
         onOrder={handleOrder}
         onBack={() => setScreen('cook-gateway')}
         onReset={handleReset}
