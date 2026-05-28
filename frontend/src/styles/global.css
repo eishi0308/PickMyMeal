@@ -929,7 +929,57 @@ body {
 .fine-step-sub {
   font-size: 14px;
   color: var(--text-muted);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
+}
+
+.fine-sel-bar {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fine-sel-bar-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.fine-sel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fine-sel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  background: var(--primary-light);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+.fine-sel-chip-cat {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.55;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.fine-sel-chip--avoid {
+  background: rgba(244, 63, 94, 0.1);
+  color: #E11D48;
 }
 
 .fine-step-body {
