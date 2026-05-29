@@ -83,7 +83,25 @@ export default function CookExact({
           <span className="cook-stat">⏱ {data.time_minutes} min</span>
           <span className="cook-stat">{data.effort}</span>
           <span className="cook-stat">Serves {data.serves}</span>
+          {data.saving_estimate && <span className="cook-stat">💰 Save {data.saving_estimate}</span>}
         </div>
+
+        {data.delivery_estimate && (
+          <div className="cook-savings-card">
+            <div className="cook-savings-row">
+              <span className="cook-savings-label">Delivery / restaurant</span>
+              <span className="cook-savings-value">{data.delivery_estimate}</span>
+            </div>
+            <div className="cook-savings-row">
+              <span className="cook-savings-label">Cook at home</span>
+              <span className="cook-savings-value">{data.home_estimate}</span>
+            </div>
+            <div className="cook-savings-row cook-savings-highlight">
+              <span className="cook-savings-label">You could save</span>
+              <span className="cook-savings-value">{data.saving_estimate}</span>
+            </div>
+          </div>
+        )}
 
         {data.tip && (
           <div className="cook-exact-tip">

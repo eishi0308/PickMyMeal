@@ -41,7 +41,7 @@ export default function App() {
       data.response.category,
       ...data.backups.map((b) => b.category),
     ]);
-    // Pre-fetch cook alternative for best pick while user reads the result
+    // Pre-fetch both easy version and exact recipe while user reads the result
     const best = data.response.category;
     setCookData(null);
     setCookLoading(true);
@@ -55,6 +55,12 @@ export default function App() {
           .then(img => setCookAltImage(img.image_url));
       })
       .catch(() => setCookLoading(false));
+    setExactData(null);
+    setExactError(false);
+    setExactLoading(true);
+    getCookExact(best)
+      .then(d => { setExactData(d); setExactLoading(false); })
+      .catch(() => { setExactError(true); setExactLoading(false); });
   };
 
   const handleHistory = () => {
@@ -74,7 +80,7 @@ export default function App() {
     setOrderCategory(category);
     setOrderImage(imageUrl);
     setScreen('cook-gateway');
-    // Pre-fetch easy version if not already done
+    // Pre-fetch easy version and exact recipe if switching to a different dish
     if (category !== cookForCategory) {
       setCookData(null);
       setCookLoading(true);
@@ -88,20 +94,25 @@ export default function App() {
             .then(img => setCookAltImage(img.image_url));
         })
         .catch(() => setCookLoading(false));
+      setExactData(null);
+      setExactError(false);
+      setExactLoading(true);
+      getCookExact(category)
+        .then(d => { setExactData(d); setExactLoading(false); })
+        .catch(() => { setExactError(true); setExactLoading(false); });
     }
-    // Reset exact recipe state for fresh fetch on demand
-    setExactData(null);
-    setExactError(false);
   };
 
   const handleChooseExact = () => {
     setScreen('cook-exact');
-    setExactData(null);
-    setExactError(false);
-    setExactLoading(true);
-    getCookExact(orderCategory)
-      .then(d => { setExactData(d); setExactLoading(false); })
-      .catch(() => { setExactError(true); setExactLoading(false); });
+    // Only fetch if not already prefetched or in progress
+    if (!exactData && !exactLoading) {
+      setExactError(false);
+      setExactLoading(true);
+      getCookExact(orderCategory)
+        .then(d => { setExactData(d); setExactLoading(false); })
+        .catch(() => { setExactError(true); setExactLoading(false); });
+    }
   };
 
   const handleRetryExact = () => {

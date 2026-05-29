@@ -2452,7 +2452,15 @@ body {
 }
 
 .cook-exact-escape-btn {
-  color: var(--primary) !important;
-  border-color: var(--primary) !important;
+  background: #7C5CFC !important;
+  color: #fff !important;
+  border-color: #7C5CFC !important;
   font-weight: 600;
+  box-shadow: 0 4px 14px rgba(124, 92, 252, 0.35);
+}
+
+.cook-exact-escape-btn:hover {
+  background: #6b4eea !important;
+  border-color: #6b4eea !important;
+  box-shadow: 0 6px 18px rgba(124, 92, 252, 0.45);
 }

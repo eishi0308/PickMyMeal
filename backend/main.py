@@ -214,12 +214,6 @@ async def cook_alternative(request: CookAlternativeRequest):
     recipe = RECIPE_LIBRARY[recipe_key]
     steps = list(recipe["steps"])
 
-    delivery_estimate = f"${recipe['delivery_min']}–${recipe['delivery_max']}"
-    home_estimate = f"~${recipe['home_min']}–${recipe['home_max']}"
-    saving_min = recipe['delivery_min'] - recipe['home_max']
-    saving_max = recipe['delivery_max'] - recipe['home_min']
-    saving_estimate = f"~${saving_min}–${saving_max}"
-
     # Step 3: Explanation + optional variant modification
     variant_instruction = ""
     if request.variant == "easier":
@@ -243,7 +237,10 @@ async def cook_alternative(request: CookAlternativeRequest):
         f'Write a specific 1-sentence explanation (max 25 words) of WHY this home version differs from the original. '
         f'Name the actual hard-to-find ingredient, specialist equipment, or complex restaurant technique that was simplified. '
         f'Be dish-specific — never say generic things like "cooking at home saves money" or "customize to your taste".\n'
-        f'Respond with JSON: {{"explanation": "..."{steps_field}}}'
+        f'Also estimate realistic USD costs for 1-2 servings: '
+        f'delivery_min/delivery_max = Uber Eats or restaurant price range for "{request.dish}", '
+        f'home_min/home_max = ingredient cost to cook this easy home version.\n'
+        f'Respond with JSON: {{"explanation": "...","delivery_min":18,"delivery_max":28,"home_min":4,"home_max":8{steps_field}}}'
         f'{variant_instruction}'
     )
 
@@ -261,6 +258,14 @@ async def cook_alternative(request: CookAlternativeRequest):
 
     if request.variant and "steps" in explain_data:
         steps = explain_data["steps"]
+
+    del_min = int(explain_data.get("delivery_min", recipe.get("delivery_min", 18)))
+    del_max = int(explain_data.get("delivery_max", recipe.get("delivery_max", 28)))
+    hom_min = int(explain_data.get("home_min", recipe.get("home_min", 4)))
+    hom_max = int(explain_data.get("home_max", recipe.get("home_max", 8)))
+    delivery_estimate = f"${del_min}–${del_max}"
+    home_estimate = f"~${hom_min}–${hom_max}"
+    saving_estimate = f"~${del_min - hom_max}–${del_max - hom_min}"
 
     return CookAlternativeResponse(
         alternative_name=recipe["alternative_name"],
@@ -287,6 +292,9 @@ class CookExactResponse(BaseModel):
     ingredients: List[str]
     steps: List[str]
     tip: Optional[str] = None
+    delivery_estimate: str = ""
+    home_estimate: str = ""
+    saving_estimate: str = ""
 
 
 @app.post("/cook-exact", response_model=CookExactResponse)
@@ -296,9 +304,14 @@ async def cook_exact(request: CookExactRequest):
         f'Rules: real ingredients with measurements, clear step-by-step instructions, '
         f'serves 1-2 people, as close to the real dish as possible (not simplified).\n'
         f'Include an optional single pro tip.\n'
+        f'Also estimate realistic USD costs for 1-2 servings: '
+        f'delivery_min/delivery_max = Uber Eats or restaurant price range, '
+        f'home_min/home_max = ingredient cost to cook this authentic version at home '
+        f'(will be higher than a shortcut version since it uses real/more ingredients, but still cheaper than delivery).\n'
         f'Respond with JSON:\n'
         f'{{"dish_name":"...","time_minutes":45,"effort":"Medium","serves":2,'
-        f'"ingredients":["250g ingredient","..."],"steps":["..."],"tip":"..."}}'
+        f'"ingredients":["250g ingredient","..."],"steps":["..."],"tip":"...",'
+        f'"delivery_min":18,"delivery_max":28,"home_min":8,"home_max":14}}'
     )
     resp = await client.chat.completions.create(
         model="gpt-4o-mini",
@@ -310,6 +323,10 @@ async def cook_exact(request: CookExactRequest):
         ],
     )
     d = json.loads(resp.choices[0].message.content)
+    del_min = int(d.get("delivery_min", 18))
+    del_max = int(d.get("delivery_max", 28))
+    hom_min = int(d.get("home_min", 8))
+    hom_max = int(d.get("home_max", 14))
     return CookExactResponse(
         dish_name=d.get("dish_name", request.dish),
         time_minutes=int(d.get("time_minutes", 45)),
@@ -318,6 +335,9 @@ async def cook_exact(request: CookExactRequest):
         ingredients=d.get("ingredients", []),
         steps=d.get("steps", []),
         tip=d.get("tip"),
+        delivery_estimate=f"${del_min}–${del_max}",
+        home_estimate=f"~${hom_min}–${hom_max}",
+        saving_estimate=f"~${del_min - hom_max}–${del_max - hom_min}",
     )
 
 

@@ -44,6 +44,9 @@ export interface CookExactResponse {
   ingredients: string[];
   steps: string[];
   tip?: string | null;
+  delivery_estimate: string;
+  home_estimate: string;
+  saving_estimate: string;
 }
 
 export type Screen = 'landing' | 'home' | 'result' | 'order' | 'cook-gateway' | 'cook' | 'cook-exact' | 'history';
