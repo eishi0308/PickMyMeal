@@ -105,8 +105,9 @@ export default function App() {
 
   const handleChooseExact = () => {
     setScreen('cook-exact');
-    // Only fetch if not already prefetched or in progress
-    if (!exactData && !exactLoading) {
+    // Refetch if no data, or if prefetched data is missing cost fields (stale)
+    if ((!exactData || !exactData.delivery_estimate) && !exactLoading) {
+      setExactData(null);
       setExactError(false);
       setExactLoading(true);
       getCookExact(orderCategory)

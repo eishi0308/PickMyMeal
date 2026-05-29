@@ -310,12 +310,12 @@ async def cook_exact(request: CookExactRequest):
         f'(will be higher than a shortcut version since it uses real/more ingredients, but still cheaper than delivery).\n'
         f'Respond with JSON:\n'
         f'{{"dish_name":"...","time_minutes":45,"effort":"Medium","serves":2,'
-        f'"ingredients":["250g ingredient","..."],"steps":["..."],"tip":"...",'
-        f'"delivery_min":18,"delivery_max":28,"home_min":8,"home_max":14}}'
+        f'"delivery_min":18,"delivery_max":28,"home_min":8,"home_max":14,'
+        f'"ingredients":["250g ingredient","..."],"steps":["..."],"tip":"..."}}'
     )
     resp = await client.chat.completions.create(
         model="gpt-4o-mini",
-        max_tokens=900,
+        max_tokens=1200,
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": "You are an expert home cooking instructor. Always respond with valid JSON."},
