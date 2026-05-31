@@ -1129,109 +1129,199 @@ body {
   background: rgba(0,0,0,0.04);
 }
 
-/* ── Landing ── */
-.landing-screen {
+/* ── Landing v2 ── */
+.lv2-screen {
   min-height: 100vh;
+  background: #0D0D14;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px 60px;
-  max-width: 480px;
-  margin: 0 auto;
-  text-align: center;
-  animation: fadeIn 0.45s ease both;
+  padding: 60px 24px 72px;
 }
 
-.landing-emojis {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 48px;
+/* Gradient orbs */
+.lv2-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(72px);
+}
+.lv2-orb-orange {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(232,112,58,0.55), transparent 70%);
+  top: -100px;
+  right: -80px;
+}
+.lv2-orb-purple {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(124,92,252,0.45), transparent 70%);
+  bottom: -60px;
+  left: -60px;
+}
+.lv2-orb-pink {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(236,72,153,0.3), transparent 70%);
+  top: 40%;
+  left: -40px;
 }
 
-.landing-emoji {
-  font-size: 36px;
-  display: inline-block;
-  animation: float 2.6s ease-in-out infinite;
+/* Floating emojis */
+.lv2-float-emoji {
+  position: absolute;
+  font-size: 30px;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
 }
 
-.landing-content {
+/* Content */
+.lv2-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   width: 100%;
+  max-width: min(560px, 92vw);
 }
 
-.landing-title {
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  color: var(--text);
-  margin-bottom: 14px;
-  line-height: 1.1;
+/* Badge */
+.lv2-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232,112,58,0.1);
+  border: 1px solid rgba(232,112,58,0.22);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #E8703A;
+  letter-spacing: 0.3px;
+  margin-bottom: 28px;
+}
+.lv2-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #E8703A;
+  border-radius: 50%;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
 }
 
-.landing-tagline {
-  font-size: 17px;
-  color: var(--text-muted);
-  line-height: 1.65;
-  margin-bottom: 40px;
+/* Title */
+.lv2-title {
+  font-size: clamp(26px, 7.2vw, 48px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.18;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+.lv2-gradient-text {
+  background: linear-gradient(135deg, #E8703A 0%, #FC8C5A 45%, #FF6B9D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.landing-cta {
-  max-width: 280px;
-  font-size: 17px;
-  padding: 18px 24px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 6px 24px rgba(232, 112, 58, 0.35);
+/* Tagline */
+.lv2-tagline {
+  font-size: 16px;
+  color: rgba(255,255,255,0.48);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 310px;
 }
 
-.landing-selling-points {
-  list-style: none;
+/* Feature cards */
+.lv2-features {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 36px;
-  text-align: left;
   width: 100%;
-  max-width: 280px;
+  margin-bottom: 36px;
 }
-
-.landing-selling-points li {
+.lv2-feature-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 15px 18px;
+  text-align: left;
+  backdrop-filter: blur(12px);
+  cursor: default;
+}
+.lv2-feature-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.lv2-feature-title {
   font-size: 14px;
-  color: var(--text-muted);
-  padding-left: 20px;
-  position: relative;
-  line-height: 1.5;
-}
-
-.landing-selling-points li::before {
-  content: '✕';
-  position: absolute;
-  left: 0;
-  color: var(--primary);
-  font-size: 12px;
   font-weight: 700;
-  top: 1px;
+  color: #fff;
+  margin-bottom: 3px;
+  letter-spacing: -0.2px;
+}
+.lv2-feature-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.45;
 }
 
-.landing-selling-points li:last-child {
-  color: var(--text);
-  font-weight: 600;
+/* CTA */
+.lv2-cta {
+  width: 100%;
+  max-width: 290px;
+  padding: 19px 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #E8703A 0%, #d45e28 100%);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.3px;
+  margin-bottom: 28px;
+  animation: lv2-glow 2.8s ease-in-out infinite;
+}
+@keyframes lv2-glow {
+  0%, 100% { box-shadow: 0 8px 30px rgba(232,112,58,0.45); }
+  50% { box-shadow: 0 8px 52px rgba(232,112,58,0.72), 0 0 70px rgba(232,112,58,0.2); }
 }
 
-.landing-selling-points li:last-child::before {
-  content: '→';
-}
-
-.landing-returning {
+/* Returning user */
+.lv2-returning {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  margin-top: 28px;
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.3);
+}
+.lv2-returning button {
+  background: none;
+  border: none;
+  color: #7C5CFC;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
 }
 
 @keyframes float {
