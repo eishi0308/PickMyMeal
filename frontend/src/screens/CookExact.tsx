@@ -143,7 +143,7 @@ export default function CookExact({
               {data.steps.map((step, i) => (
                 <div key={i} className="cook-step">
                   <span className="cook-step-num">{i + 1}</span>
-                  <span className="cook-step-text">{step}</span>
+                  <span className="cook-step-text">{step.replace(/^\d+\.\s*/, '')}</span>
                 </div>
               ))}
             </div>
