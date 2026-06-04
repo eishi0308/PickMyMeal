@@ -14,7 +14,7 @@ export async function recommend(request: RecommendRequest): Promise<RecommendRes
 
 export async function generateImage(foodName: string, foodKeyword: string): Promise<ImageResponse> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 30000);
+  const timer = setTimeout(() => controller.abort(), 90000);
   try {
     const response = await fetch(`${API_BASE}/image`, {
       method: 'POST',

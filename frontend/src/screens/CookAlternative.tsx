@@ -59,6 +59,7 @@ export default function CookAlternative({
 
   // Image for the alternative dish
   const [altImage, setAltImage] = useState<string | null>(null);
+  const [altImageDone, setAltImageDone] = useState(false);
 
   // Cook mode (step-by-step)
   const [cooked, setCooked] = useState(false);
@@ -104,11 +105,13 @@ export default function CookAlternative({
     if (!activeData) return;
     if (prefetchedAltImage && variant === undefined) {
       setAltImage(prefetchedAltImage);
+      setAltImageDone(true);
       return;
     }
     setAltImage(null);
+    setAltImageDone(false);
     generateImage(activeData.alternative_name, activeData.alternative_name)
-      .then(img => setAltImage(img.image_url));
+      .then(img => { setAltImage(img.image_url); setAltImageDone(true); });
   }, [activeData?.alternative_name, variant]);
 
   const handleCooked = () => {
@@ -196,7 +199,7 @@ export default function CookAlternative({
         <div className="primary-image-wrap">
           {altImage
             ? <img className="primary-image image-fade-in" src={altImage} alt={activeData.alternative_name} />
-            : <div className="image-shimmer" />
+            : altImageDone ? null : <div className="image-shimmer" />
           }
         </div>
 

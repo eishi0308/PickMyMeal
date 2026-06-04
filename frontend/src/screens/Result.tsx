@@ -25,11 +25,12 @@ interface Props {
   onTune: () => void;
 }
 
-function ImageSlot({ src, alt }: { src: string | null; alt: string }) {
+function ImageSlot({ src, alt, done }: { src: string | null; alt: string; done: boolean }) {
   const fb = `https://loremflickr.com/600/400/food,${encodeURIComponent(alt)}`;
-  if (!src) {
+  if (!done) {
     return <div className="image-shimmer" />;
   }
+  if (!src) return null;
   return (
     <img
       className="primary-image image-fade-in"
@@ -49,24 +50,26 @@ export default function Result({
   const [descOpen, setDescOpen] = useState(false);
   const [backupDescOpen, setBackupDescOpen] = useState<Set<number>>(new Set());
   const [bestImage, setBestImage] = useState<string | null>(null);
+  const [bestImageDone, setBestImageDone] = useState(false);
   const [backupImages, setBackupImages] = useState<(string | null)[]>([null, null]);
+  const [backupImagesDone, setBackupImagesDone] = useState([false, false]);
 
   // Reset and reload images whenever picks change
   useEffect(() => {
     setDescOpen(false);
     setBackupDescOpen(new Set());
     setBestImage(null);
+    setBestImageDone(false);
     setBackupImages([null, null]);
+    setBackupImagesDone([false, false]);
     generateImage(best.category, best.category).then(img => {
       setBestImage(img.image_url);
+      setBestImageDone(true);
     });
     backups.forEach((backup, i) => {
       generateImage(backup.category, backup.category).then(img => {
-        setBackupImages(prev => {
-          const next = [...prev];
-          next[i] = img.image_url;
-          return next;
-        });
+        setBackupImages(prev => { const next = [...prev]; next[i] = img.image_url; return next; });
+        setBackupImagesDone(prev => { const next = [...prev]; next[i] = true; return next; });
       });
     });
   }, [best.category]);
@@ -121,7 +124,7 @@ export default function Result({
           </div>
         )}
         <div className="primary-image-wrap">
-          <ImageSlot src={bestImage} alt={best.category} />
+          <ImageSlot src={bestImage} alt={best.category} done={bestImageDone} />
         </div>
         <p className="primary-reason">{best.reason}</p>
         <div className="result-dual-cta">
@@ -162,7 +165,7 @@ export default function Result({
                     </div>
                   )}
                   <div className="primary-image-wrap">
-                    <ImageSlot src={backupImages[i]} alt={item.category} />
+                    <ImageSlot src={backupImages[i]} alt={item.category} done={backupImagesDone[i]} />
                   </div>
                   <p className="primary-reason">{item.reason}</p>
                   <div className="result-dual-cta">
