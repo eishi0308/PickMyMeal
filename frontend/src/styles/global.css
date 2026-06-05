@@ -1465,6 +1465,7 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: lv3-grad-shift 5s ease infinite;
+  white-space: nowrap;
 }
 @keyframes lv3-grad-shift {
   0%,100% { background-position: 0% 50%; }
@@ -1634,13 +1635,17 @@ body {
 }
 
 /* ── PROBLEM HOOK ────────────────────────────────────────────────────── */
-.lv3-problem-section { padding-top: 0; }
+.lv3-problem-section {
+  padding-top: 0;
+  max-width: 680px;
+}
 .lv3-problem-card {
-  padding: 36px 28px;
+  padding: 36px 32px;
   background: rgba(255,255,255,.03);
   border: 1px solid rgba(255,255,255,.07);
   border-radius: 22px;
   backdrop-filter: blur(10px);
+  width: 100%;
 }
 .lv3-problem-label {
   font-size: 11px;

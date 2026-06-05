@@ -346,8 +346,8 @@ export default function Landing({ onStart, onHistory }: Props) {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            "I've been scrolling for <span className="lv3-kw">20 minutes</span> and I still{' '}
-            <span className="lv3-kw">don't know what to eat.</span>"
+            "I've been scrolling for <span className="lv3-kw">20 minutes</span> —<br />
+            and I still <span className="lv3-kw">don't know what to eat.</span>"
           </motion.p>
           <motion.div
             className="lv3-problem-rule"
