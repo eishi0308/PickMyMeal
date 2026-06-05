@@ -1769,6 +1769,9 @@ body {
 .lv3-closing {
   text-align: center;
   padding-bottom: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .lv3-closing-glow {
   position: absolute;
