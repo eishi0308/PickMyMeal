@@ -55,6 +55,8 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
   }, [initialMode]);
 
   const hasSelection = Object.keys(selected).length > 0;
+  const isQuick = mode === 'quick';
+  const isFine = mode === 'fine';
 
   const handleDecideWithPrefs = async (prefs: PreferenceMap) => {
     setLoading(true);
@@ -116,8 +118,8 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
               </View>
               <View style={styles.lastResultChips}>
                 {lastResultNames.map((name, i) => (
-                  <View key={i} style={[styles.lastResultChip, i === 0 && styles.lastResultChipBest]}>
-                    <Text style={[styles.lastResultChipText, i === 0 && styles.lastResultChipTextBest]}>
+                  <View key={i} style={[styles.lastResultChip, i === 0 ? styles.lastResultChipBest : undefined]}>
+                    <Text style={[styles.lastResultChipText, i === 0 ? styles.lastResultChipTextBest : undefined]}>
                       {i === 0 ? '⭐ ' : ''}{name}
                     </Text>
                   </View>
@@ -129,18 +131,18 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
           {/* Mode toggle */}
           <View style={styles.modeToggle}>
             <TouchableOpacity
-              style={[styles.modeBtn, mode === 'quick' && styles.modeBtnActive]}
+              style={[styles.modeBtn, isQuick ? styles.modeBtnActive : undefined]}
               onPress={() => switchMode('quick')}
             >
-              <Text style={[styles.modeBtnText, mode === 'quick' && styles.modeBtnTextActive]}>
+              <Text style={[styles.modeBtnText, isQuick ? styles.modeBtnTextActive : undefined]}>
                 ⚡ Quick
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modeBtn, mode === 'fine' && styles.modeBtnActive]}
+              style={[styles.modeBtn, isFine ? styles.modeBtnActive : undefined]}
               onPress={() => switchMode('fine')}
             >
-              <Text style={[styles.modeBtnText, mode === 'fine' && styles.modeBtnTextActive]}>
+              <Text style={[styles.modeBtnText, isFine ? styles.modeBtnTextActive : undefined]}>
                 🎛 Fine Tune
               </Text>
             </TouchableOpacity>
@@ -195,18 +197,18 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
             {/* Mode toggle */}
             <View style={styles.modeToggle}>
               <TouchableOpacity
-                style={[styles.modeBtn, mode === 'quick' && styles.modeBtnActive]}
+                style={[styles.modeBtn, isQuick ? styles.modeBtnActive : undefined]}
                 onPress={() => switchMode('quick')}
               >
-                <Text style={[styles.modeBtnText, mode === 'quick' && styles.modeBtnTextActive]}>
+                <Text style={[styles.modeBtnText, isQuick ? styles.modeBtnTextActive : undefined]}>
                   ⚡ Quick
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.modeBtn, mode === 'fine' && styles.modeBtnActive]}
+                style={[styles.modeBtn, isFine ? styles.modeBtnActive : undefined]}
                 onPress={() => switchMode('fine')}
               >
-                <Text style={[styles.modeBtnText, mode === 'fine' && styles.modeBtnTextActive]}>
+                <Text style={[styles.modeBtnText, isFine ? styles.modeBtnTextActive : undefined]}>
                   🎛 Fine Tune
                 </Text>
               </TouchableOpacity>
@@ -246,15 +248,15 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
                             key={option}
                             style={[
                               styles.chip,
-                              isAvoid && styles.avoidChip,
-                              isOn && (isAvoid ? styles.avoidChipSelected : styles.chipSelected),
+                              isAvoid ? styles.avoidChip : undefined,
+                              isOn ? (isAvoid ? styles.avoidChipSelected : styles.chipSelected) : undefined,
                             ]}
                             onPress={() => onToggle(key, option)}
                           >
                             <Text style={[
                               styles.chipText,
-                              isAvoid && styles.avoidChipText,
-                              isOn && (isAvoid ? styles.avoidChipTextSelected : styles.chipTextSelected),
+                              isAvoid ? styles.avoidChipText : undefined,
+                              isOn ? (isAvoid ? styles.avoidChipTextSelected : styles.chipTextSelected) : undefined,
                             ]}>
                               {isAvoid && isOn ? `✕ ${option}` : option}
                             </Text>
@@ -293,7 +295,7 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  style={[styles.decideBtn, !hasSelection && styles.decideBtnDisabled]}
+                  style={[styles.decideBtn, !hasSelection ? styles.decideBtnDisabled : undefined]}
                   onPress={handleDecide}
                   disabled={!hasSelection}
                 >
