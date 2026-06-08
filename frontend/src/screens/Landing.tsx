@@ -211,7 +211,7 @@ export default function Landing({ onStart, onHistory }: Props) {
 
         {/* Headline — word split with 3D perspective */}
         <div className="lv3-headline" style={{ perspective: 1200 }}>
-          <div className="lv3-hl-row">
+          <div className="lv3-hl-row lv3-hl-row--line1">
             {words1.map((w, i) => (
               <motion.span
                 key={`a${i}`}

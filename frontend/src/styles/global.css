@@ -1448,13 +1448,20 @@ body {
   justify-content: center;
   gap: 0 14px;
 }
+.lv3-hl-row--line1 {
+  flex-wrap: nowrap;
+  gap: 0 1vw;
+}
+.lv3-hl-row--line1 .lv3-hl-word {
+  font-size: min(9.5vw, 66px);
+}
 .lv3-hl-word {
   display: inline-block;
-  font-size: clamp(40px, 10.5vw, 66px);
+  font-size: min(9.5vw, 66px);
   font-weight: 900;
   letter-spacing: -2.5px;
   color: #fff;
-  line-height: 1.05;
+  line-height: 1.2;
 }
 
 /* Animated gradient text */
