@@ -162,8 +162,8 @@ export default function Landing({ onStart, onHistory }: Props) {
 
   const { count: savingsCount, ref: savRef } = useCounter(12);
 
-  const words1 = 'Stop scrolling.'.split(' ');
-  const words2 = 'Start eating.'.split(' ');
+  const words1 = 'No idea what to eat?'.split(' ');
+  const words2 = 'We got you.'.split(' ');
 
   return (
     <div className="lv3-screen" ref={containerRef}>
