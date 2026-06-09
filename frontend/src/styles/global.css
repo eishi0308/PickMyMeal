@@ -1626,17 +1626,17 @@ body {
 }
 .lv3-sec-tag {
   display: block;
-  font-size: 10.5px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 1.8px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.28);
-  margin-bottom: 10px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 14px;
 }
 .lv3-sec-title {
-  font-size: clamp(24px, 6.5vw, 38px);
+  font-size: clamp(32px, 8vw, 52px);
   font-weight: 900;
-  letter-spacing: -1.2px;
+  letter-spacing: -1.5px;
   color: #fff;
   line-height: 1.1;
 }
@@ -1693,54 +1693,65 @@ body {
 }
 
 /* ── STEPS ────────────────────────────────────────────────────────────── */
-.lv3-steps { display: flex; flex-direction: column; }
+.lv3-steps { display: flex; flex-direction: column; gap: 16px; }
 .lv3-step {
   position: relative;
   display: flex;
-  gap: 16px;
-  padding: 22px 18px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.07);
-  border-left: 3px solid var(--sc, #E8703A);
-  border-radius: 18px;
-  margin-bottom: 14px;
+  gap: 22px;
+  padding: 28px 24px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 24px;
   cursor: default;
-  transition: background .25s;
+  transition: background .3s, border-color .3s, transform .25s;
+  overflow: hidden;
 }
-.lv3-step:hover { background: rgba(255,255,255,.05); }
+.lv3-step::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at top left, color-mix(in srgb, var(--sc, #E8703A) 14%, transparent), transparent 65%);
+  pointer-events: none;
+}
+.lv3-step:hover {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.16);
+  transform: translateY(-2px);
+}
 .lv3-step-num {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
   color: var(--sc, #E8703A);
-  opacity: .7;
   flex-shrink: 0;
-  padding-top: 2px;
-  min-width: 26px;
+  padding-top: 5px;
+  min-width: 28px;
 }
 .lv3-step-body { flex: 1; }
 .lv3-step-emoji {
-  font-size: 26px;
+  font-size: 42px;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 .lv3-step-title {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: #fff;
-  letter-spacing: -.3px;
-  margin-bottom: 5px;
+  letter-spacing: -.5px;
+  margin-bottom: 10px;
+  line-height: 1.2;
 }
 .lv3-step-desc {
-  font-size: 12.5px;
-  color: rgba(255,255,255,.38);
-  line-height: 1.6;
+  font-size: 15px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.65;
 }
 .lv3-step-line {
   position: absolute;
-  left: 24px;
-  bottom: -14px;
-  width: 2px; height: 14px;
+  left: 38px;
+  bottom: -16px;
+  width: 2px; height: 16px;
   background: linear-gradient(to bottom, var(--sc, #E8703A), transparent);
   transform-origin: top;
   z-index: 2;
