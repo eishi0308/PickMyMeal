@@ -378,7 +378,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="lv3-sec-tag">How it works</span>
-          <h2 className="lv3-sec-title">Three steps.<br />One perfect meal.</h2>
+          <h2 className="lv3-sec-title">3 steps.<br />One perfect meal.</h2>
         </motion.div>
 
         <div className="lv3-steps">
