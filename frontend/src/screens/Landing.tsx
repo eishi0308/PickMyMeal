@@ -531,6 +531,16 @@ export default function Landing({ onStart, onHistory }: Props) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="lv3-closing-glow" />
+        <motion.h2
+          className="lv3-closing-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          Your next meal<br />
+          <span className="lv3-grad-text">is one tap away.</span>
+        </motion.h2>
         <motion.button
           className="lv3-cta lv3-cta-lg"
           onClick={onStart}
@@ -539,7 +549,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.1 }}
+          transition={{ duration: 0.55, delay: 0.22 }}
         >
           <span className="lv3-shimmer" />
           Decide my meal →
