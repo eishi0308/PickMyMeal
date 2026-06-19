@@ -1683,6 +1683,42 @@ body {
   color: rgba(255,255,255,.88);
   letter-spacing: -0.6px;
   line-height: 1.3;
+  margin-bottom: 28px;
+}
+
+/* Problem stat block */
+.lv3-problem-stat-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(232,112,58,.08);
+  border: 1px solid rgba(232,112,58,.2);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.lv3-problem-stat-num {
+  font-size: clamp(28px, 7vw, 42px);
+  font-weight: 900;
+  color: #E8703A;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.lv3-problem-stat-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lv3-problem-stat-text {
+  font-size: 14px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.55;
+}
+.lv3-problem-stat-src {
+  font-size: 11px;
+  color: rgba(255,255,255,.28);
+  font-style: italic;
+  letter-spacing: 0.2px;
 }
 .lv3-kw {
   font-weight: 900;
@@ -1757,6 +1793,85 @@ body {
   z-index: 2;
 }
 
+/* ── SAVINGS PROOF ───────────────────────────────────────────────────── */
+.lv3-sav-wrap { border-radius: 24px; cursor: default; }
+.lv3-sav-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 24px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  backdrop-filter: blur(12px);
+}
+.lv3-sav-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.lv3-sav-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lv3-sav-label {
+  font-size: 17px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  letter-spacing: -0.3px;
+}
+.lv3-sav-src {
+  font-size: 11px;
+  color: rgba(255,255,255,.28);
+  font-style: italic;
+}
+.lv3-sav-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: rgba(255,255,255,.7);
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.lv3-sav-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform-origin: left;
+}
+.lv3-sav-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lv3-sav-total-label {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(255,255,255,.9);
+  letter-spacing: -0.4px;
+}
+.lv3-sav-total-val {
+  font-size: clamp(28px, 7vw, 42px);
+  font-weight: 900;
+  color: #22C55E;
+  letter-spacing: -1.5px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.lv3-sav-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(34,197,94,.7);
+  background: rgba(34,197,94,.1);
+  border: 1px solid rgba(34,197,94,.25);
+  border-radius: 999px;
+  padding: 3px 10px;
+  letter-spacing: 0.3px;
+}
+
 /* ── FEATURES ────────────────────────────────────────────────────────── */
 .lv3-feat-grid { display: flex; flex-direction: column; gap: 16px; }
 .lv3-feat-wrap { border-radius: 24px; cursor: default; }
@@ -1805,20 +1920,6 @@ body {
   width: 320px; height: 180px;
   background: radial-gradient(ellipse, rgba(232,112,58,.14) 0%, transparent 70%);
   pointer-events: none;
-}
-.lv3-closing-title {
-  font-size: clamp(28px, 7.5vw, 46px);
-  font-weight: 900;
-  letter-spacing: -1.8px;
-  color: #fff;
-  line-height: 1.08;
-  margin-bottom: 28px;
-}
-.lv3-closing-sub {
-  margin-top: 16px;
-  font-size: 12px;
-  color: rgba(255,255,255,.2);
-  font-style: italic;
 }
 
 @keyframes fadeIn {

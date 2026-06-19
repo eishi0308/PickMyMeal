@@ -109,8 +109,8 @@ const STEPS = [
   {
     num: '03',
     emoji: '🍳',
-    title: 'Cook cheap or order',
-    desc: 'Get a real recipe and save up to $15 — or order from your favourite app in seconds.',
+    title: 'Cook it or order it',
+    desc: 'Get a real recipe and save AU$15+ — or order from your favourite app instantly.',
     color: '#FF6B9D',
   },
 ];
@@ -125,9 +125,9 @@ const FEATURES = [
     glow: '#E8703A',
   },
   {
-    icon: '💸',
-    title: 'Save every meal',
-    desc: 'Real recipes, real savings. See exactly how much you save vs ordering out.',
+    icon: '🎯',
+    title: 'One recommendation',
+    desc: 'Not 50 options. Just the right one. Picked for your exact mood right now.',
     grad: 'linear-gradient(135deg,rgba(124,58,237,.14),rgba(159,90,237,.06))',
     border: 'rgba(124,58,237,.28)',
     glow: '#7C3AED',
@@ -152,6 +152,21 @@ const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
   op: 0.06 + (i % 4) * 0.04,
 }));
 
+const SAVINGS_ROWS = [
+  {
+    label: 'Uber Eats / DoorDash',
+    src: 'food + delivery + service fees · Uber AU',
+    val: '~$26–38',
+    color: '#F43F5E',
+  },
+  {
+    label: 'Cook at home',
+    src: 'ingredients per person · Canstar Blue, 2025',
+    val: '~$5–10',
+    color: 'rgba(255,255,255,0.7)',
+  },
+];
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Landing({ onStart, onHistory }: Props) {
   const historyCount = getHistory().length;
@@ -160,7 +175,7 @@ export default function Landing({ onStart, onHistory }: Props) {
   const heroY = useTransform(scrollYProgress, [0, 0.28], [0, -55]);
   const heroOp = useTransform(scrollYProgress, [0, 0.22], [1, 0]);
 
-  const { count: savingsCount, ref: savRef } = useCounter(12);
+  const { count: savingsCount, ref: savRef } = useCounter(15);
 
   const words1 = 'No idea what to eat?'.split(' ');
   const words2 = 'We got you.'.split(' ');
@@ -248,36 +263,16 @@ export default function Landing({ onStart, onHistory }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.52, ease: [0.16, 1, 0.3, 1] }}
         >
-          Tell us your mood. Get <strong>one perfect dish</strong> — cook it for{' '}
-          <span ref={savRef} className="lv3-accent">${savingsCount} less</span> or order instantly.
+          Tell us your mood. Get <strong>one perfect dish</strong> —{' '}
+          cook it for <span className="lv3-accent">AU$15+ less</span> or order instantly.
         </motion.p>
-
-        {/* Stats strip */}
-        <motion.div
-          className="lv3-stats"
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.68, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {[
-            { val: '<1min', label: 'to decide' },
-            { val: `$${savingsCount}+`, label: 'saved / meal' },
-            { val: '1', label: 'perfect pick' },
-          ].map((s, i) => (
-            <div key={i} className="lv3-stat-item">
-              {i > 0 && <div className="lv3-stat-sep" />}
-              <span className="lv3-stat-val">{s.val}</span>
-              <span className="lv3-stat-lbl">{s.label}</span>
-            </div>
-          ))}
-        </motion.div>
 
         {/* CTA */}
         <motion.div
           className="lv3-cta-wrap"
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.84, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.button
             className="lv3-cta"
@@ -337,7 +332,7 @@ export default function Landing({ onStart, onHistory }: Props) {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.05 }}
           >
-            Sound familiar?
+            You know this feeling.
           </motion.p>
           <motion.p
             className="lv3-problem-q"
@@ -363,8 +358,24 @@ export default function Landing({ onStart, onHistory }: Props) {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
-            We pick the perfect meal for you in <span className="lv3-grad-text">under a minute.</span>
+            One decision. <span className="lv3-grad-text">Made for you.</span>
           </motion.p>
+          <motion.div
+            className="lv3-problem-stat-block"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="lv3-problem-stat-num">AU$60</span>
+            <div className="lv3-problem-stat-right">
+              <span className="lv3-problem-stat-text">
+                average Australians spend per week on food delivery —
+                most of it on meals they never planned.
+              </span>
+              <span className="lv3-problem-stat-src">Source: Canstar Blue, 2025</span>
+            </div>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -378,7 +389,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="lv3-sec-tag">How it works</span>
-          <h2 className="lv3-sec-title">3 steps.<br />One perfect meal.</h2>
+          <h2 className="lv3-sec-title">3 steps.<br /><span className="lv3-grad-text">One perfect meal.</span></h2>
         </motion.div>
 
         <div className="lv3-steps">
@@ -411,6 +422,69 @@ export default function Landing({ onStart, onHistory }: Props) {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ═══════════════════ SAVINGS PROOF ═══════════════════ */}
+      <section className="lv3-section">
+        <motion.div
+          className="lv3-sec-head"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className="lv3-sec-tag">Cook it for less</span>
+          <h2 className="lv3-sec-title">Every single time.</h2>
+        </motion.div>
+
+        <MagneticCard className="lv3-sav-wrap">
+          <motion.div
+            className="lv3-sav-card"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-20px' }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {SAVINGS_ROWS.map((row, i) => (
+              <motion.div
+                key={i}
+                className="lv3-sav-row"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12 + 0.15, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="lv3-sav-left">
+                  <span className="lv3-sav-label">{row.label}</span>
+                  <span className="lv3-sav-src">{row.src}</span>
+                </div>
+                <span className="lv3-sav-val" style={{ color: row.color }}>{row.val}</span>
+              </motion.div>
+            ))}
+
+            <motion.div
+              className="lv3-sav-divider"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.38 }}
+            />
+
+            <motion.div
+              className="lv3-sav-total"
+              initial={{ opacity: 0, scale: 0.92 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="lv3-sav-total-label">You save</span>
+              <span className="lv3-sav-total-val">
+                AU$<span ref={savRef}>{savingsCount}</span>+
+                <span className="lv3-sav-badge">per meal</span>
+              </span>
+            </motion.div>
+          </motion.div>
+        </MagneticCard>
       </section>
 
       {/* ═══════════════════ FEATURES ═══════════════════ */}
@@ -457,16 +531,6 @@ export default function Landing({ onStart, onHistory }: Props) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="lv3-closing-glow" />
-        <motion.h2
-          className="lv3-closing-title"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          Your next meal<br />
-          <span className="lv3-grad-text">is one tap away.</span>
-        </motion.h2>
         <motion.button
           className="lv3-cta lv3-cta-lg"
           onClick={onStart}
@@ -475,20 +539,11 @@ export default function Landing({ onStart, onHistory }: Props) {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.22 }}
+          transition={{ duration: 0.55, delay: 0.1 }}
         >
           <span className="lv3-shimmer" />
           Decide my meal →
         </motion.button>
-        <motion.p
-          className="lv3-closing-sub"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.38 }}
-        >
-          Built for people who hate deciding.
-        </motion.p>
       </motion.section>
 
     </div>
