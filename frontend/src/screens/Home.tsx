@@ -162,32 +162,6 @@ export default function Home({ selected, initialMode = 'quick', lastResultNames 
             ][fineStep]}
           </p>
 
-          {/* Selected summary — shows all picks across all steps */}
-          {hasSelection && (
-            <div className="fine-sel-bar">
-              <span className="fine-sel-bar-label">Your picks</span>
-              <div className="fine-sel-chips">
-                {[...ESSENTIALS, ...DETAILS].map(({ key, label }) =>
-                  selected[key] ? (
-                    <span key={key} className="fine-sel-chip">
-                      <span className="fine-sel-chip-cat">{label}</span>
-                      {selected[key]}
-                    </span>
-                  ) : null
-                )}
-                {AVOID.map(({ key }) =>
-                  selected[key]
-                    ? selected[key].split(',').map((val) => (
-                        <span key={`${key}-${val}`} className="fine-sel-chip fine-sel-chip--avoid">
-                          ✕ {val}
-                        </span>
-                      ))
-                    : null
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Categories — keyed so React remounts on step change, triggering animation */}
           <div key={fineStep} className={`fine-step-body fine-step-body--${slideDir}`}>
             {(fineStep === 0 ? ESSENTIALS : fineStep === 1 ? DETAILS : AVOID).map(({ key, label, options }) => {
