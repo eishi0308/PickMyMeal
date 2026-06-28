@@ -35,4 +35,17 @@ export interface CookAlternativeResponse {
   explanation: string;
 }
 
-export type Screen = 'landing' | 'home' | 'result' | 'order' | 'cook' | 'history';
+export interface CookExactResponse {
+  dish_name: string;
+  time_minutes: number;
+  effort: string;
+  serves: number;
+  ingredients: string[];
+  steps: string[];
+  tip?: string | null;
+  delivery_estimate: string;
+  home_estimate: string;
+  saving_estimate: string;
+}
+
+export type Screen = 'landing' | 'home' | 'result' | 'order' | 'cook-gateway' | 'cook' | 'cook-exact' | 'history';

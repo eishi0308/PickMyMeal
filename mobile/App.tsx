@@ -6,10 +6,12 @@ import Landing from './src/screens/Landing';
 import Home from './src/screens/Home';
 import Result from './src/screens/Result';
 import Order from './src/screens/Order';
+import CookGateway from './src/screens/CookGateway';
 import CookAlternative from './src/screens/CookAlternative';
+import CookExact from './src/screens/CookExact';
 import History from './src/screens/History';
-import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse } from './src/types';
-import { getCookAlternative } from './src/api/foodApi';
+import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse, CookExactResponse } from './src/types';
+import { getCookAlternative, getCookExact } from './src/api/foodApi';
 
 interface ResultData {
   response: RecommendResponse;
@@ -29,6 +31,9 @@ export default function App() {
   const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
   const [cookLoading, setCookLoading] = useState(false);
   const [cookForCategory, setCookForCategory] = useState<string>('');
+  const [exactData, setExactData] = useState<CookExactResponse | null>(null);
+  const [exactLoading, setExactLoading] = useState(false);
+  const [exactError, setExactError] = useState(false);
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -64,7 +69,7 @@ export default function App() {
   const handleCook = (category: string, imageUrl: string | null = null) => {
     setOrderCategory(category);
     setOrderImage(imageUrl);
-    setScreen('cook');
+    setScreen('cook-gateway');
     if (category !== cookForCategory) {
       setCookData(null);
       setCookLoading(true);
@@ -73,6 +78,25 @@ export default function App() {
         .then(d => { setCookData(d); setCookLoading(false); })
         .catch(() => setCookLoading(false));
     }
+  };
+
+  const handleChooseExact = () => {
+    setExactData(null);
+    setExactLoading(true);
+    setExactError(false);
+    setScreen('cook-exact');
+    getCookExact(orderCategory)
+      .then(d => { setExactData(d); setExactLoading(false); })
+      .catch(() => { setExactError(true); setExactLoading(false); });
+  };
+
+  const handleRetryExact = () => {
+    setExactData(null);
+    setExactLoading(true);
+    setExactError(false);
+    getCookExact(orderCategory)
+      .then(d => { setExactData(d); setExactLoading(false); })
+      .catch(() => { setExactError(true); setExactLoading(false); });
   };
 
   const handleOrder = (category: string, imageUrl: string | null = null) => {
@@ -141,6 +165,19 @@ export default function App() {
           />
         )}
 
+        {screen === 'cook-gateway' && (
+          <CookGateway
+            category={orderCategory}
+            imageUrl={orderImage}
+            easyData={cookData}
+            easyLoading={cookLoading}
+            onChooseEasy={() => setScreen('cook')}
+            onChooseExact={handleChooseExact}
+            onBack={() => setScreen('result')}
+            onLogoClick={() => setScreen('landing')}
+          />
+        )}
+
         {screen === 'cook' && (
           <CookAlternative
             category={orderCategory}
@@ -148,8 +185,23 @@ export default function App() {
             prefetchedData={cookData}
             prefetchLoading={cookLoading}
             onOrder={handleOrder}
-            onBack={() => setScreen('result')}
+            onBack={() => setScreen('cook-gateway')}
             onReset={handleReset}
+            onLogoClick={() => setScreen('landing')}
+          />
+        )}
+
+        {screen === 'cook-exact' && (
+          <CookExact
+            category={orderCategory}
+            imageUrl={orderImage}
+            data={exactData}
+            loading={exactLoading}
+            error={exactError}
+            onRetry={handleRetryExact}
+            onSwitchToEasy={() => setScreen('cook')}
+            onOrder={handleOrder}
+            onBack={() => setScreen('cook-gateway')}
             onLogoClick={() => setScreen('landing')}
           />
         )}
