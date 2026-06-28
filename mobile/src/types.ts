@@ -9,6 +9,7 @@ export interface RecommendResponse {
   category: string;
   reason: string;
   image_url: string | null;
+  description?: string;
 }
 
 export interface ImageResponse {

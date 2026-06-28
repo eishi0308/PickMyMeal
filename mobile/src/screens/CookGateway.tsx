@@ -48,7 +48,7 @@ export default function CookGateway({
           </View>
           <Text style={styles.cardTitle}>Make the real thing</Text>
           <Text style={styles.cardDesc}>Full recipe — real ingredients, proper technique</Text>
-          <Text style={styles.cardCta}>Get the recipe →</Text>
+          <Text style={styles.cardCtaReal}>Get the recipe →</Text>
         </TouchableOpacity>
 
         {/* Card B — Easy adapted version */}
@@ -61,7 +61,7 @@ export default function CookGateway({
           </View>
           <Text style={styles.cardTitle}>Easy home version</Text>
           <Text style={styles.cardDesc}>{easySubtitle}</Text>
-          <Text style={styles.cardCta}>
+          <Text style={styles.cardCtaEasy}>
             {easyLoading ? 'Loading…' : 'Show easy version →'}
           </Text>
         </TouchableOpacity>
@@ -93,23 +93,24 @@ const styles = StyleSheet.create({
   },
   cardReal: {
     backgroundColor: '#fff',
-    borderColor: 'rgba(0,0,0,0.08)',
+    borderColor: 'rgba(99, 102, 241, 0.25)',
   },
   cardEasy: {
-    backgroundColor: 'rgba(232,112,58,0.04)',
-    borderColor: 'rgba(232,112,58,0.25)',
+    backgroundColor: '#fff',
+    borderColor: 'rgba(232, 112, 58, 0.25)',
   },
 
-  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
   cardIcon: { fontSize: 28 },
 
-  badge: { borderRadius: 999, paddingVertical: 4, paddingHorizontal: 12 },
-  badgeReal: { backgroundColor: '#F3F4F6' },
+  badge: { borderRadius: 999, paddingVertical: 4, paddingHorizontal: 10 },
+  badgeReal: { backgroundColor: 'rgba(99, 102, 241, 0.1)' },
   badgeEasy: { backgroundColor: 'rgba(232,112,58,0.12)' },
-  badgeText: { fontSize: 11, fontWeight: '700', color: '#6B7280', letterSpacing: 0.5, textTransform: 'uppercase' },
+  badgeText: { fontSize: 11, fontWeight: '700', color: '#6366F1', letterSpacing: 0.8, textTransform: 'uppercase' },
   badgeEasyText: { color: '#E8703A' },
 
-  cardTitle: { fontSize: 20, fontWeight: '800', color: '#1A1A1A', marginBottom: 6, letterSpacing: -0.4 },
-  cardDesc: { fontSize: 14, color: '#6B7280', lineHeight: 21, marginBottom: 16 },
-  cardCta: { fontSize: 15, fontWeight: '700', color: '#E8703A' },
+  cardTitle: { fontSize: 18, fontWeight: '800', color: '#1A1A1A', marginBottom: 4, letterSpacing: -0.4 },
+  cardDesc: { fontSize: 13, color: '#6B7280', lineHeight: 20, marginBottom: 14 },
+  cardCtaReal: { fontSize: 14, fontWeight: '700', color: '#6366F1' },
+  cardCtaEasy: { fontSize: 14, fontWeight: '700', color: '#E8703A' },
 });

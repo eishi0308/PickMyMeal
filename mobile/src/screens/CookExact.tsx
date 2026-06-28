@@ -113,7 +113,8 @@ export default function CookExact({
 
           {data.tip && (
             <View style={styles.tip}>
-              <Text style={styles.tipText}>💡 {data.tip}</Text>
+              <Text style={{ fontSize: 16 }}>💡</Text>
+              <Text style={styles.tipText}>{data.tip}</Text>
             </View>
           )}
         </View>
@@ -182,8 +183,8 @@ export default function CookExact({
 
           <View style={styles.escapeWrap}>
             <Text style={styles.escapeLabel}>Looks too complex?</Text>
-            <TouchableOpacity onPress={onSwitchToEasy}>
-              <Text style={styles.escapeBtn}>Show me the easy home version →</Text>
+            <TouchableOpacity style={styles.escapeBtn} onPress={onSwitchToEasy}>
+              <Text style={styles.escapeBtnText}>Show me the easy home version →</Text>
             </TouchableOpacity>
           </View>
 
@@ -205,8 +206,8 @@ const styles = StyleSheet.create({
   cookFlow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' },
   cookFlowOriginal: { fontSize: 15, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.3 },
   cookFlowArrow: { fontSize: 15, color: '#9CA3AF' },
-  cookFlowLabelWrap: { backgroundColor: 'rgba(0,0,0,0.06)', borderRadius: 999, paddingVertical: 3, paddingHorizontal: 10 },
-  cookFlowLabel: { fontSize: 13, fontWeight: '700', color: '#374151' },
+  cookFlowLabelWrap: { backgroundColor: 'rgba(99, 102, 241, 0.1)', borderRadius: 999, paddingVertical: 5, paddingHorizontal: 12 },
+  cookFlowLabel: { fontSize: 12, fontWeight: '700', color: '#4f46e5', letterSpacing: 0.2 },
 
   primaryCard: {
     backgroundColor: '#fff',
@@ -255,13 +256,18 @@ const styles = StyleSheet.create({
   savingsHighlightText: { color: '#16A34A', fontWeight: '800' },
 
   tip: {
-    backgroundColor: 'rgba(232,112,58,0.06)',
+    backgroundColor: 'rgba(251, 191, 36, 0.08)',
     borderRadius: 12,
     padding: 12,
-    borderLeftWidth: 3,
-    borderLeftColor: '#E8703A',
+    paddingHorizontal: 14,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 191, 36, 0.25)',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginTop: 14,
   },
-  tipText: { fontSize: 13, color: '#6B7280', lineHeight: 20 },
+  tipText: { fontSize: 13, color: '#1A1A1A', lineHeight: 20, flex: 1 },
 
   cookMode: {
     backgroundColor: '#fff',
@@ -343,9 +349,22 @@ const styles = StyleSheet.create({
   },
   uberBtnText: { color: '#111', fontSize: 16, fontWeight: '700' },
 
-  escapeWrap: { alignItems: 'center', gap: 6, paddingVertical: 8 },
+  escapeWrap: { alignItems: 'center', gap: 8, paddingVertical: 4, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.07)', marginTop: 4 },
   escapeLabel: { fontSize: 13, color: '#9CA3AF' },
-  escapeBtn: { fontSize: 14, fontWeight: '700', color: '#7C5CFC' },
+  escapeBtn: {
+    backgroundColor: '#7C5CFC',
+    borderRadius: 999,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    shadowColor: '#7C5CFC',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
+    elevation: 5,
+  },
+  escapeBtnText: { color: '#fff', fontSize: 15, fontWeight: '600' },
 
   backLinkBtn: { paddingVertical: 12, alignItems: 'center' },
   backLinkBtnText: { color: '#9CA3AF', fontSize: 15, fontWeight: '500' },

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator,
 } from 'react-native';
@@ -57,6 +57,8 @@ function FoodCard({
   onDirectOrder: (category: string, imageUrl: string | null) => void;
   onCollapse?: () => void;
 }) {
+  const [descOpen, setDescOpen] = useState(false);
+
   return (
     <View style={styles.primaryCard}>
       <TouchableOpacity
@@ -73,6 +75,19 @@ function FoodCard({
       </TouchableOpacity>
 
       <Text style={styles.primaryTitle}>{item.category}</Text>
+
+      {item.description && (
+        <View style={styles.descWrap}>
+          <TouchableOpacity style={styles.descToggle} onPress={() => setDescOpen(o => !o)}>
+            <Text style={styles.descToggleText}>What is this?</Text>
+            <Text style={styles.descChevron}>{descOpen ? '↓' : '›'}</Text>
+          </TouchableOpacity>
+          {descOpen && (
+            <Text style={styles.descBody}>{item.description}</Text>
+          )}
+        </View>
+      )}
+
       <ImageSlot src={imageUrl} alt={item.category} />
       <Text style={styles.primaryReason}>{item.reason}</Text>
 
@@ -294,8 +309,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#6B7280',
     lineHeight: 26,
-    marginBottom: 12,
+    marginBottom: 28,
   },
+
+  descWrap: { marginBottom: 14 },
+  descToggle: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  descToggleText: { fontSize: 12, fontWeight: '500', color: '#9CA3AF' },
+  descChevron: { fontSize: 14, color: '#9CA3AF' },
+  descBody: { fontSize: 14, color: '#6B7280', lineHeight: 22, marginTop: 8 },
   dualCta: { gap: 10, marginTop: 4 },
   cookBtn: {
     backgroundColor: '#E8703A',
@@ -336,9 +357,9 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.06)',
-    borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: '#F0F0F0',
+    borderRadius: 14,
     marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
