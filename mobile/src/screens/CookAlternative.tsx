@@ -12,6 +12,7 @@ interface Props {
   imageUrl: string | null;
   prefetchedData: CookAlternativeResponse | null;
   prefetchLoading: boolean;
+  prefetchedAltImage: string | null;
   onOrder: (category: string, imageUrl: string | null) => void;
   onBack: () => void;
   onReset: () => void;
@@ -47,7 +48,7 @@ async function saveCookedEntry(dish: string, alternative: string, saving: string
 }
 
 export default function CookAlternative({
-  category, imageUrl, prefetchedData, prefetchLoading,
+  category, imageUrl, prefetchedData, prefetchLoading, prefetchedAltImage,
   onOrder, onBack, onReset, onLogoClick,
 }: Props) {
   const [variant, setVariant] = useState<'easier' | 'closer' | undefined>(undefined);
@@ -61,6 +62,7 @@ export default function CookAlternative({
   const didSelfFetch = useRef(false);
 
   const [altImage, setAltImage] = useState<string | null>(null);
+  const [altImageDone, setAltImageDone] = useState(false);
   const [cooked, setCooked] = useState(false);
   const [cookMode, setCookMode] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -102,10 +104,16 @@ export default function CookAlternative({
 
   useEffect(() => {
     if (!activeData) return;
+    if (prefetchedAltImage && variant === undefined) {
+      setAltImage(prefetchedAltImage);
+      setAltImageDone(true);
+      return;
+    }
     setAltImage(null);
+    setAltImageDone(false);
     generateImage(activeData.alternative_name, activeData.alternative_name)
-      .then(img => setAltImage(img.image_url ?? null));
-  }, [activeData?.alternative_name]);
+      .then(img => { setAltImage(img.image_url ?? null); setAltImageDone(true); });
+  }, [activeData?.alternative_name, variant]);
 
   const handleCooked = async () => {
     if (!activeData) return;
@@ -182,15 +190,12 @@ export default function CookAlternative({
           <Text style={styles.cookFlowOriginal}>{category}</Text>
           <Text style={styles.cookFlowArrow}>→</Text>
           <View style={styles.cookFlowLabelWrap}>
-            <Text style={styles.cookFlowLabel}>{activeData.alternative_name}</Text>
+            <Text style={styles.cookFlowLabel}>⚡ Easy version</Text>
           </View>
         </View>
 
         {/* Main card */}
         <View style={styles.primaryCard}>
-          <View style={styles.cookBadge}>
-            <Text style={styles.cookBadgeText}>🏠 Adapted for your kitchen</Text>
-          </View>
           <Text style={styles.primaryTitle}>{activeData.alternative_name}</Text>
 
           {/* Why it's different — shown immediately */}
@@ -201,7 +206,7 @@ export default function CookAlternative({
           <View style={styles.imageWrap}>
             {altImage
               ? <Image style={styles.primaryImage} source={{ uri: altImage }} />
-              : <View style={styles.imageShimmer} />
+              : altImageDone ? null : <View style={styles.imageShimmer} />
             }
           </View>
 
@@ -381,21 +386,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
     shadowRadius: 16,
     elevation: 4,
-    overflow: 'hidden',
   },
-  cookBadge: {
-    marginHorizontal: -24,
-    marginTop: -24,
-    marginBottom: 20,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    backgroundColor: '#f0fdf9',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(16, 185, 129, 0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cookBadgeText: { fontSize: 13, fontWeight: '700', color: '#059669', letterSpacing: 0.2, textTransform: 'uppercase' },
   primaryTitle: {
     fontSize: 32,
     fontWeight: '800',

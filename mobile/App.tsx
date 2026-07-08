@@ -11,7 +11,7 @@ import CookAlternative from './src/screens/CookAlternative';
 import CookExact from './src/screens/CookExact';
 import History from './src/screens/History';
 import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse, CookExactResponse } from './src/types';
-import { getCookAlternative, getCookExact } from './src/api/foodApi';
+import { getCookAlternative, getCookExact, generateImage } from './src/api/foodApi';
 
 interface ResultData {
   response: RecommendResponse;
@@ -31,6 +31,7 @@ export default function App() {
   const [cookData, setCookData] = useState<CookAlternativeResponse | null>(null);
   const [cookLoading, setCookLoading] = useState(false);
   const [cookForCategory, setCookForCategory] = useState<string>('');
+  const [cookAltImage, setCookAltImage] = useState<string | null>(null);
   const [exactData, setExactData] = useState<CookExactResponse | null>(null);
   const [exactLoading, setExactLoading] = useState(false);
   const [exactError, setExactError] = useState(false);
@@ -43,14 +44,26 @@ export default function App() {
       data.response.category,
       ...data.backups.map((b) => b.category),
     ]);
-    // Pre-fetch cook alternative for best pick while user reads the result
+    // Pre-fetch cook alternative + exact recipe while user reads the result
     const best = data.response.category;
     setCookData(null);
     setCookLoading(true);
+    setCookAltImage(null);
     setCookForCategory(best);
     getCookAlternative(best)
-      .then(d => { setCookData(d); setCookLoading(false); })
+      .then(d => {
+        setCookData(d);
+        setCookLoading(false);
+        generateImage(d.alternative_name, d.alternative_name)
+          .then(img => setCookAltImage(img.image_url ?? null));
+      })
       .catch(() => setCookLoading(false));
+    setExactData(null);
+    setExactError(false);
+    setExactLoading(true);
+    getCookExact(best)
+      .then(d => { setExactData(d); setExactLoading(false); })
+      .catch(() => { setExactError(true); setExactLoading(false); });
   };
 
   const handleHistory = () => {
@@ -73,21 +86,35 @@ export default function App() {
     if (category !== cookForCategory) {
       setCookData(null);
       setCookLoading(true);
+      setCookAltImage(null);
       setCookForCategory(category);
       getCookAlternative(category)
-        .then(d => { setCookData(d); setCookLoading(false); })
+        .then(d => {
+          setCookData(d);
+          setCookLoading(false);
+          generateImage(d.alternative_name, d.alternative_name)
+            .then(img => setCookAltImage(img.image_url ?? null));
+        })
         .catch(() => setCookLoading(false));
+      setExactData(null);
+      setExactError(false);
+      setExactLoading(true);
+      getCookExact(category)
+        .then(d => { setExactData(d); setExactLoading(false); })
+        .catch(() => { setExactError(true); setExactLoading(false); });
     }
   };
 
   const handleChooseExact = () => {
-    setExactData(null);
-    setExactLoading(true);
-    setExactError(false);
     setScreen('cook-exact');
-    getCookExact(orderCategory)
-      .then(d => { setExactData(d); setExactLoading(false); })
-      .catch(() => { setExactError(true); setExactLoading(false); });
+    if ((!exactData || !exactData.delivery_estimate) && !exactLoading) {
+      setExactData(null);
+      setExactError(false);
+      setExactLoading(true);
+      getCookExact(orderCategory)
+        .then(d => { setExactData(d); setExactLoading(false); })
+        .catch(() => { setExactError(true); setExactLoading(false); });
+    }
   };
 
   const handleRetryExact = () => {
@@ -184,6 +211,7 @@ export default function App() {
             imageUrl={orderImage}
             prefetchedData={cookData}
             prefetchLoading={cookLoading}
+            prefetchedAltImage={cookAltImage}
             onOrder={handleOrder}
             onBack={() => setScreen('cook-gateway')}
             onReset={handleReset}
@@ -212,6 +240,7 @@ export default function App() {
             imageUrl={orderImage}
             onBack={() => setScreen('result')}
             onReset={handleReset}
+            onLogoClick={() => setScreen('landing')}
           />
         )}
 
