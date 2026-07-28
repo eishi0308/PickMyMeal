@@ -1343,8 +1343,11 @@ body {
   min-height: 100vh;
   background: #07070f;
   position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* `clip` contains the off-canvas orbs horizontally WITHOUT turning this
+     element into a scroll container. `overflow-x: hidden` would force
+     overflow-y to compute as `auto`, creating a second scroll container
+     that swallows the first scroll gesture before the document scrolls. */
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
 }

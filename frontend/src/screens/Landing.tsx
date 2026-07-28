@@ -170,10 +170,18 @@ const SAVINGS_ROWS = [
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Landing({ onStart, onHistory }: Props) {
   const historyCount = getHistory().length;
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container: containerRef });
-  const heroY = useTransform(scrollYProgress, [0, 0.28], [0, -55]);
-  const heroOp = useTransform(scrollYProgress, [0, 0.22], [1, 0]);
+  // Track the document scroll — the page scrolls the window, not an inner box.
+  // Drive the hero off raw pixels against the viewport height: page-progress
+  // ratios would stretch the fade across the whole (very tall) document.
+  const { scrollY } = useScroll();
+  const [vh, setVh] = useState(() => (typeof window === 'undefined' ? 900 : window.innerHeight));
+  useEffect(() => {
+    const onResize = () => setVh(window.innerHeight);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const heroY = useTransform(scrollY, [0, vh], [0, -55]);
+  const heroOp = useTransform(scrollY, [0, vh * 0.62], [1, 0]);
 
   const { count: savingsCount, ref: savRef } = useCounter(15);
 
@@ -181,7 +189,7 @@ export default function Landing({ onStart, onHistory }: Props) {
   const words2 = 'We got you.'.split(' ');
 
   return (
-    <div className="lv3-screen" ref={containerRef}>
+    <div className="lv3-screen">
 
       {/* Fixed mesh + orbs */}
       <div className="lv3-mesh" />
