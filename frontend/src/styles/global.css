@@ -59,13 +59,13 @@ body {
 }
 
 .home-subtitle {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
   margin-bottom: 32px;
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -88,7 +88,7 @@ body {
   border-radius: var(--radius-full);
   background: var(--chip-bg);
   border: 2px solid transparent;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -108,7 +108,7 @@ body {
 }
 
 .free-text-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -123,7 +123,7 @@ body {
   border-radius: var(--radius);
   border: 1.5px solid var(--border);
   background: var(--white);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   font-family: inherit;
   resize: none;
@@ -173,7 +173,7 @@ body {
 
 .error-msg {
   color: #DC2626;
-  font-size: 13px;
+  font-size: 16px;
   margin-top: 12px;
   text-align: center;
 }
@@ -201,7 +201,7 @@ body {
 .navbar-logo {
   background: none;
   border: none;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text);
   cursor: pointer;
@@ -216,7 +216,7 @@ body {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
@@ -227,7 +227,7 @@ body {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -247,7 +247,7 @@ body {
 }
 
 .result-eyebrow {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -317,7 +317,7 @@ body {
   border-radius: var(--radius);
   background: var(--primary);
   color: var(--white);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -334,7 +334,7 @@ body {
   border-radius: 999px;
   background: transparent;
   color: var(--text-muted);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   border: 1.5px solid var(--border);
   cursor: pointer;
@@ -364,7 +364,7 @@ body {
   background: none;
   border: none;
   color: #DC2626;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
   padding: 0;
   font-family: inherit;
@@ -377,7 +377,7 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  font-size: 15px;
+  font-size: 16px;
   gap: 6px;
   text-align: center;
 }
@@ -415,7 +415,7 @@ body {
 }
 
 .history-item-time {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 
@@ -427,7 +427,7 @@ body {
 }
 
 .history-mood-tag {
-  font-size: 12px;
+  font-size: 16px;
   padding: 3px 10px;
   background: var(--primary-light);
   color: var(--primary);
@@ -436,7 +436,7 @@ body {
 }
 
 .history-item-reason {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
   line-height: 1.5;
 }
@@ -460,14 +460,14 @@ body {
   justify-content: space-between;
 }
 .last-result-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #E8703A;
 }
 .last-result-arrow {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #E8703A;
 }
@@ -479,7 +479,7 @@ body {
 .last-result-chip {
   padding: 5px 12px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   text-transform: capitalize;
   background: rgba(0,0,0,0.05);
@@ -506,7 +506,7 @@ body {
   border-radius: 999px;
   border: none;
   background: transparent;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
@@ -567,7 +567,7 @@ body {
   background: rgba(232, 112, 58, 0.08);
   border: 1px solid rgba(232, 112, 58, 0.2);
   border-radius: 99px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--primary);
 }
@@ -688,7 +688,7 @@ body {
 .qm-back-btn {
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
@@ -702,7 +702,7 @@ body {
 }
 
 .qm-step-counter {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-muted);
 }
@@ -738,7 +738,7 @@ body {
 }
 
 .qm-confirm-q {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -820,7 +820,7 @@ body {
 }
 
 .pref-section-header {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -835,7 +835,7 @@ body {
   border-bottom-color: rgba(244, 63, 94, 0.2);
 }
 .pref-section-sub {
-  font-size: 13px;
+  font-size: 16px;
   color: #9CA3AF;
   margin-bottom: 14px;
   margin-top: -8px;
@@ -857,7 +857,7 @@ body {
 }
 
 .pref-category-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -909,7 +909,7 @@ body {
 }
 
 .fine-step-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -927,7 +927,7 @@ body {
 }
 
 .fine-step-sub {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-muted);
   margin-bottom: 16px;
 }
@@ -945,7 +945,7 @@ body {
 }
 
 .fine-sel-bar-label {
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -968,7 +968,7 @@ body {
   padding: 5px 12px 5px 10px;
   background: var(--primary-light);
   border-radius: var(--radius-full);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--primary-dark);
   white-space: nowrap;
@@ -976,7 +976,7 @@ body {
 }
 
 .fine-sel-chip-cat {
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 700;
   opacity: 0.55;
   text-transform: uppercase;
@@ -1015,7 +1015,7 @@ body {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   padding: 4px 0 12px;
@@ -1053,7 +1053,7 @@ body {
   border-radius: 999px;
   background: transparent;
   border: 2px solid var(--border);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
@@ -1072,7 +1072,7 @@ body {
   background: var(--primary);
   border: none;
   color: white;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1093,7 +1093,7 @@ body {
   background: var(--primary);
   border: none;
   color: white;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1207,7 +1207,7 @@ body {
   border: 1px solid rgba(232,112,58,0.22);
   border-radius: 999px;
   padding: 7px 16px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #E8703A;
   letter-spacing: 0.3px;
@@ -1276,14 +1276,14 @@ body {
   line-height: 1;
 }
 .lv2-feature-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #fff;
   margin-bottom: 3px;
   letter-spacing: -0.2px;
 }
 .lv2-feature-desc {
-  font-size: 12px;
+  font-size: 16px;
   color: rgba(255,255,255,0.38);
   line-height: 1.45;
 }
@@ -1316,14 +1316,14 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 16px;
   color: rgba(255,255,255,0.3);
 }
 .lv2-returning button {
   background: none;
   border: none;
   color: #7C5CFC;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -1421,7 +1421,7 @@ body {
   border-radius: 100px;
   background: rgba(255,255,255,.05);
   border: 1px solid rgba(255,255,255,.1);
-  font-size: 11.5px;
+  font-size: 16px;
   font-weight: 600;
   color: rgba(255,255,255,.65);
   letter-spacing: .3px;
@@ -1437,7 +1437,7 @@ body {
   flex-shrink: 0;
 }
 .lv3-badge-tag {
-  font-size: 9px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: .8px;
   padding: 2px 6px;
@@ -1489,7 +1489,7 @@ body {
 }
 
 .lv3-tagline {
-  font-size: 15.5px;
+  font-size: 16px;
   color: rgba(255,255,255,.42);
   line-height: 1.7;
   margin-bottom: 28px;
@@ -1526,7 +1526,7 @@ body {
   line-height: 1;
 }
 .lv3-stat-lbl {
-  font-size: 9.5px;
+  font-size: 16px;
   color: rgba(255,255,255,.3);
   font-weight: 500;
   letter-spacing: .3px;
@@ -1592,7 +1592,7 @@ body {
   background: none;
   border: none;
   color: rgba(255,255,255,.32);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   padding: 6px 10px;
@@ -1635,7 +1635,7 @@ body {
 }
 .lv3-sec-tag {
   display: block;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1664,7 +1664,7 @@ body {
   width: 100%;
 }
 .lv3-problem-label {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -1719,12 +1719,12 @@ body {
   gap: 6px;
 }
 .lv3-problem-stat-text {
-  font-size: 14px;
+  font-size: 16px;
   color: rgba(255,255,255,.6);
   line-height: 1.55;
 }
 .lv3-problem-stat-src {
-  font-size: 11px;
+  font-size: 16px;
   color: rgba(255,255,255,.28);
   font-style: italic;
   letter-spacing: 0.2px;
@@ -1765,7 +1765,7 @@ body {
   transform: translateY(-2px);
 }
 .lv3-step-num {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 900;
   letter-spacing: 1.5px;
   color: var(--sc, #E8703A);
@@ -1788,7 +1788,7 @@ body {
   line-height: 1.2;
 }
 .lv3-step-desc {
-  font-size: 15px;
+  font-size: 16px;
   color: rgba(255,255,255,.55);
   line-height: 1.65;
 }
@@ -1832,7 +1832,7 @@ body {
   letter-spacing: -0.3px;
 }
 .lv3-sav-src {
-  font-size: 11px;
+  font-size: 16px;
   color: rgba(255,255,255,.28);
   font-style: italic;
 }
@@ -1871,7 +1871,7 @@ body {
   gap: 10px;
 }
 .lv3-sav-badge {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   color: rgba(34,197,94,.7);
   background: rgba(34,197,94,.1);
@@ -1909,7 +1909,7 @@ body {
   line-height: 1.2;
 }
 .lv3-feat-desc {
-  font-size: 15px;
+  font-size: 16px;
   color: rgba(255,255,255,.55);
   line-height: 1.65;
 }
@@ -1976,7 +1976,7 @@ body {
   align-items: center;
   background: rgba(232, 112, 58, 0.1);
   color: var(--primary);
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: var(--radius-full);
@@ -2032,7 +2032,7 @@ body {
 }
 
 .primary-reason {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
   line-height: 1.7;
   margin-bottom: 28px;
@@ -2051,7 +2051,7 @@ body {
   border: none;
   padding: 0;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.1px;
@@ -2065,7 +2065,7 @@ body {
 
 .dish-desc-chevron {
   display: inline-block;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1;
   transition: transform 0.2s ease;
   transform: rotate(0deg);
@@ -2087,7 +2087,7 @@ body {
 
 .dish-desc-body > p {
   overflow: hidden;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
   line-height: 1.6;
   padding-top: 6px;
@@ -2141,7 +2141,7 @@ body {
   margin-bottom: 4px;
 }
 .tune-hook-sub {
-  font-size: 14px;
+  font-size: 16px;
   color: #6B7280;
   margin-bottom: 16px;
   line-height: 1.5;
@@ -2190,7 +2190,7 @@ body {
 }
 
 .backup-collapse-arrow {
-  font-size: 12px;
+  font-size: 16px;
   color: #9CA3AF;
   font-weight: 500;
 }
@@ -2201,7 +2201,7 @@ body {
 }
 
 .backups-compact-label {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -2238,7 +2238,7 @@ body {
 }
 
 .backup-row-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
   text-transform: capitalize;
@@ -2246,7 +2246,7 @@ body {
 }
 
 .backup-row-reason {
-  font-size: 13px;
+  font-size: 16px;
   color: #9CA3AF;
   flex: 1;
   white-space: nowrap;
@@ -2301,7 +2301,7 @@ body {
   right: 22px;
 }
 .order-eyebrow {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -2410,7 +2410,7 @@ body {
   gap: 6px;
   background: rgba(232,112,58,0.1);
   color: var(--primary);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   padding: 5px 12px;
   border-radius: var(--radius-full);
@@ -2441,7 +2441,7 @@ body {
 }
 
 .best-reason {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
   line-height: 1.65;
   margin-bottom: 20px;
@@ -2453,7 +2453,7 @@ body {
 }
 
 .backups-label {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -2500,7 +2500,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-muted);
   margin-bottom: 8px;
@@ -2516,7 +2516,7 @@ body {
 }
 
 .backup-reason {
-  font-size: 12px;
+  font-size: 16px;
   color: #9CA3AF;
   line-height: 1.5;
   margin-bottom: 10px;
@@ -2527,7 +2527,7 @@ body {
 }
 
 .backup-uber {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #06C167;
   text-decoration: none;
@@ -2597,7 +2597,7 @@ body {
 }
 
 .cook-origin {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
   font-weight: 500;
   margin-bottom: 2px;
@@ -2626,7 +2626,7 @@ body {
 }
 
 .cook-flow-original {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
@@ -2638,7 +2638,7 @@ body {
 }
 
 .cook-flow-arrow {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-muted);
   font-weight: 400;
   flex-shrink: 0;
@@ -2654,7 +2654,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   color: #059669;
   background: rgba(16, 185, 129, 0.1);
@@ -2666,7 +2666,7 @@ body {
 }
 
 .cook-why-different {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-muted);
   line-height: 22px;
   margin-bottom: 16px;
@@ -2690,7 +2690,7 @@ body {
   border-bottom: 1px solid rgba(16, 185, 129, 0.18);
   border-radius: 28px 28px 0 0;
   color: #059669;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.2px;
   text-transform: uppercase;
@@ -2707,7 +2707,7 @@ body {
   padding: 6px 14px;
   background: var(--chip-bg);
   border-radius: var(--radius-full);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
 }
@@ -2727,7 +2727,7 @@ body {
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 
@@ -2737,11 +2737,11 @@ body {
 }
 
 .cook-savings-label {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .cook-savings-value {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
 }
@@ -2771,7 +2771,7 @@ body {
   padding: 7px 14px;
   background: var(--chip-bg);
   border-radius: var(--radius-full);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text);
   text-transform: capitalize;
@@ -2795,7 +2795,7 @@ body {
   border-radius: 50%;
   background: var(--primary-light);
   color: var(--primary);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -2805,7 +2805,7 @@ body {
 }
 
 .cook-step-text {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   line-height: 1.6;
 }
@@ -2815,7 +2815,7 @@ body {
   border: 1.5px solid rgba(16, 185, 129, 0.25);
   border-radius: 16px;
   padding: 16px 20px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: #059669;
   text-align: center;
@@ -2881,7 +2881,7 @@ body {
   background: transparent;
   border: none;
   color: #9CA3AF;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   font-family: inherit;
@@ -2904,7 +2904,7 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: var(--radius-full);
   padding: 8px 16px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #059669;
   margin-bottom: 16px;
@@ -2931,7 +2931,7 @@ body {
 }
 
 .cook-mode-label {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -2941,7 +2941,7 @@ body {
 .cook-mode-exit {
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
@@ -2996,7 +2996,7 @@ body {
 }
 
 .cook-gateway-sub {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 
@@ -3056,7 +3056,7 @@ body {
 }
 
 .cook-gateway-card-badge {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -3083,14 +3083,14 @@ body {
 }
 
 .cook-gateway-card-desc {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
   margin-bottom: 14px;
   line-height: 1.5;
 }
 
 .cook-gateway-card-cta {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -3127,7 +3127,7 @@ body {
   border-radius: 12px;
   padding: 12px 14px;
   margin-top: 14px;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text);
   line-height: 1.5;
 }
@@ -3146,7 +3146,7 @@ body {
 }
 
 .cook-exact-escape-text {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
   margin-bottom: 8px;
 }
