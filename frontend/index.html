@@ -3,10 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07070f" />
     <title>DecideMyMeal</title>
+    <!-- Paint the landing's dark canvas from the very first frame. Without this
+         the browser shows a white page for the whole JS boot, which reads as
+         "the site is frozen" on a phone. -->
+    <style>
+      html { background: #07070f; }
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #07070f;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      #boot .boot-word {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #fff;
+      }
+      #boot .boot-bar {
+        width: 120px;
+        height: 3px;
+        border-radius: 2px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      #boot .boot-bar::after {
+        content: '';
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 2px;
+        background: #e8703a;
+        animation: boot-slide 1s ease-in-out infinite;
+      }
+      @keyframes boot-slide {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot .boot-bar::after { animation: none; width: 100%; }
+      }
+      #boot .boot-stuck {
+        display: none;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      #boot .boot-stuck button {
+        margin-left: 6px;
+        background: none;
+        border: none;
+        padding: 0;
+        color: #e8703a;
+        font: inherit;
+        font-weight: 600;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      #boot.is-stuck .boot-stuck { display: block; }
+      #boot.is-stuck .boot-bar { display: none; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="boot">
+      <div class="boot-word">DecideMyMeal</div>
+      <div class="boot-bar"></div>
+      <div class="boot-stuck">
+        Taking longer than usual.<button onclick="location.reload()">Retry</button>
+      </div>
+    </div>
+    <script>
+      // If the app script never arrives (flaky mobile connection), offer a way
+      // out rather than leaving a loading bar running forever.
+      setTimeout(function () {
+        document.getElementById('boot')?.classList.add('is-stuck');
+      }, 10000);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -15,6 +15,22 @@ interface Props {
   onHistory: () => void;
 }
 
+// ── Device capability gate ────────────────────────────────────────────────────
+// The full effect stack — three 88px-blurred orbs animating forever, 22
+// independently animated particles, a scroll-driven hero fade and per-card
+// 3D springs — costs a frame budget only a desktop GPU has. On a phone it
+// pins the main thread from the moment React mounts, so the first paint and
+// the first tap both feel frozen. Detect once, up front, and serve a static
+// background to phones and to anyone who asked for reduced motion.
+function detectLite(): boolean {
+  if (typeof window === 'undefined') return true;
+  const mm = (q: string) => window.matchMedia?.(q).matches ?? false;
+  if (mm('(prefers-reduced-motion: reduce)')) return true;
+  if (mm('(pointer: coarse)') || mm('(max-width: 820px)')) return true;
+  const cores = navigator.hardwareConcurrency;
+  return typeof cores === 'number' && cores > 0 && cores <= 4;
+}
+
 // ── Animated counter ──────────────────────────────────────────────────────────
 function useCounter(target: number, duration = 1400) {
   const [count, setCount] = useState(0);
@@ -47,13 +63,26 @@ const wordVariants: Variants = {
   }),
 };
 
+// No 3D rotation (which forces a perspective layer per word) and roughly half
+// the stagger, so the headline and CTA are readable in ~0.4s instead of ~1.6s.
+const wordVariantsLite: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.04, duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+  }),
+};
+
 // ── 3D magnetic card ──────────────────────────────────────────────────────────
 function MagneticCard({
   children,
   className,
+  lite,
 }: {
   children: React.ReactNode;
   className?: string;
+  lite: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
@@ -74,6 +103,10 @@ function MagneticCard({
     mx.set(0);
     my.set(0);
   }, [mx, my]);
+
+  // The tilt is driven entirely by mouse position, so on touch it buys nothing
+  // and costs two springs plus a preserve-3d layer per card.
+  if (lite) return <div className={className}>{children}</div>;
 
   return (
     <motion.div
@@ -169,6 +202,7 @@ const SAVINGS_ROWS = [
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Landing({ onStart, onHistory }: Props) {
+  const [lite] = useState(detectLite);
   const historyCount = getHistory().length;
   // Track the document scroll — the page scrolls the window, not an inner box.
   // Drive the hero off raw pixels against the viewport height: page-progress
@@ -176,10 +210,16 @@ export default function Landing({ onStart, onHistory }: Props) {
   const { scrollY } = useScroll();
   const [vh, setVh] = useState(() => (typeof window === 'undefined' ? 900 : window.innerHeight));
   useEffect(() => {
-    const onResize = () => setVh(window.innerHeight);
+    if (lite) return;
+    const onResize = () => {
+      // Mobile browsers fire `resize` every time the URL bar collapses or
+      // expands mid-scroll. Re-rendering the whole landing on a ~90px toolbar
+      // delta stalls the scroll, so only react to a real viewport change.
+      setVh((prev) => (Math.abs(window.innerHeight - prev) > 120 ? window.innerHeight : prev));
+    };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [lite]);
   const heroY = useTransform(scrollY, [0, vh], [0, -55]);
   const heroOp = useTransform(scrollY, [0, vh * 0.62], [1, 0]);
 
@@ -191,41 +231,53 @@ export default function Landing({ onStart, onHistory }: Props) {
   return (
     <div className="lv3-screen">
 
-      {/* Fixed mesh + orbs */}
+      {/* Fixed mesh + orbs. The orbs carry an 88px blur, so animating `scale`
+          forces the GPU to re-run the blur over a 420px layer every frame —
+          affordable on a desktop, ruinous on a phone. Phones get them static. */}
       <div className="lv3-mesh" />
-      <motion.div className="lv3-orb lv3-orb-a"
-        animate={{ x: [0, 45, 0], y: [0, -35, 0], scale: [1, 1.12, 1] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div className="lv3-orb lv3-orb-b"
-        animate={{ x: [0, -35, 0], y: [0, 45, 0], scale: [1, 0.88, 1] }}
-        transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
-      />
-      <motion.div className="lv3-orb lv3-orb-c"
-        animate={{ x: [0, 22, -14, 0], y: [0, -25, 32, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 8 }}
-      />
+      {lite ? (
+        <>
+          <div className="lv3-orb lv3-orb-a" />
+          <div className="lv3-orb lv3-orb-b" />
+          <div className="lv3-orb lv3-orb-c" />
+        </>
+      ) : (
+        <>
+          <motion.div className="lv3-orb lv3-orb-a"
+            animate={{ x: [0, 45, 0], y: [0, -35, 0], scale: [1, 1.12, 1] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div className="lv3-orb lv3-orb-b"
+            animate={{ x: [0, -35, 0], y: [0, 45, 0], scale: [1, 0.88, 1] }}
+            transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          />
+          <motion.div className="lv3-orb lv3-orb-c"
+            animate={{ x: [0, 22, -14, 0], y: [0, -25, 32, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 8 }}
+          />
 
-      {/* Floating particles */}
-      {PARTICLES.map((p) => (
-        <motion.span
-          key={p.id}
-          className="lv3-particle"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, opacity: p.op }}
-          animate={{ y: [0, -28, 0], opacity: [p.op, p.op * 3, p.op] }}
-          transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
-        />
-      ))}
+          {/* Floating particles — 22 independent forever-animations. */}
+          {PARTICLES.map((p) => (
+            <motion.span
+              key={p.id}
+              className="lv3-particle"
+              style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, opacity: p.op }}
+              animate={{ y: [0, -28, 0], opacity: [p.op, p.op * 3, p.op] }}
+              transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
+            />
+          ))}
+        </>
+      )}
 
       {/* ═══════════════════ HERO ═══════════════════ */}
-      <motion.section className="lv3-hero" style={{ y: heroY, opacity: heroOp }}>
+      <motion.section className="lv3-hero" style={lite ? undefined : { y: heroY, opacity: heroOp }}>
 
         {/* Badge */}
         <motion.div
           className="lv3-badge"
           initial={{ opacity: 0, y: 18, scale: 0.92 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: lite ? 0.35 : 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="lv3-badge-dot" />
           AI-powered meal decisions
@@ -233,7 +285,7 @@ export default function Landing({ onStart, onHistory }: Props) {
         </motion.div>
 
         {/* Headline — word split with 3D perspective */}
-        <div className="lv3-headline" style={{ perspective: 1200 }}>
+        <div className="lv3-headline" style={lite ? undefined : { perspective: 1200 }}>
           <div className="lv3-hl-row lv3-hl-row--line1">
             {words1.map((w, i) => (
               <motion.span
@@ -242,7 +294,7 @@ export default function Landing({ onStart, onHistory }: Props) {
                 custom={i}
                 initial="hidden"
                 animate="visible"
-                variants={wordVariants}
+                variants={lite ? wordVariantsLite : wordVariants}
               >
                 {w}
               </motion.span>
@@ -256,7 +308,7 @@ export default function Landing({ onStart, onHistory }: Props) {
                 custom={i + words1.length}
                 initial="hidden"
                 animate="visible"
-                variants={wordVariants}
+                variants={lite ? wordVariantsLite : wordVariants}
               >
                 {w}
               </motion.span>
@@ -269,7 +321,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           className="lv3-tagline"
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.52, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: lite ? 0.4 : 0.7, delay: lite ? 0.26 : 0.52, ease: [0.16, 1, 0.3, 1] }}
         >
           Tell us your mood. Get <strong>one perfect dish</strong> —{' '}
           cook it for <span className="lv3-accent">AU$15+ less</span> or order instantly.
@@ -280,7 +332,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           className="lv3-cta-wrap"
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: lite ? 0.35 : 0.6, delay: lite ? 0.34 : 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.button
             className="lv3-cta"
@@ -314,7 +366,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           className="lv3-scroll-hint"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.6, duration: 0.7 }}
+          transition={{ delay: lite ? 0.8 : 1.6, duration: lite ? 0.4 : 0.7 }}
         >
           <motion.div
             className="lv3-scroll-dot"
@@ -445,7 +497,7 @@ export default function Landing({ onStart, onHistory }: Props) {
           <h2 className="lv3-sec-title">Every single time.</h2>
         </motion.div>
 
-        <MagneticCard className="lv3-sav-wrap">
+        <MagneticCard className="lv3-sav-wrap" lite={lite}>
           <motion.div
             className="lv3-sav-card"
             initial={{ opacity: 0, y: 32 }}
@@ -510,7 +562,7 @@ export default function Landing({ onStart, onHistory }: Props) {
 
         <div className="lv3-feat-grid">
           {FEATURES.map((f, i) => (
-            <MagneticCard key={i} className="lv3-feat-wrap">
+            <MagneticCard key={i} className="lv3-feat-wrap" lite={lite}>
               <motion.div
                 className="lv3-feat-card"
                 style={{ background: f.grad, border: `1px solid ${f.border}`, '--fg': f.glow } as CSSProperties}

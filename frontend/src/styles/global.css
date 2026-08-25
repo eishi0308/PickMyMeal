@@ -2675,8 +2675,6 @@ body {
   border-radius: 12px;
   border-left: 3px solid rgba(232,112,58,0.4);
 }
-  text-transform: capitalize;
-}
 
 .cook-badge {
   display: flex;
@@ -3163,4 +3161,62 @@ body {
   background: #6b4eea !important;
   border-color: #6b4eea !important;
   box-shadow: 0 6px 18px rgba(124, 92, 252, 0.45);
+}
+
+/* ── Suspense fallback for the lazily-loaded screens ─────────────────────── */
+.screen-fallback {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* The landing is dark and every other screen is light. Match the page
+   background to the current screen so neither the initial paint nor iOS
+   rubber-band overscroll flashes the wrong colour. */
+body[data-screen="landing"] {
+  background-color: #07070f;
+}
+
+/* ── Mobile / reduced-motion effect budget ───────────────────────────────────
+   Mirrors detectLite() in Landing.tsx. Everything below is a per-frame cost
+   that a phone pays forever once the landing mounts: backdrop-filter re-samples
+   the page behind it on every scroll frame, and animating box-shadow or
+   background-position repaints the element (for .lv3-grad-text, gradient-clipped
+   text) on every frame. Static substitutes look near-identical on a dark page. */
+@media (pointer: coarse), (max-width: 820px), (prefers-reduced-motion: reduce) {
+  .lv3-badge,
+  .lv3-stats,
+  .lv3-problem-card,
+  .lv3-sav-card {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* A blur this wide has to rasterize a ~600px layer; half the radius reads the
+     same behind content and costs a quarter of the fill. */
+  .lv3-orb { filter: blur(52px); }
+
+  .lv3-badge-dot {
+    animation: none;
+    box-shadow: 0 0 8px #E8703A;
+  }
+  .lv3-cta {
+    animation: none;
+    box-shadow: 0 4px 28px rgba(232, 112, 58, 0.38);
+  }
+  .lv3-shimmer { animation: none; opacity: 0; }
+  .lv3-grad-text {
+    animation: none;
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

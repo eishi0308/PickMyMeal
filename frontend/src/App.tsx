@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useLayoutEffect, lazy, Suspense } from 'react';
 import Landing from './screens/Landing';
-import Home from './screens/Home';
-import Result from './screens/Result';
-import Order from './screens/Order';
-import CookGateway from './screens/CookGateway';
-import CookAlternative from './screens/CookAlternative';
-import CookExact from './screens/CookExact';
-import History from './screens/History';
 import { PreferenceMap, RecommendResponse, Screen, CookAlternativeResponse, CookExactResponse } from './types';
 import { getCookAlternative, getCookExact, generateImage } from './api/foodApi';
+
+// Only the landing is needed for the first paint. Everything else is split out
+// so the initial bundle a phone has to download and parse stays small.
+const Home = lazy(() => import('./screens/Home'));
+const Result = lazy(() => import('./screens/Result'));
+const Order = lazy(() => import('./screens/Order'));
+const CookGateway = lazy(() => import('./screens/CookGateway'));
+const CookAlternative = lazy(() => import('./screens/CookAlternative'));
+const CookExact = lazy(() => import('./screens/CookExact'));
+const History = lazy(() => import('./screens/History'));
 
 interface ResultData {
   response: RecommendResponse;
@@ -32,6 +35,25 @@ export default function App() {
   const [exactData, setExactData] = useState<CookExactResponse | null>(null);
   const [exactLoading, setExactLoading] = useState(false);
   const [exactError, setExactError] = useState(false);
+
+  // Drop the static boot splash as soon as React has something on screen.
+  useLayoutEffect(() => {
+    document.getElementById('boot')?.remove();
+  }, []);
+
+  // The landing is dark; every other screen is light. Tag the body so the
+  // page background (and iOS rubber-band overscroll) matches the screen.
+  useEffect(() => {
+    document.body.dataset.screen = screen === 'landing' ? 'landing' : 'app';
+  }, [screen]);
+
+  // Warm the next screen's chunk while the user is still reading the landing,
+  // so tapping the CTA doesn't wait on a network round-trip.
+  useEffect(() => {
+    if (screen !== 'landing') return;
+    const id = setTimeout(() => { void import('./screens/Home'); }, 1200);
+    return () => clearTimeout(id);
+  }, [screen]);
 
   const handleResult = (data: ResultData) => {
     setResultData(data);
@@ -145,118 +167,122 @@ export default function App() {
     );
   }
 
-  if (screen === 'order') {
-    return (
-      <Order
-        category={orderCategory}
-        imageUrl={orderImage}
-        onBack={() => setScreen('result')}
-        onReset={handleReset}
-        onLogoClick={() => setScreen('landing')}
-      />
-    );
-  }
+  return <Suspense fallback={<div className="screen-fallback" />}>{renderScreen()}</Suspense>;
 
-  if (screen === 'result' && resultData) {
+  function renderScreen() {
+    if (screen === 'order') {
+      return (
+        <Order
+          category={orderCategory}
+          imageUrl={orderImage}
+          onBack={() => setScreen('result')}
+          onReset={handleReset}
+          onLogoClick={() => setScreen('landing')}
+        />
+      );
+    }
+
+    if (screen === 'result' && resultData) {
+      return (
+        <Result
+          best={resultData.response}
+          backups={resultData.backups}
+          preferences={resultData.preferences}
+          excludes={sessionExcludes}
+          onResult={handleResult}
+          onBack={() => setScreen('home')}
+          onReset={handleReset}
+          onHistory={handleHistory}
+          onLogoClick={() => setScreen('landing')}
+          onOrder={(cat, img) => handleCook(cat, img)}
+          onDirectOrder={(cat, img) => handleOrder(cat, img)}
+          onTune={handleTune}
+        />
+      );
+    }
+
+    if (screen === 'cook-gateway') {
+      return (
+        <CookGateway
+          category={orderCategory}
+          imageUrl={orderImage}
+          easyData={cookData}
+          easyLoading={cookLoading}
+          onChooseEasy={() => setScreen('cook')}
+          onChooseExact={handleChooseExact}
+          onBack={() => setScreen('result')}
+          onLogoClick={() => setScreen('landing')}
+        />
+      );
+    }
+
+    if (screen === 'cook') {
+      return (
+        <CookAlternative
+          category={orderCategory}
+          imageUrl={orderImage}
+          prefetchedData={cookData}
+          prefetchLoading={cookLoading}
+          prefetchedAltImage={cookAltImage}
+          onOrder={handleOrder}
+          onBack={() => setScreen('cook-gateway')}
+          onReset={handleReset}
+          onLogoClick={() => setScreen('landing')}
+        />
+      );
+    }
+
+    if (screen === 'cook-exact') {
+      return (
+        <CookExact
+          category={orderCategory}
+          imageUrl={orderImage}
+          data={exactData}
+          loading={exactLoading}
+          error={exactError}
+          onRetry={handleRetryExact}
+          onSwitchToEasy={() => setScreen('cook')}
+          onOrder={handleOrder}
+          onBack={() => setScreen('cook-gateway')}
+          onLogoClick={() => setScreen('landing')}
+        />
+      );
+    }
+
+    if (screen === 'history') {
+      return (
+        <History
+          onBack={() => setScreen(previousScreen)}
+          onLogoClick={() => setScreen('landing')}
+        />
+      );
+    }
+
     return (
-      <Result
-        best={resultData.response}
-        backups={resultData.backups}
-        preferences={resultData.preferences}
-        excludes={sessionExcludes}
-        onResult={handleResult}
-        onBack={() => setScreen('home')}
-        onReset={handleReset}
+      <Home
+        selected={selected}
+        initialMode={homeMode}
+        lastResultNames={resultData ? [resultData.response.category, ...resultData.backups.map(b => b.category)] : []}
+        onToggle={(key, option) =>
+          setSelected((prev) => {
+            if (key.startsWith('avoid_')) {
+              const current = prev[key] ? prev[key].split(',') : [];
+              if (current.includes(option)) {
+                const next = current.filter(o => o !== option);
+                if (next.length === 0) { const n = { ...prev }; delete n[key]; return n; }
+                return { ...prev, [key]: next.join(',') };
+              }
+              return { ...prev, [key]: [...current, option].join(',') };
+            }
+            if (prev[key] === option) { const n = { ...prev }; delete n[key]; return n; }
+            return { ...prev, [key]: option };
+          })
+        }
+        onResult={(data) => handleResult({ response: data.response, backups: data.backups, preferences: data.preferences })}
+        onBackToResult={() => setScreen('result')}
         onHistory={handleHistory}
         onLogoClick={() => setScreen('landing')}
-        onOrder={(cat, img) => handleCook(cat, img)}
-        onDirectOrder={(cat, img) => handleOrder(cat, img)}
-        onTune={handleTune}
       />
     );
   }
-
-  if (screen === 'cook-gateway') {
-    return (
-      <CookGateway
-        category={orderCategory}
-        imageUrl={orderImage}
-        easyData={cookData}
-        easyLoading={cookLoading}
-        onChooseEasy={() => setScreen('cook')}
-        onChooseExact={handleChooseExact}
-        onBack={() => setScreen('result')}
-        onLogoClick={() => setScreen('landing')}
-      />
-    );
-  }
-
-  if (screen === 'cook') {
-    return (
-      <CookAlternative
-        category={orderCategory}
-        imageUrl={orderImage}
-        prefetchedData={cookData}
-        prefetchLoading={cookLoading}
-        prefetchedAltImage={cookAltImage}
-        onOrder={handleOrder}
-        onBack={() => setScreen('cook-gateway')}
-        onReset={handleReset}
-        onLogoClick={() => setScreen('landing')}
-      />
-    );
-  }
-
-  if (screen === 'cook-exact') {
-    return (
-      <CookExact
-        category={orderCategory}
-        imageUrl={orderImage}
-        data={exactData}
-        loading={exactLoading}
-        error={exactError}
-        onRetry={handleRetryExact}
-        onSwitchToEasy={() => setScreen('cook')}
-        onOrder={handleOrder}
-        onBack={() => setScreen('cook-gateway')}
-        onLogoClick={() => setScreen('landing')}
-      />
-    );
-  }
-
-  if (screen === 'history') {
-    return (
-      <History
-        onBack={() => setScreen(previousScreen)}
-        onLogoClick={() => setScreen('landing')}
-      />
-    );
-  }
-
-  return (
-    <Home
-      selected={selected}
-      initialMode={homeMode}
-      lastResultNames={resultData ? [resultData.response.category, ...resultData.backups.map(b => b.category)] : []}
-      onToggle={(key, option) =>
-        setSelected((prev) => {
-          if (key.startsWith('avoid_')) {
-            const current = prev[key] ? prev[key].split(',') : [];
-            if (current.includes(option)) {
-              const next = current.filter(o => o !== option);
-              if (next.length === 0) { const n = { ...prev }; delete n[key]; return n; }
-              return { ...prev, [key]: next.join(',') };
-            }
-            return { ...prev, [key]: [...current, option].join(',') };
-          }
-          if (prev[key] === option) { const n = { ...prev }; delete n[key]; return n; }
-          return { ...prev, [key]: option };
-        })
-      }
-      onResult={(data) => handleResult({ response: data.response, backups: data.backups, preferences: data.preferences })}
-      onBackToResult={() => setScreen('result')}
-      onHistory={handleHistory}
-      onLogoClick={() => setScreen('landing')}
-    />
-  );
 }
